@@ -12,7 +12,14 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(curl -o \"d:/Satria Muhammad A/Project-SMAll/calf-one/public/images/logo.jpeg\" \"https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/ccv2%2F2026-06-23%2FMiniMax-M2.7%2F2042090771963719755%2F7bae1d43e892b0a928fb06a6069ea4c12aee78f10a696b996c48d691a72c942a..jpeg?Expires=1782307796&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=P1Ya63qVHAv8rCj6k%2FVQhLT3JOQ%3D\")"
+      "Bash(curl -o \"d:/Satria Muhammad A/Project-SMAll/calf-one/public/images/logo.jpeg\" \"https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/ccv2%2F2026-06-23%2FMiniMax-M2.7%2F2042090771963719755%2F7bae1d43e892b0a928fb06a6069ea4c12aee78f10a696b996c48d691a72c942a..jpeg?Expires=1782307796&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=P1Ya63qVHAv8rCj6k%2FVQhLT3JOQ%3D\")",
+      "Bash(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(Get-Process -Name \"next\" -ErrorAction SilentlyContinue)",
+      "Bash(Write-Host \"All Node/Next.js processes terminated\")",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "PowerShell(Get-Process -Name \"next\" -ErrorAction SilentlyContinue)"
     ]
   }
 }

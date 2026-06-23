@@ -5,20 +5,22 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
   title: "CALF ONE - Executive Command Center",
-  description: "Executive Decision Platform for Kopi Calf. Every Decision. One Dashboard. Zero Guesswork.",
+  description: "Executive Decision Platform for Kopi Calf",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "CALF ONE",
   },
   icons: {
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1e3a5f",
+  themeColor: "#1e40af",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -51,11 +53,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="apple-touch-icon" href="/images/logo.jpeg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -75,7 +77,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans h-full antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-slate-50 text-slate-900 antialiased`}>
         {children}
       </body>
     </html>

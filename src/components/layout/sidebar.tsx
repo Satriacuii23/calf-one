@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import * as ScrollArea from '@radix-ui/react-scroll-area';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -21,6 +19,7 @@ import {
   Sun,
   Moon,
 } from 'lucide-react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -44,7 +43,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -53,13 +52,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
 
   return (
     <div className={cn(
-      'flex flex-col h-full bg-sidebar text-sidebar-foreground',
-      collapsed ? 'w-[68px]' : 'w-[240px]'
+      'flex flex-col h-full bg-blue-900 text-white',
+      collapsed ? 'w-[64px]' : 'w-[220px]'
     )}>
       {/* Logo */}
-      <div className="flex items-center h-16 px-4 border-b border-sidebar-border/50">
+      <div className="flex items-center h-14 px-4 border-b border-blue-800">
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative h-9 w-9 overflow-hidden rounded-lg bg-white/10">
+          <div className="relative h-8 w-8 overflow-hidden rounded bg-white">
             <Image
               src="/images/logo.jpeg"
               alt="CALF"
@@ -69,57 +68,50 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="text-base font-bold tracking-tight">CALF</span>
-              <span className="text-[10px] font-semibold text-blue-300">ONE</span>
+              <span className="text-sm font-bold tracking-tight">CALF</span>
+              <span className="text-[9px] font-semibold text-blue-300">ONE</span>
             </div>
           )}
         </Link>
       </div>
 
       {/* Navigation */}
-      <ScrollArea.Root className="flex-1">
-        <ScrollArea.Viewport className="h-full w-full">
-          <nav className="p-2 space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onMobileClose}
-                  className={cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all',
-                    isActive
-                      ? 'bg-sidebar-accent text-white shadow-sm'
-                      : 'text-white/70 hover:bg-sidebar-accent/50 hover:text-white'
+      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onMobileClose}
+              className={cn(
+                'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-blue-700 text-white'
+                  : 'text-blue-100 hover:bg-blue-800'
+              )}
+            >
+              <item.icon className="h-5 w-5 shrink-0" />
+              {!collapsed && (
+                <>
+                  <span className="flex-1">{item.title}</span>
+                  {item.badge && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded bg-white/20 px-1.5 text-[10px] font-semibold">
+                      {item.badge}
+                    </span>
                   )}
-                >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1">{item.title}</span>
-                      {item.badge && (
-                        <span className="flex h-5 min-w-5 items-center justify-center rounded-md bg-white/20 px-1.5 text-[10px] font-semibold">
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        </ScrollArea.Viewport>
-        <ScrollArea.Scrollbar orientation="vertical" className="flex w-1.5 touch-none flex-col bg-transparent">
-          <ScrollArea.Thumb className="relative flex-1 rounded-full bg-white/20" />
-        </ScrollArea.Scrollbar>
-      </ScrollArea.Root>
+                </>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
 
       {/* Theme Toggle */}
-      <div className="p-2 border-t border-sidebar-border/50">
+      <div className="p-2 border-t border-blue-800">
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-sidebar-accent/50 hover:text-white transition-all"
+          className="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm font-medium text-blue-100 hover:bg-blue-800 transition-colors"
         >
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           {!collapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
@@ -127,15 +119,15 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
       </div>
 
       {/* Settings */}
-      <div className="p-2 border-t border-sidebar-border/50">
+      <div className="p-2 border-t border-blue-800">
         <Link
           href="/settings"
           onClick={onMobileClose}
           className={cn(
-            'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all',
+            'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
             pathname === '/settings'
-              ? 'bg-sidebar-accent text-white'
-              : 'text-white/70 hover:bg-sidebar-accent/50 hover:text-white'
+              ? 'bg-blue-700 text-white'
+              : 'text-blue-100 hover:bg-blue-800'
           )}
         >
           <Settings className="h-5 w-5" />
@@ -145,34 +137,34 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
 
       {/* User Profile */}
       {!collapsed && (
-        <div className="p-2 border-t border-sidebar-border/50">
+        <div className="p-2 border-t border-blue-800">
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-3 w-full rounded-md p-2 bg-sidebar-accent/30 hover:bg-sidebar-accent/50 transition-all">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm font-semibold">
+              <button className="flex items-center gap-3 w-full rounded-md p-2 bg-blue-800/50 hover:bg-blue-800 transition-colors">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-xs font-bold">
                   SA
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <p className="text-sm font-medium truncate">Satria A</p>
-                  <p className="text-[10px] text-white/60 truncate">Founder</p>
+                  <p className="text-[10px] text-blue-300 truncate">Founder</p>
                 </div>
-                <ChevronDown className="h-4 w-4 text-white/60" />
+                <ChevronDown className="h-4 w-4 text-blue-300" />
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
                 align="end"
                 sideOffset={8}
-                className="min-w-[180px] rounded-lg bg-popover border border-border p-1 shadow-xl z-50"
+                className="min-w-[180px] rounded-lg border border-slate-200 bg-white p-1 shadow-xl z-50"
               >
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none">
+                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-slate-700">
                   <User className="h-4 w-4" /> Profile
                 </DropdownMenu.Item>
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none">
+                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-slate-700">
                   <Settings className="h-4 w-4" /> Settings
                 </DropdownMenu.Item>
-                <DropdownMenu.Separator className="h-px bg-border my-1" />
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none text-red-500">
+                <DropdownMenu.Separator className="h-px bg-slate-200 my-1" />
+                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-red-600">
                   <LogOut className="h-4 w-4" /> Sign Out
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
@@ -196,7 +188,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
     <>
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}

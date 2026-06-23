@@ -14,7 +14,6 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import { cn } from '@/lib/utils';
 
 interface ChartCardProps {
   title: string;
@@ -25,12 +24,14 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, children, className }: ChartCardProps) {
   return (
-    <div className={cn('bg-card border border-border rounded-lg', className)}>
-      <div className="p-5 pb-2">
-        <h3 className="text-base font-semibold">{title}</h3>
-        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+    <div className={className}>
+      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-5">
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+          {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
+        </div>
+        {children}
       </div>
-      <div className="p-5 pt-2">{children}</div>
     </div>
   );
 }
@@ -38,16 +39,13 @@ export function ChartCard({ title, subtitle, children, className }: ChartCardPro
 function CustomTooltip({ active, payload, label }: any) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border border-border bg-popover p-3 shadow-lg">
-        <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+      <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 shadow-sm">
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{label}</p>
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex items-center gap-2">
-            <div
-              className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-xs text-muted-foreground">{entry.name}:</span>
-            <span className="text-xs font-semibold font-number">
+            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.color }} />
+            <span className="text-xs text-slate-600 dark:text-slate-400">{entry.name}:</span>
+            <span className="text-xs font-semibold font-number text-slate-900 dark:text-slate-100">
               Rp {entry.value.toLocaleString('id-ID')}
             </span>
           </div>
@@ -69,25 +67,25 @@ interface RevenueAreaChartProps {
 
 export function RevenueAreaChart({ data }: RevenueAreaChartProps) {
   return (
-    <ResponsiveContainer width="100%" height={280}>
+    <ResponsiveContainer width="100%" height={260}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="colorToday" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#1e40af" stopOpacity={0.15} />
+            <stop offset="5%" stopColor="#1e40af" stopOpacity={0.1} />
             <stop offset="95%" stopColor="#1e40af" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
         <XAxis
           dataKey="date"
-          stroke="var(--muted-foreground)"
-          fontSize={12}
+          stroke="#94a3b8"
+          fontSize={11}
           tickLine={false}
           axisLine={false}
         />
         <YAxis
-          stroke="var(--muted-foreground)"
-          fontSize={12}
+          stroke="#94a3b8"
+          fontSize={11}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `${(value / 1000000).toFixed(0)}jt`}
@@ -105,9 +103,9 @@ export function RevenueAreaChart({ data }: RevenueAreaChartProps) {
           type="monotone"
           dataKey="yesterday"
           name="Kemarin"
-          stroke="#94a3b8"
+          stroke="#cbd5e1"
           strokeWidth={2}
-          strokeDasharray="5 5"
+          strokeDasharray="4 4"
         />
       </AreaChart>
     </ResponsiveContainer>
@@ -124,19 +122,19 @@ interface HourlyBarChartProps {
 
 export function HourlyBarChart({ data }: HourlyBarChartProps) {
   return (
-    <ResponsiveContainer width="100%" height={240}>
+    <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
         <XAxis
           dataKey="hour"
-          stroke="var(--muted-foreground)"
-          fontSize={11}
+          stroke="#94a3b8"
+          fontSize={10}
           tickLine={false}
           axisLine={false}
         />
         <YAxis
-          stroke="var(--muted-foreground)"
-          fontSize={12}
+          stroke="#94a3b8"
+          fontSize={11}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `${(value / 1000000).toFixed(0)}jt`}
@@ -159,15 +157,15 @@ interface CustomerPieChartProps {
 export function CustomerPieChart({ data }: CustomerPieChartProps) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-6">
-      <ResponsiveContainer width={160} height={160}>
+      <ResponsiveContainer width={140} height={140}>
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius={45}
-            outerRadius={70}
-            paddingAngle={4}
+            innerRadius={40}
+            outerRadius={60}
+            paddingAngle={3}
             dataKey="value"
           >
             {data.map((entry, index) => (
@@ -176,12 +174,12 @@ export function CustomerPieChart({ data }: CustomerPieChartProps) {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         {data.map((item) => (
           <div key={item.name} className="flex items-center gap-3">
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-sm text-muted-foreground">{item.name}</span>
-            <span className="text-sm font-semibold font-number">{item.value}%</span>
+            <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+            <span className="text-xs text-slate-600 dark:text-slate-400">{item.name}</span>
+            <span className="text-xs font-semibold font-number text-slate-900 dark:text-slate-100">{item.value}%</span>
           </div>
         ))}
       </div>
@@ -200,28 +198,28 @@ interface CityPerformanceChartProps {
 
 export function CityPerformanceChart({ data }: CityPerformanceChartProps) {
   return (
-    <ResponsiveContainer width="100%" height={280}>
-      <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 80, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+    <ResponsiveContainer width="100%" height={260}>
+      <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 60, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
         <XAxis
           type="number"
-          stroke="var(--muted-foreground)"
-          fontSize={12}
+          stroke="#94a3b8"
+          fontSize={11}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${(value / 1000000000).toFixed(1)}B`}
+          tickFormatter={(value) => `${(value / 1000000000).toFixed(0)}B`}
         />
         <YAxis
           type="category"
           dataKey="city"
-          stroke="var(--muted-foreground)"
-          fontSize={12}
+          stroke="#94a3b8"
+          fontSize={11}
           tickLine={false}
           axisLine={false}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey="revenue" name="Revenue" fill="#1e40af" radius={[0, 4, 4, 0]} barSize={20} />
-        <Bar dataKey="target" name="Target" fill="var(--muted)" radius={[0, 4, 4, 0]} barSize={20} />
+        <Bar dataKey="revenue" name="Revenue" fill="#1e40af" radius={[0, 4, 4, 0]} barSize={16} />
+        <Bar dataKey="target" name="Target" fill="#e2e8f0" radius={[0, 4, 4, 0]} barSize={16} />
       </BarChart>
     </ResponsiveContainer>
   );

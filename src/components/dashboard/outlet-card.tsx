@@ -1,9 +1,7 @@
 'use client';
 
 import { Star, MapPin } from 'lucide-react';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Outlet } from '@/types';
 import { cn } from '@/lib/utils';
 import { formatCurrencyShort } from '@/lib/data';
@@ -18,27 +16,25 @@ export function OutletCard({ outlet, onClick }: OutletCardProps) {
   const isAboveTarget = performance >= 100;
 
   return (
-    <Card
-      className="p-4 cursor-pointer hover:shadow-md hover:border-primary/20 transition-all border border-border"
+    <div
+      className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
       onClick={onClick}
     >
-      {/* Status indicator */}
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h4 className="font-semibold line-clamp-1">{outlet.name}</h4>
+          <h4 className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">{outlet.name}</h4>
           <div className="flex items-center gap-1 mt-1">
-            <MapPin className="h-3 w-3 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">{outlet.city}</span>
+            <MapPin className="h-3 w-3 text-slate-400" />
+            <span className="text-xs text-slate-500 dark:text-slate-400">{outlet.city}</span>
           </div>
         </div>
         <Badge
-          variant="outline"
           className={cn(
-            'capitalize',
-            outlet.status === 'excellent' && 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400',
-            outlet.status === 'good' && 'border-blue-300 text-blue-700 dark:border-blue-500/30 dark:text-blue-400',
-            outlet.status === 'needs-attention' && 'border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400',
-            outlet.status === 'critical' && 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400'
+            'capitalize text-xs',
+            outlet.status === 'excellent' && 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+            outlet.status === 'good' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+            outlet.status === 'needs-attention' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+            outlet.status === 'critical' && 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
           )}
         >
           {outlet.status.replace('-', ' ')}
@@ -48,12 +44,12 @@ export function OutletCard({ outlet, onClick }: OutletCardProps) {
       <div className="space-y-3">
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground">Revenue</span>
-            <span className="text-sm font-semibold font-number">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Revenue</span>
+            <span className="text-sm font-semibold font-number text-slate-900 dark:text-slate-100">
               {formatCurrencyShort(outlet.revenueToday)}
             </span>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <div
               className={cn(
                 'h-full rounded-full transition-all',
@@ -63,7 +59,7 @@ export function OutletCard({ outlet, onClick }: OutletCardProps) {
             />
           </div>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-slate-400 dark:text-slate-500">
               Target: {formatCurrencyShort(outlet.revenueTarget)}
             </span>
             <span className={cn(
@@ -75,24 +71,24 @@ export function OutletCard({ outlet, onClick }: OutletCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-2 border-t border-border">
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
           <div className="text-center">
-            <p className="text-lg font-bold font-number">{outlet.transactions}</p>
-            <p className="text-xs text-muted-foreground">Transaksi</p>
+            <p className="text-lg font-bold font-number text-slate-900 dark:text-slate-100">{outlet.transactions}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Transaksi</p>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-            <span className="font-semibold">{outlet.rating}</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-100">{outlet.rating}</span>
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-muted-foreground">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
               {outlet.manager.split(' ')[0]}
             </p>
-            <p className="text-xs text-muted-foreground">Manager</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Manager</p>
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -105,44 +101,52 @@ export function OutletRow({ outlet, rank }: OutletRowProps) {
   const performance = (outlet.revenueToday / outlet.revenueTarget) * 100;
 
   return (
-    <tr className="border-b border-border hover:bg-muted/50 transition-colors">
-      <td className="py-4 px-4">
-        <span className="text-sm font-medium text-muted-foreground">#{rank}</span>
+    <tr className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+      <td className="py-3 px-4">
+        <span className="text-sm font-medium text-slate-500">#{rank}</span>
       </td>
-      <td className="py-4 px-4">
+      <td className="py-3 px-4">
         <div>
-          <p className="font-medium">{outlet.name}</p>
-          <p className="text-xs text-muted-foreground">{outlet.city}</p>
+          <p className="font-medium text-slate-900 dark:text-slate-100">{outlet.name}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{outlet.city}</p>
         </div>
       </td>
-      <td className="py-4 px-4">
-        <span className="font-semibold font-number">
+      <td className="py-3 px-4">
+        <span className="font-semibold font-number text-slate-900 dark:text-slate-100">
           {formatCurrencyShort(outlet.revenueToday)}
         </span>
       </td>
-      <td className="py-4 px-4">
-        <div className="w-24">
-          <Progress value={performance} className="h-2" />
-          <span className="text-xs text-muted-foreground mt-1 block">
+      <td className="py-3 px-4">
+        <div className="w-20">
+          <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div
+              className={cn(
+                'h-full rounded-full',
+                performance >= 100 ? 'bg-emerald-500' : 'bg-amber-500'
+              )}
+              style={{ width: `${Math.min(performance, 100)}%` }}
+            />
+          </div>
+          <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 block">
             {performance.toFixed(0)}%
           </span>
         </div>
       </td>
-      <td className="py-4 px-4">
-        <span className="text-sm">{outlet.transactions}</span>
+      <td className="py-3 px-4">
+        <span className="text-sm text-slate-700 dark:text-slate-300">{outlet.transactions}</span>
       </td>
-      <td className="py-4 px-4">
+      <td className="py-3 px-4">
         <div className="flex items-center gap-1">
           <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-          <span className="font-medium">{outlet.rating}</span>
+          <span className="font-medium text-slate-900 dark:text-slate-100">{outlet.rating}</span>
         </div>
       </td>
-      <td className="py-4 px-4">
-        <Badge variant="outline" className={cn(
-          outlet.status === 'excellent' && 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400',
-          outlet.status === 'good' && 'border-blue-300 text-blue-700 dark:border-blue-500/30 dark:text-blue-400',
-          outlet.status === 'needs-attention' && 'border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400',
-          outlet.status === 'critical' && 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400'
+      <td className="py-3 px-4">
+        <Badge className={cn(
+          outlet.status === 'excellent' && 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+          outlet.status === 'good' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+          outlet.status === 'needs-attention' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+          outlet.status === 'critical' && 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
         )}>
           {outlet.status}
         </Badge>

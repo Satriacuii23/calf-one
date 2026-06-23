@@ -18,16 +18,16 @@ export function KPICard({
   value,
   change,
   icon: Icon,
-  iconColor = 'text-primary',
-  iconBg = 'bg-primary/10',
+  iconColor = 'text-blue-600',
+  iconBg = 'bg-blue-100',
   className,
 }: KPICardProps) {
   const isPositive = change !== undefined && change >= 0;
 
   return (
-    <div className={cn('bg-card border border-border rounded-lg p-5 transition-all hover:shadow-md hover:border-primary/20', className)}>
-      <div className="flex items-start justify-between mb-4">
-        <div className={cn('flex h-11 w-11 items-center justify-center rounded-lg', iconBg)}>
+    <div className={cn('p-5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800', className)}>
+      <div className="flex items-start justify-between mb-3">
+        <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg', iconBg)}>
           <Icon className={cn('h-5 w-5', iconColor)} />
         </div>
         {change !== undefined && (
@@ -35,8 +35,8 @@ export function KPICard({
             className={cn(
               'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold',
               isPositive
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400'
-                : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
             )}
           >
             {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
@@ -45,8 +45,8 @@ export function KPICard({
         )}
       </div>
       <div>
-        <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
-        <p className="text-2xl lg:text-3xl font-bold font-number tracking-tight">{value}</p>
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{title}</p>
+        <p className="text-2xl lg:text-3xl font-bold font-number tracking-tight text-slate-900 dark:text-slate-100">{value}</p>
       </div>
     </div>
   );
@@ -61,17 +61,17 @@ interface MiniKPICardProps {
 
 export function MiniKPICard({ label, value, trend, trendValue }: MiniKPICardProps) {
   return (
-    <div className="bg-card border border-border rounded-lg p-4">
-      <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+    <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{label}</p>
       <div className="flex items-baseline justify-between">
-        <span className="text-lg font-bold font-number">{value}</span>
+        <span className="text-lg font-bold font-number text-slate-900 dark:text-slate-100">{value}</span>
         {trend && trendValue && (
           <span
             className={cn(
               'text-xs font-medium',
-              trend === 'up' && 'text-emerald-500',
-              trend === 'down' && 'text-red-500',
-              trend === 'stable' && 'text-muted-foreground'
+              trend === 'up' && 'text-emerald-600 dark:text-emerald-400',
+              trend === 'down' && 'text-red-600 dark:text-red-400',
+              trend === 'stable' && 'text-slate-500'
             )}
           >
             {trendValue}
