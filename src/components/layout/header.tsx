@@ -1,100 +1,82 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, Search, Calendar, ChevronDown, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { notifications, formatCurrencyShort } from '@/lib/data';
+  Bell,
+  Search,
+  Calendar,
+  Menu,
+  X,
+  ChevronDown,
+  LogOut,
+  User,
+  Settings,
+  HelpCircle,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { notifications, formatCurrencyShort } from '@/lib/data';
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
   sidebarCollapsed: boolean;
+  onMobileMenuToggle: () => void;
 }
 
-export function Header({ title, subtitle, sidebarCollapsed }: HeaderProps) {
+export function Header({ title, subtitle, sidebarCollapsed, onMobileMenuToggle }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'error':
-        return '●';
-      case 'warning':
-        return '▲';
-      case 'success':
-        return '✓';
-      default:
-        return '○';
-    }
-  };
-
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case 'error':
-        return 'text-red-400';
-      case 'warning':
-        return 'text-amber-400';
-      case 'success':
-        return 'text-emerald-400';
-      default:
-        return 'text-blue-400';
-    }
-  };
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 backdrop-blur-xl px-6 transition-all duration-300',
-        sidebarCollapsed ? 'ml-[72px]' : 'ml-[260px]'
+        'sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:px-6 transition-all duration-300'
       )}
     >
-      <div className="flex flex-col">
-        <h1 className="text-xl font-semibold">{title}</h1>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={onMobileMenuToggle}
+        className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg hover:bg-accent transition-colors"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      <div className="flex flex-col lg:ml-0 ml-0">
+        <h1 className="text-lg lg:text-xl font-semibold">{title}</h1>
         {subtitle && (
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <p className="text-xs lg:text-sm text-muted-foreground hidden sm:block">{subtitle}</p>
         )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 lg:gap-4">
         {/* Date Display */}
         <div className="hidden md:flex items-center gap-2 rounded-lg bg-card px-3 py-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">
             {new Date().toLocaleDateString('id-ID', {
-              weekday: 'long',
+              weekday: 'short',
               day: 'numeric',
-              month: 'long',
+              month: 'short',
               year: 'numeric',
             })}
           </span>
         </div>
 
-        {/* Search */}
-        <div className="relative hidden lg:block">
+        {/* Search - Desktop */}
+        <div className="hidden lg:block relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
+          <input
             type="search"
-            placeholder="Search outlets, customers..."
-            className="w-[280px] pl-10 bg-card"
+            placeholder="Search..."
+            className="w-[200px] lg:w-[280px] h-10 pl-10 pr-4 rounded-lg bg-card border border-border text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Notifications */}
         <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
+          <button
+            className="relative flex h-10 w-10 items-center justify-center rounded-lg hover:bg-accent transition-colors"
             onClick={() => setShowNotifications(!showNotifications)}
           >
             <Bell className="h-5 w-5" />
@@ -103,7 +85,7 @@ export function Header({ title, subtitle, sidebarCollapsed }: HeaderProps) {
                 {unreadCount}
               </span>
             )}
-          </Button>
+          </button>
 
           {showNotifications && (
             <>
@@ -111,19 +93,17 @@ export function Header({ title, subtitle, sidebarCollapsed }: HeaderProps) {
                 className="fixed inset-0 z-40"
                 onClick={() => setShowNotifications(false)}
               />
-              <div className="absolute right-0 top-full mt-2 z-50 w-[380px] rounded-xl border border-border bg-card shadow-2xl animate-fade-in">
+              <div className="absolute right-0 top-full mt-2 z-50 w-[340px] lg:w-[380px] rounded-xl border border-border bg-popover shadow-2xl animate-fade-in">
                 <div className="flex items-center justify-between border-b border-border p-4">
                   <h3 className="font-semibold">Notifications</h3>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
+                  <button
+                    className="flex h-6 w-6 items-center justify-center rounded hover:bg-accent"
                     onClick={() => setShowNotifications(false)}
                   >
                     <X className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
-                <ScrollArea className="h-[360px]">
+                <div className="max-h-[360px] overflow-y-auto">
                   <div className="p-2">
                     {notifications.map((notification) => (
                       <div
@@ -133,65 +113,68 @@ export function Header({ title, subtitle, sidebarCollapsed }: HeaderProps) {
                           !notification.read && 'bg-accent/50'
                         )}
                       >
-                        <span
+                        <div
                           className={cn(
-                            'mt-0.5 text-sm',
-                            getNotificationColor(notification.type)
+                            'mt-0.5 h-2 w-2 rounded-full shrink-0',
+                            notification.type === 'error' && 'bg-red-500',
+                            notification.type === 'warning' && 'bg-amber-500',
+                            notification.type === 'success' && 'bg-emerald-500',
+                            notification.type === 'info' && 'bg-blue-500'
                           )}
-                        >
-                          {getNotificationIcon(notification.type)}
-                        </span>
+                        />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium truncate">
-                              {notification.title}
-                            </p>
+                            <p className="text-sm font-medium truncate">{notification.title}</p>
                             {!notification.read && (
-                              <span className="h-2 w-2 rounded-full bg-primary" />
+                              <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />
                             )}
                           </div>
                           <p className="text-xs text-muted-foreground truncate mt-0.5">
                             {notification.message}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(notification.timestamp).toLocaleTimeString(
-                              'id-ID',
-                              {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              }
-                            )}
-                          </p>
                         </div>
                       </div>
                     ))}
                   </div>
-                </ScrollArea>
+                </div>
               </div>
             </>
           )}
         </div>
 
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent transition-colors">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary">
-              SA
-            </div>
-            <span className="hidden md:inline text-sm font-medium">
-              Satria A
-            </span>
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Help & Support</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-400">
-              Sign Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* User Menu - Desktop */}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <button className="hidden lg:flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-accent transition-colors">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                SA
+              </div>
+              <span className="text-sm font-medium">Satria A</span>
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              align="end"
+              sideOffset={8}
+              className="min-w-[180px] rounded-lg bg-popover border border-border p-1 shadow-lg animate-fade-in z-50"
+            >
+              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none">
+                <User className="h-4 w-4" /> Profile
+              </DropdownMenu.Item>
+              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none">
+                <Settings className="h-4 w-4" /> Settings
+              </DropdownMenu.Item>
+              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none">
+                <HelpCircle className="h-4 w-4" /> Help
+              </DropdownMenu.Item>
+              <DropdownMenu.Separator className="h-px bg-border my-1" />
+              <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-accent outline-none text-red-500">
+                <LogOut className="h-4 w-4" /> Sign Out
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
     </header>
   );

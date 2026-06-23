@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --turbopack --yes)",
-      "Bash(Move-Item SPEC.md ..\\\\SPEC.md.bak -Force)"
+      "Bash(Move-Item SPEC.md ..\\\\SPEC.md.bak -Force)",
+      "Bash(npx shadcn@latest init -y --defaults)",
+      "Bash(npx shadcn@latest add card badge table skeleton separator scroll-area dropdown-menu avatar progress tabs sheet tooltip -y)",
+      "Bash(npx shadcn@latest add select label switch -y)",
+      "Bash(npx shadcn@latest add input -y)",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(curl -o \"d:/Satria Muhammad A/Project-SMAll/calf-one/public/images/logo.jpeg\" \"https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/ccv2%2F2026-06-23%2FMiniMax-M2.7%2F2042090771963719755%2F7bae1d43e892b0a928fb06a6069ea4c12aee78f10a696b996c48d691a72c942a..jpeg?Expires=1782307796&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=P1Ya63qVHAv8rCj6k%2FVQhLT3JOQ%3D\")"
     ]
   }
 }
