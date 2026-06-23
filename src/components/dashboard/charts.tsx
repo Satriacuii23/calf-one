@@ -13,12 +13,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
-  Legend,
 } from 'recharts';
-import { Card } from '@/components/ui/card';
-import { formatCurrencyShort } from '@/lib/data';
+import { cn } from '@/lib/utils';
 
 interface ChartCardProps {
   title: string;
@@ -29,45 +25,30 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, children, className }: ChartCardProps) {
   return (
-    <Card className={className}>
-      <div className="p-4 lg:p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
-          )}
-        </div>
-        {children}
+    <div className={cn('bg-card border border-border rounded-lg', className)}>
+      <div className="p-5 pb-2">
+        <h3 className="text-base font-semibold">{title}</h3>
+        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
       </div>
-    </Card>
+      <div className="p-5 pt-2">{children}</div>
+    </div>
   );
 }
 
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-  label?: string;
-  prefix?: string;
-}
-
-function CustomTooltip({ active, payload, label, prefix = '' }: CustomTooltipProps) {
+function CustomTooltip({ active, payload, label }: any) {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-border bg-popover p-3 shadow-lg">
-        <p className="text-sm font-medium text-muted-foreground mb-2">{label}</p>
-        {payload.map((entry, index) => (
+        <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
           <div key={index} className="flex items-center gap-2">
             <div
               className="h-2 w-2 rounded-full"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-sm text-muted-foreground">{entry.name}:</span>
-            <span className="text-sm font-semibold font-number">
-              {prefix}{entry.value.toLocaleString('id-ID')}
+            <span className="text-xs text-muted-foreground">{entry.name}:</span>
+            <span className="text-xs font-semibold font-number">
+              Rp {entry.value.toLocaleString('id-ID')}
             </span>
           </div>
         ))}
@@ -82,7 +63,7 @@ interface RevenueAreaChartProps {
     date: string;
     today: number;
     yesterday: number;
-    lastWeek: number;
+    lastWeek?: number;
   }>;
 }
 
@@ -92,8 +73,8 @@ export function RevenueAreaChart({ data }: RevenueAreaChartProps) {
       <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="colorToday" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+            <stop offset="5%" stopColor="#1e40af" stopOpacity={0.15} />
+            <stop offset="95%" stopColor="#1e40af" stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -111,14 +92,13 @@ export function RevenueAreaChart({ data }: RevenueAreaChartProps) {
           axisLine={false}
           tickFormatter={(value) => `${(value / 1000000).toFixed(0)}jt`}
         />
-        <Tooltip content={<CustomTooltip prefix="Rp " />} />
+        <Tooltip content={<CustomTooltip />} />
         <Area
           type="monotone"
           dataKey="today"
           name="Hari Ini"
-          stroke="#3b82f6"
+          stroke="#1e40af"
           strokeWidth={2}
-          fillOpacity={1}
           fill="url(#colorToday)"
         />
         <Area
@@ -127,7 +107,6 @@ export function RevenueAreaChart({ data }: RevenueAreaChartProps) {
           name="Kemarin"
           stroke="#94a3b8"
           strokeWidth={2}
-          fillOpacity={1}
           strokeDasharray="5 5"
         />
       </AreaChart>
@@ -162,13 +141,8 @@ export function HourlyBarChart({ data }: HourlyBarChartProps) {
           axisLine={false}
           tickFormatter={(value) => `${(value / 1000000).toFixed(0)}jt`}
         />
-        <Tooltip content={<CustomTooltip prefix="Rp " />} />
-        <Bar
-          dataKey="revenue"
-          name="Revenue"
-          fill="#3b82f6"
-          radius={[4, 4, 0, 0]}
-        />
+        <Tooltip content={<CustomTooltip />} />
+        <Bar dataKey="revenue" name="Revenue" fill="#1e40af" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -205,14 +179,9 @@ export function CustomerPieChart({ data }: CustomerPieChartProps) {
       <div className="flex flex-col gap-3">
         {data.map((item) => (
           <div key={item.name} className="flex items-center gap-3">
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: item.color }}
-            />
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{item.name}</span>
-              <span className="text-sm font-semibold font-number">{item.value}%</span>
-            </div>
+            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
+            <span className="text-sm text-muted-foreground">{item.name}</span>
+            <span className="text-sm font-semibold font-number">{item.value}%</span>
           </div>
         ))}
       </div>
@@ -225,7 +194,7 @@ interface CityPerformanceChartProps {
     city: string;
     revenue: number;
     target: number;
-    growth: number;
+    growth?: number;
   }>;
 }
 
@@ -250,21 +219,9 @@ export function CityPerformanceChart({ data }: CityPerformanceChartProps) {
           tickLine={false}
           axisLine={false}
         />
-        <Tooltip content={<CustomTooltip prefix="Rp " />} />
-        <Bar
-          dataKey="revenue"
-          name="Revenue"
-          fill="#3b82f6"
-          radius={[0, 4, 4, 0]}
-          barSize={20}
-        />
-        <Bar
-          dataKey="target"
-          name="Target"
-          fill="var(--muted)"
-          radius={[0, 4, 4, 0]}
-          barSize={20}
-        />
+        <Tooltip content={<CustomTooltip />} />
+        <Bar dataKey="revenue" name="Revenue" fill="#1e40af" radius={[0, 4, 4, 0]} barSize={20} />
+        <Bar dataKey="target" name="Target" fill="var(--muted)" radius={[0, 4, 4, 0]} barSize={20} />
       </BarChart>
     </ResponsiveContainer>
   );
