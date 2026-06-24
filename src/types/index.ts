@@ -22,6 +22,8 @@ export interface OutletData {
   status: "online" | "warning" | "offline"
   cctvOnline: number
   cctvTotal: number
+  lat?: number
+  lng?: number
 }
 
 export interface CustomerData {

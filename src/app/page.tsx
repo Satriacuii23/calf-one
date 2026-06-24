@@ -1,5 +1,7 @@
 "use client"
 
+import dynamic from 'next/dynamic';
+
 import { MainLayout } from "@/components/layout/main-layout";
 import { Row, Col, Typography, Badge, Progress, Table, Button, Segmented, Space, Tag, Tooltip, Spin } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -10,6 +12,15 @@ import { useState, useMemo, useEffect } from 'react';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useSocialData, useCustomerCareData } from '@/hooks/useDashboardModules';
 import { formatNumber } from '@/lib/utils';
+
+const OutletsMap = dynamic(() => import('@/components/dashboard/outlets-map'), { 
+  ssr: false, 
+  loading: () => (
+    <div style={{ height: 400, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Spin size="large" />
+    </div>
+  )
+});
 
 const { Text, Title } = Typography;
 
@@ -58,27 +69,6 @@ export default function OverviewPage() {
     { label: 'Active Members', tooltip: 'Pelanggan aktif loyalitas.', value: formatNumber(dashboardData.totalCustomers), icon: Users, trend: '+18.4%' },
     { label: 'Active Outlets', tooltip: 'Jumlah gerai beroperasi.', value: `${dashboardData.totalOutlets}`, icon: Building2, trend: '0%' },
     { label: 'Health Score', tooltip: 'Indeks kesehatan operasional.', value: `${totalScore}/100`, icon: ShieldCheck, trend: '+1.2%' },
-  ];
-
-  const tableColumns = [
-    { title: '#', dataIndex: 'id', key: 'id', render: (_: any, __: any, index: number) => <Text type="secondary">{index + 1}</Text> },
-    { title: 'Outlet', key: 'outlet', render: (record: any) => (<div><Text strong>{record.name}</Text><br/><Text type="secondary" style={{ fontSize: 12 }}>{record.area}</Text></div>) },
-    { title: 'Revenue', dataIndex: 'revenue', key: 'revenue', align: 'right' as const, render: (rev: number) => <Text strong>Rp {(rev / 1000000).toFixed(0)}M</Text> },
-    { title: 'Growth', dataIndex: 'growth', key: 'growth', align: 'right' as const, render: (growth: number) => (
-      <Space size={4}>
-        {growth >= 0 ? <ArrowUpRight size={14} color="#475569" /> : <ArrowDownRight size={14} color="#475569" />}
-        <Text strong style={{ color: growth >= 0 ? '#22c55e' : '#ef4444' }}>{growth >= 0 ? '+' : ''}{growth}%</Text>
-      </Space>
-    )},
-    { title: 'Health Score', dataIndex: 'healthScore', key: 'healthScore', align: 'center' as const, render: (score: number) => (
-      <Space size={8}>
-        <Progress percent={score} showInfo={false} strokeColor={score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444'} style={{ width: 50, marginBottom: 0 }} />
-        <Text strong style={{ color: score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444' }}>{score}</Text>
-      </Space>
-    )},
-    { title: 'Status', dataIndex: 'status', key: 'status', align: 'center' as const, render: (status: string) => (
-      <div style={{ background: status === 'online' ? '#ecfdf5' : status === 'warning' ? '#fffbeb' : '#fef2f2', color: status === 'online' ? '#10b981' : status === 'warning' ? '#f59e0b' : '#ef4444', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{status.toUpperCase()}</div>
-    )},
   ];
 
   const summaryInsight = "Data eksekutif menunjukkan performa stabil dengan total pendapatan mencapai target harian. Infrastruktur fisik beroperasi optimal pada tingkat 100%, didukung oleh metrik sentimen pelanggan yang terus menunjukkan tren positif. Rekomendasi utama: Tingkatkan utilisasi AI Executive Insights untuk mengidentifikasi pola anomali lebih awal.";
@@ -194,9 +184,11 @@ export default function OverviewPage() {
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Top Outlets Performer</Title>
                   </Space>
-                  <Button type="link" size="small">Lihat Semua</Button>
+                  <Button type="link" size="small">Lihat Detail</Button>
                 </div>
-                <Table columns={tableColumns} dataSource={topOutlets} pagination={{ pageSize: 5, showSizeChanger: true }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
+                <div style={{ padding: '0 24px 24px 24px' }}>
+                  <OutletsMap />
+                </div>
               </SectionContainer>
             </Col>
           </Row>
