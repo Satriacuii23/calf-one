@@ -16,24 +16,27 @@ import {
   Zap,
   Brain,
   FileText,
-  ChevronLeft,
   ChevronRight,
   X,
   Menu,
   LogOut,
   User,
-  Bell,
+  ActivitySquare,
+  MessageSquare,
+  HeadphonesIcon,
 } from "lucide-react"
 import { useState, useEffect } from "react"
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 
 const navigation = [
   { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Revenue", href: "/revenue", icon: TrendingUp },
-  { name: "Outlets", href: "/outlets", icon: Building2 },
-  { name: "Customers", href: "/customers", icon: Users },
-  { name: "Products", href: "/products", icon: Package },
+  { name: "Revenue Intelligence", href: "/revenue", icon: TrendingUp },
+  { name: "Outlet Intelligence", href: "/outlets", icon: Building2 },
+  { name: "Customer Intelligence", href: "/customers", icon: Users },
+  { name: "Product Intelligence", href: "/products", icon: Package },
   { name: "Risk Center", href: "/risk", icon: AlertTriangle },
+  { name: "Operations Center", href: "/operations", icon: ActivitySquare },
+  { name: "Social Intelligence", href: "/social", icon: MessageSquare },
+  { name: "Customer Care", href: "/care", icon: HeadphonesIcon },
   { name: "AI Insights", href: "/insights", icon: Brain },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -128,7 +131,7 @@ export function Sidebar() {
   )
 
   return (
-    <TooltipProvider delayDuration={0}>
+    <>
       {/* Desktop Sidebar */}
       <motion.aside
         initial={false}
@@ -239,6 +242,6 @@ export function Sidebar() {
       >
         <Menu className="h-5 w-5 text-white" />
       </button>
-    </TooltipProvider>
+    </>
   )
 }

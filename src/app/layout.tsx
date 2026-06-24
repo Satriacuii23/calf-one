@@ -1,50 +1,12 @@
-import '@mantine/core/styles.css';
-import '@mantine/charts/styles.css';
-import '@mantine/dates/styles.css';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { ConfigProvider } from 'antd';
+import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import './globals.css';
 
-import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { MainLayout } from '@/components/layout/main-layout';
-
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
-})
-
-const theme = createTheme({
-  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
-  primaryColor: 'blue',
-  colors: {
-    brand: [
-      '#e6f0ff',
-      '#cce0ff',
-      '#99c2ff',
-      '#66a3ff',
-      '#3385ff',
-      '#1F5EFF',
-      '#0F2D6B',
-      '#0a2459',
-      '#071c47',
-      '#041336',
-    ],
-  },
-  defaultRadius: 'md',
-  components: {
-    Card: {
-      defaultProps: {
-        shadow: 'sm',
-        padding: 'lg',
-        withBorder: true,
-      },
-    },
-    Button: {
-      defaultProps: {
-        radius: 'md',
-      },
-    },
-  },
 });
 
 export const metadata: Metadata = {
@@ -53,7 +15,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/logo.jpeg",
   },
-}
+};
 
 export default function RootLayout({
   children,
@@ -61,15 +23,34 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <head>
-        <ColorSchemeScript defaultColorScheme="light" />
-      </head>
-      <body className={inter.className}>
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          {children}
-        </MantineProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={jakarta.className} style={{ margin: 0, padding: 0, backgroundColor: '#f0f2f5' }}>
+        <AntdRegistry>
+          <ConfigProvider
+            theme={{
+              token: {
+                fontFamily: 'Plus Jakarta Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+                colorPrimary: '#1F5EFF',
+                borderRadius: 8,
+                colorBgContainer: '#ffffff',
+              },
+              components: {
+                Layout: {
+                  bodyBg: '#f0f2f5',
+                  headerBg: '#ffffff',
+                },
+                Menu: {
+                  itemBg: 'transparent',
+                  itemSelectedBg: '#eff6ff',
+                  itemSelectedColor: '#1F5EFF',
+                }
+              }
+            }}
+          >
+            {children}
+          </ConfigProvider>
+        </AntdRegistry>
       </body>
     </html>
-  )
+  );
 }

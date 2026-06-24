@@ -1,7 +1,7 @@
 "use client"
 
-import { AppShell, Burger, Group, NavLink, Text, Avatar, Menu, ActionIcon, Badge, TextInput, ScrollArea, Divider, Box, UnstyledButton, Badge as MantineBadge } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import React, { useState } from 'react';
+import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider } from 'antd';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -18,29 +18,60 @@ import {
   Search,
   LogOut,
   User,
-  ChevronRight,
-  ChevronLeft,
+  ActivitySquare,
+  MessageSquare,
+  HeadphonesIcon,
 } from 'lucide-react';
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 
-const navigation = [
-  { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Revenue", href: "/revenue", icon: TrendingUp },
-  { name: "Outlets", href: "/outlets", icon: Building2 },
-  { name: "Customers", href: "/customers", icon: Users },
-  { name: "Products", href: "/products", icon: Package },
-  { name: "Risk Center", href: "/risk", icon: AlertTriangle },
-  { name: "AI Insights", href: "/insights", icon: Brain },
-  { name: "Reports", href: "/reports", icon: FileText },
-  { name: "Settings", href: "/settings", icon: Settings },
-]
+const { Header, Sider, Content } = Layout;
+const { Text, Title } = Typography;
 
-const secondaryNav = [
-  { name: "Expansions", href: "/expansion", icon: Zap },
-  { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
-]
+const navGroups = [
+  {
+    group: "Executive Board",
+    items: [
+      { name: "Overview", href: "/", icon: LayoutDashboard },
+      { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
+      { name: "Expansions", href: "/expansion", icon: Zap },
+    ]
+  },
+  {
+    group: "Business Intelligence",
+    items: [
+      { name: "Revenue Intelligence", href: "/revenue", icon: TrendingUp },
+      { name: "Product Intelligence", href: "/products", icon: Package },
+      { name: "Customer Intelligence", href: "/customers", icon: Users },
+    ]
+  },
+  {
+    group: "Operations & Risk",
+    items: [
+      { name: "Operations Center", href: "/operations", icon: ActivitySquare },
+      { name: "Outlet Intelligence", href: "/outlets", icon: Building2 },
+      { name: "Risk Center", href: "/risk", icon: AlertTriangle },
+    ]
+  },
+  {
+    group: "Brand & Engagement",
+    items: [
+      { name: "Social Intelligence", href: "/social", icon: MessageSquare },
+      { name: "Customer Care", href: "/care", icon: HeadphonesIcon },
+    ]
+  },
+  {
+    group: "System & Administration",
+    items: [
+      { name: "AI Insights", href: "/insights", icon: Brain },
+      { name: "Reports", href: "/reports", icon: FileText },
+      { name: "Settings", href: "/settings", icon: Settings },
+    ]
+  }
+];
+
+const healthScore = 89;
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -49,167 +80,116 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
-  const [opened, { toggle, close }] = useDisclosure();
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const navItems = [...navigation, ...secondaryNav].map((item) => ({
-    ...item,
-    active: pathname === item.href,
+  const menuItems = navGroups.map((group, index) => ({
+    key: `group-${index}`,
+    type: 'group' as const,
+    label: <Text type="secondary" style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>{group.group.toUpperCase()}</Text>,
+    children: group.items.map(item => ({
+      key: item.href,
+      icon: <item.icon size={16} />,
+      label: <Link href={item.href}>{item.name}</Link>,
+    })),
   }));
 
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: collapsed ? 70 : 260,
-        breakpoint: 'sm',
-        collapsed: { mobile: !opened, desktop: false },
-      }}
-      padding="md"
-      styles={(theme) => ({
-        main: {
-          backgroundColor: '#f8fafc',
-        },
-      })}
-    >
-      <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Group gap="xs">
-              <Avatar color="blue" radius="md" size={36}>
-                C1
-              </Avatar>
-              <div>
-                <Text fw={700} size="lg" c="dark">CALF ONE</Text>
-                <Text size="xs" c="dimmed">Command Center</Text>
-              </div>
-            </Group>
-          </Group>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider 
+        width={260} 
+        theme="light" 
+        collapsible 
+        collapsed={collapsed} 
+        onCollapse={(value) => setCollapsed(value)}
+        style={{ borderRight: '1px solid #f0f0f0' }}
+      >
+        <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', borderBottom: '1px solid #f0f0f0' }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#1F5EFF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: collapsed ? 0 : 12 }}>
+            <Text strong style={{ color: 'white', fontSize: 14 }}>C1</Text>
+          </div>
+          {!collapsed && (
+            <div>
+              <Text strong style={{ fontSize: 16, display: 'block', lineHeight: 1.2 }}>CALF ONE</Text>
+              <Text type="secondary" style={{ fontSize: 11, display: 'block', lineHeight: 1.2 }}>Command Center</Text>
+            </div>
+          )}
+        </div>
+        
+        <Menu
+          mode="inline"
+          selectedKeys={[pathname]}
+          items={menuItems}
+          style={{ borderRight: 0, padding: '12px 0' }}
+        />
 
-          <Group gap="md">
-            <TextInput
-              placeholder="Search..."
-              leftSection={<Search size={16} />}
-              radius="md"
-              styles={{
-                input: {
-                  width: 240,
-                }
-              }}
-              visibleFrom="sm"
+        {!collapsed && (
+          <div style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
+            <div style={{ padding: 12, backgroundColor: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', marginBottom: 16 }}>
+              <Text type="secondary" strong style={{ fontSize: 11, display: 'block', marginBottom: 8 }}>CALF Health Score</Text>
+              <Space align="center" size="middle">
+                <Progress type="circle" percent={healthScore} size={48} strokeColor="#22c55e" format={(percent) => <Text strong style={{ fontSize: 12 }}>{percent}</Text>} />
+                <div>
+                  <Text strong style={{ fontSize: 18, display: 'block', lineHeight: 1 }}>{healthScore}/100</Text>
+                  <Badge color="green" text="Healthy" style={{ marginTop: 4, fontSize: 12 }} />
+                </div>
+              </Space>
+            </div>
+            
+            <Space align="center" style={{ width: '100%', justifyContent: 'space-between' }}>
+              <Space>
+                <Avatar style={{ backgroundColor: '#eff6ff', color: '#1F5EFF' }}>F</Avatar>
+                <div>
+                  <Text strong style={{ display: 'block', fontSize: 14, lineHeight: 1.2 }}>Founder</Text>
+                  <Text type="secondary" style={{ display: 'block', fontSize: 12, lineHeight: 1.2 }}>Administrator</Text>
+                </div>
+              </Space>
+            </Space>
+          </div>
+        )}
+      </Sider>
+
+      <Layout>
+        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
+          <Space align="center">
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ fontSize: '16px', width: 32, height: 32 }}
             />
+            {title && (
+              <div style={{ marginLeft: 16 }}>
+                <Text strong style={{ fontSize: 18, display: 'block', lineHeight: 1.2 }}>{title}</Text>
+                {subtitle && <Text type="secondary" style={{ fontSize: 13, display: 'block', lineHeight: 1.2 }}>{subtitle}</Text>}
+              </div>
+            )}
+          </Space>
 
-            <Menu shadow="md" width={320} position="bottom-end">
-              <Menu.Target>
-                <ActionIcon variant="subtle" size="lg" radius="md" pos="relative">
-                  <Bell size={20} />
-                  <Badge size="xs" color="red" variant="filled" circle pos="absolute" top={0} right={0}>
-                    3
-                  </Badge>
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Label>Notifications</Menu.Label>
-                <Menu.Item>
-                  <Text size="sm" fw={500}>Outlet Cirebon offline</Text>
-                  <Text size="xs" c="dimmed">5 min ago</Text>
-                </Menu.Item>
-                <Menu.Item>
-                  <Text size="sm" fw={500}>17 CCTV cameras offline</Text>
-                  <Text size="xs" c="dimmed">12 min ago</Text>
-                </Menu.Item>
-                <Menu.Item>
-                  <Text size="sm" fw={500}>Internet unstable at 3 outlets</Text>
-                  <Text size="xs" c="dimmed">18 min ago</Text>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-
-            <Menu shadow="md" width={200} position="bottom-end">
-              <Menu.Target>
-                <UnstyledButton>
-                  <Group gap="xs">
-                    <Avatar color="blue" radius="md" size="sm">SA</Avatar>
-                    <Box visibleFrom="sm">
-                      <Text size="sm" fw={500}>Admin</Text>
-                      <Text size="xs" c="dimmed">Manager</Text>
-                    </Box>
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item leftSection={<User size={14} />}>Profile</Menu.Item>
-                <Menu.Item leftSection={<Settings size={14} />}>Settings</Menu.Item>
-                <Menu.Divider />
-                <Menu.Item color="red" leftSection={<LogOut size={14} />}>Logout</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
-        </Group>
-      </AppShell.Header>
-
-      <AppShell.Navbar p="md" style={{ backgroundColor: '#0F2D6B' }}>
-        <AppShell.Section grow component={ScrollArea}>
-          <Box>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.name}
-                component={Link}
-                href={item.href}
-                onClick={close}
-                label={!collapsed && item.name}
-                leftSection={<item.icon size={20} />}
-                rightSection={!collapsed && <ChevronRight size={14} />}
-                active={item.active}
-                variant="filled"
-                styles={{
-                  root: {
-                    color: item.active ? 'white' : 'rgba(255,255,255,0.7)',
-                    backgroundColor: item.active ? 'rgba(255,255,255,0.15)' : 'transparent',
-                    borderRadius: 8,
-                    marginBottom: 4,
-                    '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.1)',
-                    },
-                  },
-                  label: {
-                    color: item.active ? 'white' : 'rgba(255,255,255,0.7)',
-                  },
-                }}
-              />
-            ))}
-          </Box>
-        </AppShell.Section>
-
-        <AppShell.Section>
-          <Divider color="rgba(255,255,255,0.1)" my="sm" />
-          <UnstyledButton
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: 8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-              gap: 12,
-              color: 'rgba(255,255,255,0.6)',
-              transition: 'all 0.2s',
-            }}
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            {!collapsed && <Text size="sm">Collapse</Text>}
-          </UnstyledButton>
-        </AppShell.Section>
-      </AppShell.Navbar>
-
-      <AppShell.Main>
-        <Box py="md">
+          <Space size="large">
+            <Input 
+              placeholder="Search outlets, reports..." 
+              prefix={<Search size={14} style={{ color: '#bfbfbf' }} />}
+              style={{ borderRadius: 20, backgroundColor: '#f1f5f9', border: 'none', width: 240 }}
+            />
+            <Text type="secondary" style={{ fontSize: 14 }}>24 Juni 2026</Text>
+            
+            <Dropdown menu={{ items: [{ key: '1', label: 'Notifikasi 1' }] }} trigger={['click']}>
+              <Badge dot color="red">
+                <Button type="text" shape="circle" icon={<Bell size={18} />} />
+              </Badge>
+            </Dropdown>
+            
+            <Dropdown menu={{ items: [{ key: 'profile', label: 'Profil Saya', icon: <User size={14} /> }, { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }] }} trigger={['click']}>
+              <Avatar style={{ backgroundColor: '#eff6ff', color: '#1F5EFF', cursor: 'pointer' }}>F</Avatar>
+            </Dropdown>
+          </Space>
+        </Header>
+        
+        <Content style={{ margin: '24px', overflow: 'initial' }}>
           {children}
-        </Box>
-      </AppShell.Main>
-    </AppShell>
+        </Content>
+      </Layout>
+    </Layout>
   )
 }

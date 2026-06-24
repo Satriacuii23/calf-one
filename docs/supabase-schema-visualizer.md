@@ -1,6 +1,6 @@
 Project ID : uzkcbnyeqhtgzoflxenq
-Publishable key : YOUR_SUPABASE_PUBLISHED_KEY_HERE
-Secret keys : YOUR_SUPABASE_SECRET_KEY_HERE
+Publishable key : [REDACTED]
+Secret keys : [REDACTED]
 
 
 ## Table `companies`

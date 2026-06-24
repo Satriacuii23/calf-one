@@ -5,9 +5,9 @@ import { Typography, Card, Empty } from 'antd';
 
 const { Title, Text } = Typography;
 
-export default function revenuePage() {
+export default function operationsPage() {
   return (
-    <MainLayout title="Revenue" subtitle="Migrating to Ant Design...">
+    <MainLayout title="Operations" subtitle="Migrating to Ant Design...">
       <Card style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Empty description={
           <Text type="secondary">Halaman ini sedang dalam proses migrasi ke Ant Design.</Text>

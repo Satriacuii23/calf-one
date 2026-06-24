@@ -2,30 +2,29 @@
 
 import { MainLayout } from "@/components/layout/main-layout";
 import {
-  Grid,
+  Row,
+  Col,
   Card,
-  Text,
-  Group,
-  Stack,
+  Typography,
   Badge,
   Progress,
-  RingProgress,
-  ThemeIcon,
-  Box,
-  SegmentedControl,
-  Paper,
-  SimpleGrid,
-  Avatar,
-  Title,
-} from '@mantine/core';
-import { AreaChart, DonutChart } from '@mantine/charts';
+  Table,
+  Button,
+  Segmented,
+  Space,
+  Tag,
+} from 'antd';
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
+  PieChart, Pie, Cell,
+} from 'recharts';
 import {
   Wallet,
   TrendingUp,
   Receipt,
   Users,
   Building2,
-  Activity,
+  ShieldCheck,
   ArrowUpRight,
   ArrowDownRight,
   Video,
@@ -33,8 +32,6 @@ import {
   Truck,
   MessageSquare,
   ThumbsUp,
-  AlertCircle,
-  AlertTriangle,
   Brain,
   ChevronRight,
 } from 'lucide-react';
@@ -45,397 +42,234 @@ import {
   aiRecommendations,
   healthScoreData,
   areaRevenueData,
-  customerStats,
 } from "@/lib/data";
-import { formatNumber } from "@/lib/utils";
+import { useState, useMemo } from 'react';
 
-// Chart Data
-const revenueData = Array.from({ length: 30 }, (_, i) => {
-  const date = new Date();
-  date.setDate(date.getDate() - (29 - i));
-  const baseRevenue = 450000000 + Math.random() * 150000000;
-  const weekendBoost = [0, 6].includes(date.getDay()) ? 1.3 : 1;
+const { Text, Title } = Typography;
+
+// --- Static chart data seeded to avoid hydration mismatch ---
+const allRevenueData = Array.from({ length: 365 }, (_, i) => {
+  const date = new Date(2026, 0, 1);
+  date.setDate(date.getDate() + i);
+  const base = 420000000 + (i % 7 === 0 || i % 7 === 6 ? 120000000 : 0) + (i * 800000);
   return {
     date: date.toLocaleDateString("id-ID", { day: "numeric", month: "short" }),
-    revenue: Math.round(baseRevenue * weekendBoost),
+    revenue: base,
+    target: base * 1.05,
   };
 });
 
-const areaData = areaRevenueData.map((item) => ({
+const areaColors = ['#1F5EFF', '#0ea5e9', '#8b5cf6', '#f97316', '#14b8a6', '#ef4444'];
+const areaData = areaRevenueData.map((item, index) => ({
   name: item.area,
-  value: item.revenue / 1000000,
+  value: Math.round(item.revenue / 1000000),
+  color: areaColors[index % areaColors.length],
 }));
 
+const FILTER_RANGES: Record<string, number> = { '7D': 7, '30D': 30, '90D': 90, '12M': 365 };
+
 export default function OverviewPage() {
+  const [revenueFilter, setRevenueFilter] = useState('30D');
+
+  const filteredRevenue = useMemo(() => {
+    const days = FILTER_RANGES[revenueFilter];
+    return allRevenueData.slice(-days);
+  }, [revenueFilter]);
+
   const totalScore = Math.round(
     healthScoreData.reduce((acc, item) => acc + item.score * (item.weight / 100), 0)
   );
 
+  const kpiCards = [
+    { label: 'Revenue Today', value: 'Rp 512.000.000', sub: '+12.5% vs kemarin', trend: 'up', icon: Wallet, color: '#1F5EFF', bg: '#eff6ff' },
+    { label: 'Revenue MTD', value: 'Rp 14,8 Miliar', sub: 'Target: Rp 15,0M', trend: 'up', icon: TrendingUp, color: '#0ea5e9', bg: '#f0f9ff' },
+    { label: 'Transaksi Hari Ini', value: '18.642', sub: '+6.2% vs kemarin', trend: 'up', icon: Receipt, color: '#8b5cf6', bg: '#f5f3ff' },
+    { label: 'Customer Aktif', value: '128.521', sub: '+15.3% bulan lalu', trend: 'up', icon: Users, color: '#14b8a6', bg: '#f0fdfa' },
+    { label: 'Outlet Aktif', value: '115 / 115', sub: '100% Online', trend: 'up', icon: Building2, color: '#22c55e', bg: '#f0fdf4' },
+    { label: 'Health Score', value: `${totalScore}/100`, sub: 'Healthy', trend: 'up', icon: ShieldCheck, color: '#f59e0b', bg: '#fffbeb' },
+  ];
+
+  const tableColumns = [
+    { title: '#', dataIndex: 'id', key: 'id', render: (_: any, __: any, index: number) => <Text type="secondary">{index + 1}</Text> },
+    { title: 'Outlet', key: 'outlet', render: (record: any) => (<div><Text strong>{record.name}</Text><br/><Text type="secondary" style={{ fontSize: 12 }}>{record.area}</Text></div>) },
+    { title: 'Revenue', dataIndex: 'revenue', key: 'revenue', align: 'right' as const, render: (rev: number) => <Text strong>Rp {(rev / 1000000).toFixed(0)}M</Text> },
+    { title: 'Growth', dataIndex: 'growth', key: 'growth', align: 'right' as const, render: (growth: number) => (
+      <Space size={4}>
+        {growth >= 0 ? <ArrowUpRight size={14} color="#22c55e" /> : <ArrowDownRight size={14} color="#ef4444" />}
+        <Text strong style={{ color: growth >= 0 ? '#22c55e' : '#ef4444' }}>{growth >= 0 ? '+' : ''}{growth}%</Text>
+      </Space>
+    )},
+    { title: 'Health Score', dataIndex: 'healthScore', key: 'healthScore', align: 'center' as const, render: (score: number) => (
+      <Space size={8}>
+        <Progress percent={score} showInfo={false} strokeColor={score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444'} style={{ width: 50, marginBottom: 0 }} />
+        <Text strong style={{ color: score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444' }}>{score}</Text>
+      </Space>
+    )},
+    { title: 'Status', dataIndex: 'status', key: 'status', align: 'center' as const, render: (status: string) => (
+      <Tag color={status === 'online' ? 'success' : status === 'warning' ? 'warning' : 'error'}>{status.toUpperCase()}</Tag>
+    )},
+  ];
+
   return (
-    <MainLayout title="Executive Overview" subtitle="Real-time business intelligence">
-      {/* KPI Section */}
-      <Grid gutter="md" mb="xl">
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Revenue Today</Text>
-                <Text fw={700} size="lg">Rp 512.000.000</Text>
-                <Group gap={4} mt="xs">
-                  <ArrowUpRight size={14} className="text-teal-500" />
-                  <Text size="xs" c="teal" fw={500}>+12.5%</Text>
-                  <Text size="xs" c="dimmed">vs yesterday</Text>
-                </Group>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="blue">
-                <Wallet size={20} />
-              </ThemeIcon>
-            </Group>
-          </Card>
-        </Grid.Col>
+    <MainLayout title="Executive Command Center" subtitle="Ringkasan performa Kopi Calf secara real-time">
+      {/* ── KPI CARDS ── */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        {kpiCards.map((kpi) => (
+          <Col xs={12} sm={8} lg={4} key={kpi.label}>
+            <Card styles={{ body: { padding: 16 } }} variant="outlined" style={{ borderTop: `3px solid ${kpi.color}`, height: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                <Text type="secondary" style={{ fontSize: 13, lineHeight: 1.2, flex: 1 }}>{kpi.label}</Text>
+                <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: kpi.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <kpi.icon size={16} color={kpi.color} />
+                </div>
+              </div>
+              <Title level={4} style={{ margin: '4px 0 8px 0', fontSize: 20 }}>{kpi.value}</Title>
+              <Space size={4} align="center">
+                {kpi.trend === 'up' ? <ArrowUpRight size={14} color="#22c55e" /> : <ArrowDownRight size={14} color="#ef4444" />}
+                <Text style={{ fontSize: 12, color: kpi.trend === 'up' ? '#22c55e' : '#ef4444', fontWeight: 500 }}>{kpi.sub}</Text>
+              </Space>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Revenue MTD</Text>
-                <Text fw={700} size="lg">Rp 14.8B</Text>
-                <Group gap={4} mt="xs">
-                  <ArrowUpRight size={14} className="text-teal-500" />
-                  <Text size="xs" c="teal" fw={500}>+8.3%</Text>
-                </Group>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="teal">
-                <TrendingUp size={20} />
-              </ThemeIcon>
-            </Group>
+      {/* ── ROW 2: Revenue Trend + Area + Risk ── */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} lg={12}>
+          <Card title="Revenue Trend" extra={
+            <Segmented options={['7D', '30D', '90D', '12M']} value={revenueFilter} onChange={setRevenueFilter} />
+          } styles={{ body: { padding: 16 } }} style={{ height: '100%' }}>
+            <div style={{ height: 260, width: '100%' }}>
+              <ResponsiveContainer>
+                <AreaChart data={filteredRevenue} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1F5EFF" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#1F5EFF" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="date" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                  <YAxis tickFormatter={(val) => `${val/1000000}M`} tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <RechartsTooltip formatter={(value: any) => `Rp ${(value/1000000).toFixed(0)}M`} />
+                  <Area type="monotone" dataKey="revenue" stroke="#1F5EFF" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
+                  <Area type="monotone" dataKey="target" stroke="#cbd5e1" strokeDasharray="5 5" fillOpacity={0} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </Card>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Transactions</Text>
-                <Text fw={700} size="lg">{formatNumber(18642)}</Text>
-                <Group gap={4} mt="xs">
-                  <ArrowUpRight size={14} className="text-teal-500" />
-                  <Text size="xs" c="teal" fw={500}>+15.2%</Text>
-                </Group>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="violet">
-                <Receipt size={20} />
-              </ThemeIcon>
-            </Group>
-          </Card>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Active Customers</Text>
-                <Text fw={700} size="lg">{formatNumber(customerStats.active)}</Text>
-                <Group gap={4} mt="xs">
-                  <ArrowUpRight size={14} className="text-teal-500" />
-                  <Text size="xs" c="teal" fw={500}>+5.8%</Text>
-                </Group>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="teal">
-                <Users size={20} />
-              </ThemeIcon>
-            </Group>
-          </Card>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Outlets Active</Text>
-                <Text fw={700} size="lg">115 / 115</Text>
-                <Badge color="teal" variant="light" size="xs" mt="xs">All Online</Badge>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="teal">
-                <Building2 size={20} />
-              </ThemeIcon>
-            </Group>
-          </Card>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
-          <Card shadow="xs" padding="md" radius="md" withBorder>
-            <Group justify="space-between" align="flex-start">
-              <Box>
-                <Text size="xs" c="dimmed" fw={500} mb={4}>Health Score</Text>
-                <Text fw={700} size="lg">89/100</Text>
-                <Badge color="yellow" variant="light" size="xs" mt="xs">Healthy</Badge>
-              </Box>
-              <ThemeIcon size={40} radius="md" variant="light" color="yellow">
-                <Activity size={20} />
-              </ThemeIcon>
-            </Group>
-          </Card>
-        </Grid.Col>
-      </Grid>
-
-      {/* Charts Section */}
-      <Grid gutter="md" mb="xl">
-        <Grid.Col span={{ base: 12, lg: 8 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder>
-            <Group justify="space-between" mb="lg">
-              <Text fw={600} size="lg">Revenue Trend</Text>
-              <SegmentedControl
-                size="xs"
-                data={[
-                  { label: '7D', value: '7d' },
-                  { label: '30D', value: '30d' },
-                  { label: '90D', value: '90d' },
-                ]}
-                defaultValue="30d"
-              />
-            </Group>
-            <AreaChart
-              h={280}
-              data={revenueData}
-              dataKey="date"
-              series={[{ name: 'revenue', color: 'blue.6' }]}
-              curveType="natural"
-              withDots={false}
-              gridAxis="xy"
-              valueFormatter={(value) => `Rp ${(value / 1000000).toFixed(0)}M`}
-            />
-          </Card>
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 12, lg: 4 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder h="100%">
-            <Text fw={600} size="lg" mb="lg">Revenue by Area</Text>
-            <DonutChart
-              data={areaData}
-              h={180}
-              thickness={25}
-              chartLabel="Rp 14.8B"
-              valueFormatter={(value) => `Rp ${value.toFixed(0)}M`}
-            />
-            <Stack gap="xs" mt="md">
-              {areaData.slice(0, 4).map((item) => (
-                <Group key={item.name} justify="space-between">
-                  <Text size="sm">{item.name}</Text>
-                  <Text size="sm" fw={500}>Rp {item.value.toFixed(0)}M</Text>
-                </Group>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card title="Revenue by Area" styles={{ body: { padding: 16 } }} style={{ height: '100%' }}>
+            <div style={{ height: 160, display: 'flex', justifyContent: 'center' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={areaData} innerRadius={50} outerRadius={70} paddingAngle={2} dataKey="value" stroke="none">
+                    {areaData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                  </Pie>
+                  <RechartsTooltip formatter={(val) => `Rp ${val}M`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+              {areaData.map(item => (
+                <div key={item.name} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Space size={8}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: item.color }} />
+                    <Text style={{ fontSize: 13 }}>{item.name}</Text>
+                  </Space>
+                  <Text strong style={{ fontSize: 13 }}>Rp {item.value}M</Text>
+                </div>
               ))}
-            </Stack>
+            </div>
           </Card>
-        </Grid.Col>
-      </Grid>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card title="Risk Alert" extra={<Button type="link" size="small" style={{ padding: 0 }}>Lihat Semua</Button>} styles={{ body: { padding: 16 } }} style={{ height: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {alertFeed.slice(0, 5).map((alert) => {
+                const color = alert.type === 'danger' ? '#ef4444' : alert.type === 'warning' ? '#f59e0b' : '#3b82f6';
+                return (
+                  <div key={alert.id} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: color, marginTop: 6 }} />
+                    <div style={{ flex: 1 }}>
+                      <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.3, marginBottom: 2 }}>{alert.message}</Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>{alert.timestamp}</Text>
+                    </div>
+                    {!alert.isRead && <Badge dot color="red" />}
+                  </div>
+                )
+              })}
+            </div>
+          </Card>
+        </Col>
+      </Row>
 
-      {/* Top Outlets */}
-      <Card shadow="xs" padding="lg" radius="md" withBorder mb="xl">
-        <Group justify="space-between" mb="lg">
-          <Text fw={600} size="lg">Top Performing Outlets</Text>
-          <Text size="sm" c="dimmed">Last 7 days</Text>
-        </Group>
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }}>
-          {topOutlets.slice(0, 4).map((outlet, index) => {
-            const statusColor = outlet.status === 'online' ? 'teal' : outlet.status === 'warning' ? 'yellow' : 'red';
-            return (
-              <Card key={outlet.id} shadow="xs" padding="md" radius="md" withBorder>
-                <Group justify="space-between" mb="sm">
-                  <Group gap="sm">
-                    <Avatar size={36} radius="md" color="blue">{index + 1}</Avatar>
-                    <Box>
-                      <Text fw={600} size="sm">{outlet.name}</Text>
-                      <Text size="xs" c="dimmed">{outlet.area}</Text>
-                    </Box>
-                  </Group>
-                  <Badge color={statusColor} variant="light" size="sm">{outlet.status}</Badge>
-                </Group>
-                <Stack gap="xs">
-                  <Group justify="space-between">
-                    <Text size="xs" c="dimmed">Revenue</Text>
-                    <Text size="xs" fw={600}>Rp {(outlet.revenue / 1000000).toFixed(0)}M</Text>
-                  </Group>
-                  <Group justify="space-between">
-                    <Text size="xs" c="dimmed">Growth</Text>
-                    <Group gap={4}>
-                      {outlet.growth >= 0 ? <ArrowUpRight size={12} className="text-teal-500" /> : <ArrowDownRight size={12} className="text-red-500" />}
-                      <Text size="xs" fw={500} c={outlet.growth >= 0 ? 'teal' : 'red'}>+{outlet.growth}%</Text>
-                    </Group>
-                  </Group>
-                  <Box>
-                    <Group justify="space-between" mb={4}>
-                      <Text size="xs" c="dimmed">Health</Text>
-                      <Text size="xs" fw={600}>{outlet.healthScore}</Text>
-                    </Group>
-                    <Progress value={outlet.healthScore} color={outlet.healthScore >= 80 ? 'teal' : outlet.healthScore >= 60 ? 'yellow' : 'red'} size="sm" radius="xl" />
-                  </Box>
-                </Stack>
-              </Card>
-            );
-          })}
-        </SimpleGrid>
+      {/* ── ROW 3: Top 10 Outlets ── */}
+      <Card title="Top Outlet (by Revenue)" extra={<Button type="link">Lihat Semua</Button>} style={{ marginBottom: 24 }}>
+        <Table 
+          columns={tableColumns} 
+          dataSource={topOutlets.slice(0, 10)} 
+          pagination={false}
+          size="middle"
+          rowKey="id"
+        />
       </Card>
 
-      {/* Bottom Section */}
-      <Grid gutter="md">
-        {/* Risk Alerts */}
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder>
-            <Group justify="space-between" mb="lg">
-              <Text fw={600} size="lg">Risk Alert Feed</Text>
-              <Badge color="red" variant="light">{alertFeed.filter((a) => !a.isRead).length} New</Badge>
-            </Group>
-            <Stack gap="md">
-              {alertFeed.slice(0, 4).map((alert) => {
-                const isDanger = alert.type === 'danger';
-                const isWarning = alert.type === 'warning';
-                return (
-                  <Paper
-                    key={alert.id}
-                    p="md"
-                    radius="md"
-                    withBorder
-                    style={{
-                      borderColor: isDanger ? '#fee2e2' : isWarning ? '#fef3c7' : '#dbeafe',
-                      backgroundColor: isDanger ? '#fef2f2' : isWarning ? '#fffbeb' : '#eff6ff',
-                    }}
-                  >
-                    <Group justify="space-between" wrap="nowrap">
-                      <Group gap="sm" wrap="nowrap">
-                        {isDanger ? <AlertCircle size={18} className="text-red-500" /> : isWarning ? <AlertTriangle size={18} className="text-amber-500" /> : <AlertCircle size={18} className="text-blue-500" />}
-                        <Box>
-                          <Text size="sm" fw={500}>{alert.message}</Text>
-                          <Group gap="xs">
-                            {alert.outlet && <Text size="xs" c="dimmed">{alert.outlet}</Text>}
-                            <Text size="xs" c="dimmed">{alert.timestamp}</Text>
-                          </Group>
-                        </Box>
-                      </Group>
-                      {!alert.isRead && <Badge size="xs" color="red">New</Badge>}
-                    </Group>
-                  </Paper>
-                );
-              })}
-            </Stack>
-          </Card>
-        </Grid.Col>
-
-        {/* Infrastructure */}
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder>
-            <Group justify="space-between" mb="lg">
-              <Text fw={600} size="lg">Infrastructure Status</Text>
-              <Badge color="teal" variant="light" leftSection={<Box w={6} h={6} bg="teal" style={{ borderRadius: '50%' }} />}>Live</Badge>
-            </Group>
-            <Stack gap="md">
-              <Group justify="space-between">
-                <Group gap="sm">
-                  <ThemeIcon size={36} radius="md" variant="light" color="blue"><Video size={18} /></ThemeIcon>
-                  <Box>
-                    <Text size="sm" fw={500}>CCTV Online</Text>
-                    <Text size="xs" c="dimmed">{infrastructureStatus.cctv.online}/{infrastructureStatus.cctv.total}</Text>
-                  </Box>
-                </Group>
-                <Progress value={(infrastructureStatus.cctv.online / infrastructureStatus.cctv.total) * 100} color="blue" size="sm" w={100} />
-              </Group>
-              <Group justify="space-between">
-                <Group gap="sm">
-                  <ThemeIcon size={36} radius="md" variant="light" color="teal"><Wifi size={18} /></ThemeIcon>
-                  <Box>
-                    <Text size="sm" fw={500}>Internet Online</Text>
-                    <Text size="xs" c="dimmed">{infrastructureStatus.internet.online}/{infrastructureStatus.internet.total}</Text>
-                  </Box>
-                </Group>
-                <Progress value={(infrastructureStatus.internet.online / infrastructureStatus.internet.total) * 100} color="teal" size="sm" w={100} />
-              </Group>
-              <Group justify="space-between">
-                <Group gap="sm">
-                  <ThemeIcon size={36} radius="md" variant="light" color="violet"><Truck size={18} /></ThemeIcon>
-                  <Box>
-                    <Text size="sm" fw={500}>Vehicle Online</Text>
-                    <Text size="xs" c="dimmed">{infrastructureStatus.vehicle.online}/{infrastructureStatus.vehicle.total}</Text>
-                  </Box>
-                </Group>
-                <Progress value={(infrastructureStatus.vehicle.online / infrastructureStatus.vehicle.total) * 100} color="violet" size="sm" w={100} />
-              </Group>
-              <Group justify="space-between" pt="sm" style={{ borderTop: '1px solid #e2e8f0' }}>
-                <Group gap="xs">
-                  <MessageSquare size={16} className="text-amber-500" />
-                  <Text size="sm">Open Complaints</Text>
-                </Group>
-                <Badge color="amber" variant="light">{infrastructureStatus.openComplaint}</Badge>
-              </Group>
-              <Group justify="space-between">
-                <Group gap="xs">
-                  <ThumbsUp size={16} className="text-teal-500" />
-                  <Text size="sm">Social Sentiment</Text>
-                </Group>
-                <Badge color="teal" variant="light">{infrastructureStatus.socialSentiment}% Positive</Badge>
-              </Group>
-            </Stack>
-          </Card>
-        </Grid.Col>
-
-        {/* Health Score */}
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder>
-            <Group justify="space-between" mb="lg">
-              <Text fw={600} size="lg">Company Health Score</Text>
-              <Badge color={totalScore >= 80 ? 'teal' : totalScore >= 60 ? 'yellow' : 'red'} size="lg">{totalScore}/100</Badge>
-            </Group>
-            <Group justify="center" mb="xl">
-              <RingProgress
-                size={140}
-                thickness={14}
-                roundCaps
-                sections={[{ value: totalScore, color: totalScore >= 80 ? 'teal' : totalScore >= 60 ? 'yellow' : 'red' }]}
-                label={
-                  <Text ta="center" fw={700} size="xl">{totalScore}</Text>
-                }
-              />
-            </Group>
-            <Stack gap="sm">
-              {healthScoreData.map((item) => (
-                <Group key={item.category} justify="space-between">
-                  <Text size="sm" c="dimmed">{item.category} ({item.weight}%)</Text>
-                  <Group gap="xs">
-                    <Progress value={item.score} color={item.score >= 80 ? 'teal' : item.score >= 60 ? 'yellow' : 'red'} size="sm" w={80} />
-                    <Text size="sm" fw={500} w={30}>{item.score}</Text>
-                  </Group>
-                </Group>
+      {/* ── ROW 4: Infrastructure + AI ── */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={16}>
+          <Card title="Infrastructure Status" extra={<Tag color="success">LIVE</Tag>} style={{ height: '100%' }}>
+            <Row gutter={[16, 16]}>
+              {[
+                { icon: Video, label: 'CCTV Online', value: infrastructureStatus.cctv.online, total: infrastructureStatus.cctv.total, color: '#1F5EFF', pct: (infrastructureStatus.cctv.online/infrastructureStatus.cctv.total)*100 },
+                { icon: Wifi, label: 'Internet Online', value: infrastructureStatus.internet.online, total: infrastructureStatus.internet.total, color: '#14b8a6', pct: (infrastructureStatus.internet.online/infrastructureStatus.internet.total)*100 },
+                { icon: Truck, label: 'Vehicle Online', value: infrastructureStatus.vehicle.online, total: infrastructureStatus.vehicle.total, color: '#8b5cf6', pct: (infrastructureStatus.vehicle.online/infrastructureStatus.vehicle.total)*100 },
+                { icon: MessageSquare, label: 'Open Complaint', value: infrastructureStatus.openComplaint, total: '', color: '#f59e0b', pct: 0 },
+                { icon: ThumbsUp, label: 'Social Sentiment', value: `${infrastructureStatus.socialSentiment}%`, total: 'Positif', color: '#22c55e', pct: infrastructureStatus.socialSentiment },
+              ].map(item => (
+                <Col xs={12} sm={8} lg={4} key={item.label}>
+                  <div style={{ padding: 12, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+                      <item.icon size={16} color={item.color} />
+                    </div>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>{item.label}</Text>
+                    <Space align="baseline" size={4}>
+                      <Text strong style={{ fontSize: 18, color: item.color }}>{item.value}</Text>
+                      {item.total && <Text type="secondary" style={{ fontSize: 12 }}>/{item.total}</Text>}
+                    </Space>
+                    {item.pct > 0 && <Progress percent={item.pct} showInfo={false} strokeColor={item.color} size="small" style={{ marginBottom: 0, marginTop: 4 }} />}
+                  </div>
+                </Col>
               ))}
-            </Stack>
+            </Row>
           </Card>
-        </Grid.Col>
-
-        {/* AI Insights */}
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow="xs" padding="lg" radius="md" withBorder>
-            <Group gap="sm" mb="lg">
-              <ThemeIcon size={40} radius="md" style={{ backgroundColor: '#0F2D6B' }}><Brain size={20} color="white" /></ThemeIcon>
-              <Box>
-                <Text fw={600}>AI Insights</Text>
-                <Text size="xs" c="dimmed">Powered by CALF AI</Text>
-              </Box>
-            </Group>
-            <Stack gap="md">
-              {aiRecommendations.map((rec) => (
-                <Paper key={rec.id} p="md" radius="md" withBorder style={{ borderColor: '#e2e8f0' }}>
-                  <Group justify="space-between" mb="xs">
-                    <Text size="sm" fw={500}>{rec.title}</Text>
-                    <Badge color="teal" variant="light" size="sm">{rec.impact}</Badge>
-                  </Group>
-                  <Text size="xs" c="dimmed" mb="sm">{rec.description}</Text>
-                  <Group justify="space-between">
-                    <Text size="xs" c="dimmed">Confidence: {rec.confidence}%</Text>
-                  </Group>
-                </Paper>
+        </Col>
+        <Col xs={24} lg={8}>
+          <Card style={{ height: '100%' }}>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Brain size={18} color="#1F5EFF" />
+              </div>
+              <div>
+                <Text strong style={{ fontSize: 14, display: 'block' }}>AI Recommendation</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>Powered by CALF AI</Text>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {aiRecommendations.map(rec => (
+                <div key={rec.id} style={{ padding: 12, border: '1px solid #e2e8f0', borderLeft: '3px solid #1F5EFF', borderRadius: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <Text strong style={{ fontSize: 13, flex: 1, marginRight: 8 }}>{rec.title}</Text>
+                    <Tag color="blue" style={{ margin: 0 }}>{rec.impact}</Tag>
+                  </div>
+                  <Text type="secondary" style={{ fontSize: 12 }}>{rec.description}</Text>
+                </div>
               ))}
-            </Stack>
+            </div>
           </Card>
-        </Grid.Col>
-      </Grid>
+        </Col>
+      </Row>
     </MainLayout>
   )
 }
