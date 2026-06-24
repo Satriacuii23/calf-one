@@ -109,3 +109,66 @@ export interface SocialMention {
   date: string
   engagement: number
 }
+
+// --- ESB API Integration Types ---
+
+export interface ESBPaymentLedger {
+  id: string;
+  order_id: string;
+  payment_channel: string;
+  gross_amount: number;
+  mdr_fee_percentage: number;
+  net_amount: number;
+  settlement_status: 'Pending' | 'Settled';
+  transaction_id?: string;
+  created_at: string;
+}
+
+export interface ESBVoidRefund {
+  id: string;
+  order_id: string;
+  type: 'Void' | 'Refund';
+  reason: string;
+  authorized_by?: string;
+  amount: number;
+  created_at: string;
+}
+
+export interface ESBPurchaseOrder {
+  id: string;
+  po_number: string;
+  supplier_name: string;
+  branch_id: string;
+  status: 'Pending' | 'Received' | 'Cancelled';
+  expected_delivery?: string;
+  total_cost: number;
+  created_at: string;
+}
+
+export interface ESBRecipe {
+  id: string;
+  menu_name: string;
+  inventory_id: string;
+  qty_required: number;
+  uom: string;
+  created_at: string;
+}
+
+export interface ESBPointTransaction {
+  id: string;
+  member_code: string;
+  transaction_type: 'Earn' | 'Redeem';
+  points: number;
+  reference_order_id?: string;
+  created_at: string;
+}
+
+export interface ESBVoucher {
+  id: string;
+  voucher_code: string;
+  member_code: string;
+  discount_value: number;
+  status: 'Active' | 'Used' | 'Expired';
+  expiry_date: string;
+  created_at: string;
+}

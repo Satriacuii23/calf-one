@@ -102,7 +102,7 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         collapsible 
         collapsed={collapsed} 
         onCollapse={(value) => setCollapsed(value)}
-        style={{ borderRight: '1px solid #f0f0f0' }}
+        style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, borderRight: '1px solid #f0f0f0', zIndex: 100 }}
       >
         <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', borderBottom: '1px solid #f0f0f0' }}>
           <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#1F5EFF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: collapsed ? 0 : 12 }}>
@@ -151,8 +151,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         )}
       </Sider>
 
-      <Layout>
-        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
+      <Layout style={{ marginLeft: collapsed ? 80 : 260, transition: 'all 0.2s', minHeight: '100vh' }}>
+        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64, position: 'sticky', top: 0, zIndex: 50 }}>
           <Space align="center">
             <Button
               type="text"

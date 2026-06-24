@@ -1,12 +1,13 @@
 "use client"
 
 import { MainLayout } from "@/components/layout/main-layout";
-import { Row, Col, Card, Typography, Table, Space, Spin, Empty, Tag, Tooltip } from 'antd';
+import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Progress , Input } from 'antd';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { Users, UserCheck, WalletCards, Award, Crown, CalendarCheck } from 'lucide-react';
+import { Users, Award, Crown, CalendarCheck, Sparkles, Star , Search } from 'lucide-react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIntelligenceData } from '@/hooks/useIntelligenceData';
-import { useMemo } from "react";
+import { useCustomerCareData } from '@/hooks/useDashboardModules';
+import { useState, useMemo } from "react";
 
 const { Title, Text } = Typography;
 
@@ -17,14 +18,22 @@ const TIER_COLORS: Record<string, string> = {
   'Basic': '#1F5EFF'
 };
 
+// Custom Container Component
+const SectionContainer = ({ children, style }: { children: React.ReactNode, style?: React.CSSProperties }) => (
+  <div style={{ background: '#fff', border: '1px solid #f0f0f0', borderRadius: 16, padding: 24, ...style }}>
+    {children}
+  </div>
+);
+
 export default function CustomerIntelligencePage() {
-  const { members, isLoading } = useIntelligenceData();
+  const { members, vouchers, points, campaigns, referrals, isLoading } = useIntelligenceData();
+  const { complaints } = useCustomerCareData();
 
   const customerStats = useMemo(() => {
     if (!members.length) return { total: 0, active: 0, avgCLV: 0, avgPoints: 0, tierData: [], topTierPct: 0 };
     
     const total = members.length;
-    const active = members.filter(m => m.total_transactions > 0).length;
+    const active = members.filter(m => Number(m.total_transactions) > 0).length;
     const totalSpentAll = members.reduce((sum, m) => sum + Number(m.total_spent || 0), 0);
     const totalPointsAll = members.reduce((sum, m) => sum + Number(m.member_points || 0), 0);
     
@@ -48,24 +57,129 @@ export default function CustomerIntelligencePage() {
     return { total, active, avgCLV, avgPoints, tierData, topTierPct };
   }, [members]);
 
+  const [searchText, setSearchText] = useState("");
+  const filteredMembers = useMemo(() => members.filter((m: any) => (m.member_name || "").toLowerCase().includes(searchText.toLowerCase()) || (m.member_code || "").toLowerCase().includes(searchText.toLowerCase())), [members, searchText]);
+
+  const topSpenders = useMemo(() => {
+    return [...members].sort((a,b) => Number(b.total_spent || 0) - Number(a.total_spent || 0)).slice(0, 5);
+  }, [members]);
+
+  // Dynamic Summary
+  const summaryInsight = useMemo(() => {
+    if (!members.length) return "Mengumpulkan data untuk membuat ringkasan...";
+    
+    const topSpenderName = topSpenders[0]?.member_name || '-';
+    const topTierName = customerStats.tierData[0]?.name || 'Basic';
+    
+    return `Data menunjukkan terdapat ${customerStats.total.toLocaleString('id-ID')} anggota terdaftar, dengan tingkat aktivitas mencapai ${customerStats.active.toLocaleString('id-ID')} anggota bertransaksi. Distribusi pelanggan didominasi oleh kelas ${topTierName}, sementara pelanggan dengan nilai loyalitas (Lifetime Value) tertinggi dipegang oleh ${topSpenderName}. Rekomendasi: Berikan penawaran eksklusif kepada pelanggan kelas ${topTierName} dan manfaatkan loyalitas ${topSpenderName} sebagai duta promosi lokal (*brand ambassador*).`;
+  }, [members, customerStats, topSpenders]);
+
   const kpiCards = [
     { label: 'Total Members', tooltip: 'Jumlah total pelanggan yang terdaftar sebagai member loyalti.', value: customerStats.total.toLocaleString('id-ID'), icon: Users, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
     { label: 'Avg Spend / Member', tooltip: 'Rata-rata nominal uang yang dihabiskan satu member.', value: `Rp ${Math.round(customerStats.avgCLV).toLocaleString('id-ID')}`, icon: Award, color: '#f59e0b', bg: '#fffbeb', trend: '+5.2%' },
-    { label: 'Top Tier (Gold)', tooltip: 'Persentase member di tingkat Gold/Tertinggi.', value: `${customerStats.topTierPct.toFixed(1)}%`, icon: Crown, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
+    { label: 'Top Tier (Gold)', tooltip: 'Persentase member di tingkat Gold/Tertinggi.', value: `${customerStats.topTierPct.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, icon: Crown, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
     { label: 'Active This Month', tooltip: 'Anggota yang melakukan transaksi dalam 30 hari terakhir.', value: customerStats.active.toLocaleString('id-ID'), icon: CalendarCheck, color: '#8b5cf6', bg: '#f5f3ff', trend: '+8.4%' },
   ];
 
   const columns = [
-    { title: 'Rank', dataIndex: 'rank', key: 'rank', width: 80, render: (_: any, __: any, idx: number) => <Text strong>#{idx + 1}</Text> },
-    { title: 'Member Name', dataIndex: 'member_name', key: 'name', render: (text: string) => <Text strong>{text}</Text> },
-    { title: 'Tier', dataIndex: 'member_tier', key: 'tier', render: (tier: string) => (
-      <Tag color={tier === 'Gold' ? 'orange' : tier === 'Silver' ? 'default' : tier === 'Bronze' ? 'volcano' : 'blue'}>
-        {tier?.toUpperCase() || 'BASIC'}
-      </Tag>
-    )},
-    { title: 'Points', dataIndex: 'member_points', key: 'points', align: 'right' as const, render: (val: number) => <Text>{val?.toLocaleString('id-ID')}</Text> },
-    { title: 'Transactions', dataIndex: 'total_transactions', key: 'trx', align: 'center' as const },
-    { title: 'Total Spent', dataIndex: 'total_spent', key: 'spent', align: 'right' as const, render: (val: number) => <Text strong style={{ color: '#1F5EFF' }}>Rp {val?.toLocaleString('id-ID')}</Text> },
+    { 
+      title: 'Member Details', 
+      dataIndex: 'member_name', 
+      key: 'name',
+      render: (text: string, record: any) => (
+        <Space>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
+            <Users size={14} color="#64748b" />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Text strong style={{ color: '#0f172a' }}>{text || 'Unknown'}</Text>
+            <Text type="secondary" style={{ fontSize: 12 }}>{record.member_code}</Text>
+          </div>
+        </Space>
+      )
+    },
+    { 
+      title: 'Tier', 
+      dataIndex: 'member_tier', 
+      key: 'tier',
+      render: (tier: string) => {
+        const t = tier || 'Basic';
+        return (
+          <div style={{ background: '#f1f5f9', color: '#475569', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontWeight: 600, fontSize: 12, border: '1px solid #e2e8f0' }}>
+            {t.toUpperCase()}
+          </div>
+        );
+      }
+    },
+    { 
+      title: 'Total Spent', 
+      dataIndex: 'total_spent', 
+      key: 'spent', 
+      align: 'right' as const, 
+      render: (val: number) => <Text strong style={{ color: '#0f172a' }}>Rp {Number(val || 0).toLocaleString('id-ID')}</Text> 
+    },
+    { 
+      title: 'Transactions', 
+      dataIndex: 'total_transactions', 
+      key: 'trx', 
+      align: 'right' as const,
+      render: (val: number) => <Text>{val || 0}x</Text>
+    },
+    { 
+      title: 'Points Balance', 
+      dataIndex: 'member_points', 
+      key: 'points', 
+      align: 'right' as const,
+      render: (val: number) => <Text strong style={{ color: '#8b5cf6' }}>{val?.toLocaleString('id-ID') || 0} pts</Text>
+    }
+  ];
+
+  const voucherColumns = [
+    { title: 'Voucher Code', dataIndex: 'voucher_code', key: 'code', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Member', dataIndex: ['members', 'member_name'], key: 'member' },
+    { title: 'Value', dataIndex: 'discount_value', key: 'val', render: (v: number) => v > 100 ? `Rp ${v.toLocaleString('id-ID')}` : `${v}%` },
+    { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => {
+        const color = t === 'Active' ? '#10b981' : t === 'Used' ? '#64748b' : '#ef4444';
+        const bg = t === 'Active' ? '#ecfdf5' : t === 'Used' ? '#f1f5f9' : '#fef2f2';
+        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t}</div>;
+      }
+    },
+    { title: 'Expiry', dataIndex: 'expiry_date', key: 'exp', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+  ];
+
+  const pointColumns = [
+    { title: 'Member', dataIndex: ['members', 'member_name'], key: 'member', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Type', dataIndex: 'transaction_type', key: 'type', render: (t: string) => <Text strong style={{ color: t==='Earn'?'#10b981':'#f59e0b'}}>{t}</Text> },
+    { title: 'Points', dataIndex: 'points_earned', key: 'pts', align: 'right' as const, render: (v: number) => <Text strong style={{ color: '#8b5cf6' }}>{v > 0 ? `+${v}` : v}</Text> },
+    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+  ];
+
+  const campaignColumns = [
+    { title: 'Campaign Name', dataIndex: 'campaign_name', key: 'name', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Channel', dataIndex: 'channel', key: 'chan', render: (t: string) => <Text style={{ textTransform: 'capitalize' }}>{t?.replace('_', ' ')}</Text> },
+    { title: 'Conversion', dataIndex: 'conversion_count', key: 'conv', align: 'right' as const },
+    { title: 'Revenue', dataIndex: 'revenue_generated', key: 'rev', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
+    { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => <div style={{ background: t === 'active' ? '#ecfdf5' : '#f1f5f9', color: t === 'active' ? '#10b981' : '#64748b', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t.toUpperCase()}</div> }
+  ];
+
+  const referralColumns = [
+    { title: 'Referrer', dataIndex: 'referrer_member_code', key: 'ref' },
+    { title: 'Referred', dataIndex: 'referred_member_code', key: 'new' },
+    { title: 'Reward Value', dataIndex: 'reward_value', key: 'val', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
+    { title: 'Date', dataIndex: 'referral_date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+  ];
+
+  const complaintColumns = [
+    { title: 'Customer', dataIndex: ['members', 'member_name'], key: 'member', render: (t: string) => <Text strong>{t || 'Guest'}</Text> },
+    { title: 'Category', dataIndex: 'category', key: 'cat' },
+    { title: 'Branch', dataIndex: ['branches', 'branch_name'], key: 'branch' },
+    { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => {
+        const color = t?.toLowerCase() === 'resolved' ? '#10b981' : t?.toLowerCase() === 'in progress' ? '#f59e0b' : '#ef4444';
+        const bg = t?.toLowerCase() === 'resolved' ? '#ecfdf5' : t?.toLowerCase() === 'in progress' ? '#fffbeb' : '#fef2f2';
+        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t?.toUpperCase()}</div>;
+      }
+    },
+    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
 
   return (
@@ -76,72 +190,193 @@ export default function CustomerIntelligencePage() {
         </div>
       ) : (
         <>
-          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-            {kpiCards.map((kpi) => (
-              <Col xs={24} sm={12} lg={6} key={kpi.label}>
-                <Card variant="outlined" style={{ borderTop: `3px solid ${kpi.color}`, height: '100%', borderRadius: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                    <Space align="center" size={4}>
-                      <Text type="secondary" style={{ fontSize: 13, fontWeight: 600 }}>{kpi.label}</Text>
+          <div style={{ marginBottom: 32, padding: '8px 0 24px 0', borderBottom: '1px solid #f1f5f9' }}>
+            <Row gutter={[24, 24]}>
+              {kpiCards.map((kpi) => (
+                <Col xs={24} sm={12} lg={6} key={kpi.label}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <kpi.icon size={16} color="#475569" />
+                      </div>
+                      <Text type="secondary" style={{ fontSize: 14, fontWeight: 600, color: '#64748b' }}>{kpi.label}</Text>
                       <Tooltip title={kpi.tooltip}>
-                        <InfoCircleOutlined size={14} style={{ color: '#94a3b8', cursor: 'help' }} />
+                        <InfoCircleOutlined style={{ fontSize: 13, color: '#cbd5e1', cursor: 'help' }} />
                       </Tooltip>
-                    </Space>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: kpi.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <kpi.icon size={16} color={kpi.color} />
+                    </div>
+                    <Title level={2} style={{ margin: 0, fontSize: 32, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={kpi.value}>{kpi.value}</Title>
+                    <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ color: kpi.trend.startsWith('+') ? '#10b981' : '#ef4444', fontSize: 12, fontWeight: 700, background: kpi.trend.startsWith('+') ? '#ecfdf5' : '#fef2f2', padding: '2px 8px', borderRadius: 6 }}>{kpi.trend}</span>
+                      <Text style={{ color: '#94a3b8', fontSize: 13, fontWeight: 500 }}>vs last month</Text>
                     </div>
                   </div>
-                  <Title level={3} style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>{kpi.value}</Title>
-                  <Text style={{ color: '#10b981', fontSize: 13, fontWeight: 500, display: 'inline-block', marginTop: 8 }}>{kpi.trend} <span style={{ color: '#64748b', fontWeight: 400 }}>vs last month</span></Text>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+                </Col>
+              ))}
+            </Row>
+          </div>
 
-          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          {/* Smart Summary */}
+          <div style={{ marginBottom: 24, padding: 20, background: '#f8fafc', borderRadius: 16, border: '1px solid #e2e8f0', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Sparkles size={20} />
+            </div>
+            <div>
+              <Title level={5} style={{ margin: 0, color: '#0f172a', marginBottom: 4 }}>Calf Intelligence Summary</Title>
+              <Text style={{ fontSize: 14, color: '#334155', lineHeight: 1.6 }}>
+                {summaryInsight}
+              </Text>
+            </div>
+          </div>
+
+          <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
             <Col xs={24} lg={12}>
-              <Card title={<Space><Text strong>Membership Tier Distribution</Text><Tooltip title="Proporsi tingkat (Tier) yang dipegang oleh seluruh pelanggan."><InfoCircleOutlined size={14} style={{ color: '#94a3b8' }} /></Tooltip></Space>} style={{ height: '100%', borderRadius: 12 }}>
+              <SectionContainer style={{ height: '100%' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <Space align="center">
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Crown size={18} color="#475569" />
+                    </div>
+                    <Title level={4} style={{ margin: 0 }}>Membership Tier Distribution</Title>
+                    <Tooltip title="Proporsi tingkat (Tier) yang dipegang oleh seluruh pelanggan.">
+                      <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
+                    </Tooltip>
+                  </Space>
+                </div>
                 {customerStats.tierData.length > 0 ? (
-                  <div style={{ height: 300 }}>
+                  <div style={{ height: 300, width: '100%', marginTop: 24 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={customerStats.tierData} innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value" stroke="none">
+                        <Pie 
+                          data={customerStats.tierData} 
+                          innerRadius={80} 
+                          outerRadius={100} 
+                          paddingAngle={2} 
+                          dataKey="value" 
+                          stroke="none"
+                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 })}%`}
+                          labelLine={false}
+                        >
                           {customerStats.tierData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
-                        <RechartsTooltip formatter={(val: any) => `${val.toLocaleString('id-ID')} Members`} />
+                        <RechartsTooltip 
+                          formatter={(val: any) => [`${val.toLocaleString('id-ID')} Members`, 'Total']} 
+                          contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
+                        />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
                 ) : <Empty />}
-              </Card>
+              </SectionContainer>
             </Col>
             <Col xs={24} lg={12}>
-              <Card title={<Space><Text strong>Top 5 Members (by Spending)</Text><Tooltip title="Pelanggan teratas berdasarkan total pembelanjaan seumur hidup."><InfoCircleOutlined size={14} style={{ color: '#94a3b8' }} /></Tooltip></Space>} style={{ height: '100%', borderRadius: 12 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 16 }}>
-                  {customerStats.tierData.map(item => (
-                    <div key={item.name} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
-                      <Space size={8}>
-                        <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: item.color }} />
-                        <Text strong>{item.name}</Text>
-                      </Space>
-                      <Text strong style={{ color: '#1F5EFF' }}>{item.value.toLocaleString('id-ID')} Members</Text>
+              <SectionContainer style={{ height: '100%' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <Space align="center">
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Star size={18} color="#475569" />
                     </div>
-                  ))}
+                    <Title level={4} style={{ margin: 0 }}>Top 5 Members (by Spending)</Title>
+                    <Tooltip title="Pelanggan teratas berdasarkan total pembelanjaan seumur hidup.">
+                      <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
+                    </Tooltip>
+                  </Space>
                 </div>
-              </Card>
+                {topSpenders.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingTop: 16 }}>
+                    {topSpenders.map((member, idx) => {
+                      const maxVal = Number(topSpenders[0].total_spent || 1);
+                      const val = Number(member.total_spent || 0);
+                      const percent = (val / maxVal) * 100;
+                      return (
+                        <div key={member.member_code || idx}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                            <Text strong style={{ color: '#334155', fontSize: 13 }}>{idx + 1}. {member.member_name}</Text>
+                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {val.toLocaleString('id-ID')}</Text>
+                          </div>
+                          <Progress percent={percent} showInfo={false} strokeColor="#8b5cf6" railColor="#f5f3ff" size="small" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : <Empty />}
+              </SectionContainer>
             </Col>
           </Row>
 
-          <Card title={<Space><Text strong>Customer Leaderboard</Text><Tooltip title="Tabel lengkap profil pelanggan berserta tingkat loyalti mereka."><InfoCircleOutlined size={14} style={{ color: '#94a3b8' }} /></Tooltip></Space>} style={{ marginBottom: 24, borderRadius: 12 }}>
+          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+              <Space align="center">
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Users size={18} color="#475569" />
+                </div>
+                <Title level={4} style={{ margin: 0 }}>Customer Leaderboard</Title>
+                <Tooltip title="Tabel lengkap profil pelanggan berserta tingkat loyalti mereka.">
+                  <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
+                </Tooltip>
+              </Space>
+              <Input 
+                placeholder="Search customer name or ID..." 
+                value={searchText} 
+                onChange={(e) => setSearchText(e.target.value)} 
+                style={{ width: '100%', maxWidth: 300, borderRadius: 8 }} 
+                prefix={<Search size={14} color="#94a3b8" />} 
+              />
+            </div>
             <Table 
               columns={columns} 
-              dataSource={members} 
-              pagination={{ pageSize: 15, showSizeChanger: true, showTotal: (t) => `Total ${t} pelanggan` }}
+              dataSource={filteredMembers} 
+              pagination={{ pageSize: 15, showSizeChanger: true, showTotal: (t) => `Total ${t} members` }}
               size="middle"
               rowKey="member_code"
               scroll={{ x: 800 }}
+              style={{ padding: '0 24px 24px 24px' }}
             />
-          </Card>
+          </SectionContainer>
+
+          <Row gutter={[24, 24]} style={{ marginBottom: 24, marginTop: 24 }}>
+            <Col xs={24} lg={12}>
+              <SectionContainer>
+                <div style={{ marginBottom: 20 }}>
+                  <Title level={4} style={{ margin: 0 }}>Voucher & Coupon Activity</Title>
+                </div>
+                <Table columns={voucherColumns} dataSource={vouchers} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} />
+              </SectionContainer>
+            </Col>
+            <Col xs={24} lg={12}>
+              <SectionContainer>
+                <div style={{ marginBottom: 20 }}>
+                  <Title level={4} style={{ margin: 0 }}>Point Transactions Ledger</Title>
+                </div>
+                <Table columns={pointColumns} dataSource={points} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} />
+              </SectionContainer>
+            </Col>
+          </Row>
+
+          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
+              <Title level={4} style={{ margin: 0 }}>Customer Complaints & Feedback</Title>
+            </div>
+            <Table columns={complaintColumns} dataSource={complaints} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
+          </SectionContainer>
+
+          <Row gutter={[24, 24]} style={{ marginBottom: 24, marginTop: 24 }}>
+            <Col xs={24} lg={12}>
+              <SectionContainer>
+                <div style={{ marginBottom: 20 }}>
+                  <Title level={4} style={{ margin: 0 }}>Marketing Campaigns ROI</Title>
+                </div>
+                <Table columns={campaignColumns} dataSource={campaigns} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 500 }} />
+              </SectionContainer>
+            </Col>
+            <Col xs={24} lg={12}>
+              <SectionContainer>
+                <div style={{ marginBottom: 20 }}>
+                  <Title level={4} style={{ margin: 0 }}>Referral Conversions</Title>
+                </div>
+                <Table columns={referralColumns} dataSource={referrals} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 500 }} />
+              </SectionContainer>
+            </Col>
+          </Row>
         </>
       )}
     </MainLayout>

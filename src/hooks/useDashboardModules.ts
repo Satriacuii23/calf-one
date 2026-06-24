@@ -2,15 +2,20 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export function useOperationsData() {
-  const [data, setData] = useState<any>({ infrastructures: [], inventories: [], branches: [], isLoading: true });
+  const [data, setData] = useState<any>({ infrastructures: [], inventories: [], branches: [], purchaseOrders: [], shifts: [], attendances: [], suppliers: [], stockAdjustments: [], isLoading: true });
   useEffect(() => {
     async function fetch() {
-      const [{ data: inf }, { data: inv }, { data: br }] = await Promise.all([
+      const [{ data: inf }, { data: inv }, { data: br }, { data: po }, { data: sh }, { data: att }, { data: sup }, { data: adj }] = await Promise.all([
         supabase.from('branch_infrastructures').select('*, branches(branch_name)').limit(100),
         supabase.from('inventories').select('*, branches(branch_name)').limit(100),
-        supabase.from('branches').select('*').limit(100)
+        supabase.from('branches').select('*').limit(100),
+        supabase.from('esb_purchase_orders').select('*, branches(branch_name)').order('created_at', { ascending: false }).limit(100),
+        supabase.from('esb_shifts').select('*').order('created_at', { ascending: false }).limit(100),
+        supabase.from('esb_attendances').select('*').order('created_at', { ascending: false }).limit(100),
+        supabase.from('esb_suppliers').select('*').limit(100),
+        supabase.from('esb_stock_adjustments').select('*, inventories(item_name)').order('created_at', { ascending: false }).limit(100)
       ]);
-      setData({ infrastructures: inf || [], inventories: inv || [], branches: br || [], isLoading: false });
+      setData({ infrastructures: inf || [], inventories: inv || [], branches: br || [], purchaseOrders: po || [], shifts: sh || [], attendances: att || [], suppliers: sup || [], stockAdjustments: adj || [], isLoading: false });
     }
     fetch();
   }, []);
