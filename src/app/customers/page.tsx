@@ -27,30 +27,30 @@ const SectionContainer = ({ children, style }: { children: React.ReactNode, styl
 
 // External Reviews Mock Data
 const MOCK_GOOGLE_REVIEWS = [
-  { id: 1, outlet: 'HQ Sudirman', name: 'Budi Santoso', rating: 5, comment: 'Tempatnya cozy banget buat WFC. Kopinya konsisten enak, barista ramah.', date: '2026-06-20' },
-  { id: 2, outlet: 'Senopati', name: 'Andi Wijaya', rating: 4, comment: 'Kopinya mantap, tapi parkirannya agak susah kalau bawa mobil karena sempit.', date: '2026-06-21' },
-  { id: 3, outlet: 'Kelapa Gading', name: 'Siti Aminah', rating: 5, comment: 'Pelayanan cepat, tempatnya bersih. Selalu pesan Aren Latte kalau kesini.', date: '2026-06-22' },
-  { id: 4, outlet: 'Menteng', name: 'Reza Rahardian', rating: 3, comment: 'AC nya kurang dingin pas siang hari, mungkin bisa diperbaiki. Kopi oke.', date: '2026-06-19' },
-  { id: 5, outlet: 'Kuningan', name: 'Dian Sastro', rating: 5, comment: 'Suka banget sama ambiance outdoor-nya pas sore. Pastry nya fresh.', date: '2026-06-23' },
-  { id: 6, outlet: 'HQ Sudirman', name: 'Hendra', rating: 4, comment: 'Kopinya enak tapi antrian lumayan panjang kalau jam makan siang.', date: '2026-06-18' }
+  { id: 1, outlet: 'HQ Sudirman', name: 'Budi Santoso', rating: 5, comment: 'Very cozy place for WFC. Coffee is consistently good, friendly baristas.', date: '2026-06-20' },
+  { id: 2, outlet: 'Senopati', name: 'Andi Wijaya', rating: 4, comment: 'Great coffee, but parking is a bit difficult if you bring a car because it\'s narrow.', date: '2026-06-21' },
+  { id: 3, outlet: 'Kelapa Gading', name: 'Siti Aminah', rating: 5, comment: 'Fast service, clean place. Always order Aren Latte when coming here.', date: '2026-06-22' },
+  { id: 4, outlet: 'Menteng', name: 'Reza Rahardian', rating: 3, comment: 'The AC is not cold enough during the day, maybe it can be fixed. Coffee is okay.', date: '2026-06-19' },
+  { id: 5, outlet: 'Kuningan', name: 'Dian Sastro', rating: 5, comment: 'Really like the outdoor ambiance in the afternoon. Fresh pastries.', date: '2026-06-23' },
+  { id: 6, outlet: 'HQ Sudirman', name: 'Hendra', rating: 4, comment: 'Good coffee but the queue is quite long during lunch hour.', date: '2026-06-18' }
 ];
 
 const MOCK_GOFOOD_REVIEWS = [
-  { id: 1, outlet: 'Senopati', name: 'Kevin', rating: 5, comment: 'Pengiriman cepat, packaging super aman pakai double seal. Kopi gak tumpah.', date: '2026-06-24' },
-  { id: 2, outlet: 'Kelapa Gading', name: 'Ayu', rating: 4, comment: 'Rasa kopi enak, cuma es batunya udah lumayan cair pas sampai.', date: '2026-06-23' },
-  { id: 3, outlet: 'Kuningan', name: 'Riko', rating: 5, comment: 'Mantap ada promo diskon ongkir. Kualitas kopi Calf One selalu juara.', date: '2026-06-22' },
-  { id: 4, outlet: 'HQ Sudirman', name: 'Nadia', rating: 2, comment: 'Pesanan agak lama disiapkan dari restonya, driver nunggu lama.', date: '2026-06-21' },
-  { id: 5, outlet: 'Menteng', name: 'Fariz', rating: 5, comment: 'Sesuai pesanan (less sugar). Packaging rapi banget.', date: '2026-06-20' },
-  { id: 6, outlet: 'Senopati', name: 'Tika', rating: 5, comment: 'Rasa kopinya pas banget buat naikin mood kerja pagi.', date: '2026-06-19' }
+  { id: 1, outlet: 'Senopati', name: 'Kevin', rating: 5, comment: 'Fast delivery, super safe packaging with double seal. Coffee doesn\'t spill.', date: '2026-06-24' },
+  { id: 2, outlet: 'Kelapa Gading', name: 'Ayu', rating: 4, comment: 'Coffee tastes good, but the ice cubes are quite melted when it arrived.', date: '2026-06-23' },
+  { id: 3, outlet: 'Kuningan', name: 'Riko', rating: 5, comment: 'Awesome free shipping promo. Calf One coffee quality is always top-notch.', date: '2026-06-22' },
+  { id: 4, outlet: 'HQ Sudirman', name: 'Nadia', rating: 2, comment: 'Order took a bit long to prepare from the restaurant, driver waited a long time.', date: '2026-06-21' },
+  { id: 5, outlet: 'Menteng', name: 'Fariz', rating: 5, comment: 'As ordered (less sugar). Very neat packaging.', date: '2026-06-20' },
+  { id: 6, outlet: 'Senopati', name: 'Tika', rating: 5, comment: 'The coffee taste is perfect to boost morning work mood.', date: '2026-06-19' }
 ];
 
 const MOCK_SHOPEE_REVIEWS = [
-  { id: 1, outlet: 'HQ Sudirman', name: 'Cinta', rating: 5, comment: 'Dapat flash sale, harganya jadi murah banget! Kualitas tetap mantap.', date: '2026-06-24' },
-  { id: 2, outlet: 'Menteng', name: 'Dimas', rating: 5, comment: 'Voucher shopeefood nya lumayan. Es Kopi Susu Arennya the best.', date: '2026-06-23' },
-  { id: 3, outlet: 'Kuningan', name: 'Eka', rating: 3, comment: 'Pesan croffle tapi yang datang agak keras, mungkin kelamaan di jalan.', date: '2026-06-22' },
-  { id: 4, outlet: 'Kelapa Gading', name: 'Fikri', rating: 5, comment: 'Barista notes nya dibaca dengan baik (extra shot espresso). Keren.', date: '2026-06-21' },
-  { id: 5, outlet: 'Senopati', name: 'Gisel', rating: 4, comment: 'Rasa mantap, cuma tadi drivernya sempat kesasar cari lokasi titik map.', date: '2026-06-20' },
-  { id: 6, outlet: 'HQ Sudirman', name: 'Bagas', rating: 5, comment: 'Super recommended, tiap hari selalu repeat order disini.', date: '2026-06-19' }
+  { id: 1, outlet: 'HQ Sudirman', name: 'Cinta', rating: 5, comment: 'Got flash sale, price is so cheap! Quality remains awesome.', date: '2026-06-24' },
+  { id: 2, outlet: 'Menteng', name: 'Dimas', rating: 5, comment: 'Shopeefood voucher is decent. The Aren Milk Ice Coffee is the best.', date: '2026-06-23' },
+  { id: 3, outlet: 'Kuningan', name: 'Eka', rating: 3, comment: 'Ordered croffle but it arrived a bit hard, maybe too long on the road.', date: '2026-06-22' },
+  { id: 4, outlet: 'Kelapa Gading', name: 'Fikri', rating: 5, comment: 'Barista notes were read well (extra shot espresso). Cool.', date: '2026-06-21' },
+  { id: 5, outlet: 'Senopati', name: 'Gisel', rating: 4, comment: 'Awesome taste, but the driver got lost finding the map location point.', date: '2026-06-20' },
+  { id: 6, outlet: 'HQ Sudirman', name: 'Bagas', rating: 5, comment: 'Super recommended, always repeat order here every day.', date: '2026-06-19' }
 ];
 
 export default function CustomerIntelligencePage() {
@@ -96,19 +96,19 @@ export default function CustomerIntelligencePage() {
 
   // Dynamic Summary
   const summaryInsight = useMemo(() => {
-    if (!members.length) return "Mengumpulkan data untuk membuat ringkasan...";
+    if (!members.length) return "Gathering data to build summary...";
     
     const topSpenderName = topSpenders[0]?.member_name || '-';
     const topTierName = customerStats.tierData[0]?.name || 'Basic';
     
-    return `Data menunjukkan terdapat ${customerStats.total.toLocaleString('id-ID')} anggota terdaftar, dengan tingkat aktivitas mencapai ${customerStats.active.toLocaleString('id-ID')} anggota bertransaksi. Distribusi pelanggan didominasi oleh kelas ${topTierName}, sementara pelanggan dengan nilai loyalitas (Lifetime Value) tertinggi dipegang oleh ${topSpenderName}. Rekomendasi: Berikan penawaran eksklusif kepada pelanggan kelas ${topTierName} dan manfaatkan loyalitas ${topSpenderName} sebagai duta promosi lokal (*brand ambassador*).`;
+    return `Data shows there are ${customerStats.total.toLocaleString('en-US')} registered members, with an activity level reaching ${customerStats.active.toLocaleString('en-US')} transacting members. Customer distribution is dominated by the ${topTierName} tier, while the customer with the highest Lifetime Value is held by ${topSpenderName}. Recommendation: Provide exclusive offers to ${topTierName} tier customers and leverage the loyalty of ${topSpenderName} as a local brand ambassador.`;
   }, [members, customerStats, topSpenders]);
 
   const kpiCards = [
-    { label: 'Total Members', tooltip: 'Jumlah total pelanggan yang terdaftar sebagai member loyalti.', value: customerStats.total.toLocaleString('id-ID'), icon: Users, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
-    { label: 'Avg Spend / Member', tooltip: 'Rata-rata nominal uang yang dihabiskan satu member.', value: `Rp ${Math.round(customerStats.avgCLV).toLocaleString('id-ID')}`, icon: Award, color: '#f59e0b', bg: '#fffbeb', trend: '+5.2%' },
-    { label: 'Top Tier (Gold)', tooltip: 'Persentase member di tingkat Gold/Tertinggi.', value: `${customerStats.topTierPct.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, icon: Crown, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
-    { label: 'Active This Month', tooltip: 'Anggota yang melakukan transaksi dalam 30 hari terakhir.', value: customerStats.active.toLocaleString('id-ID'), icon: CalendarCheck, color: '#8b5cf6', bg: '#f5f3ff', trend: '+8.4%' },
+    { label: 'Total Members', tooltip: 'Total number of customers registered as loyalty members.', value: customerStats.total.toLocaleString('en-US'), icon: Users, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
+    { label: 'Avg Spend / Member', tooltip: 'Average amount of money spent by one member.', value: `Rp ${Math.round(customerStats.avgCLV).toLocaleString('en-US')}`, icon: Award, color: '#f59e0b', bg: '#fffbeb', trend: '+5.2%' },
+    { label: 'Top Tier (Gold)', tooltip: 'Percentage of members in the Gold/Highest tier.', value: `${customerStats.topTierPct.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, icon: Crown, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
+    { label: 'Active This Month', tooltip: 'Members who made transactions in the last 30 days.', value: customerStats.active.toLocaleString('en-US'), icon: CalendarCheck, color: '#8b5cf6', bg: '#f5f3ff', trend: '+8.4%' },
   ];
 
   const columns = [
@@ -239,7 +239,7 @@ export default function CustomerIntelligencePage() {
     { title: 'Date', dataIndex: 'date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }
   ];
   return (
-    <MainLayout title="Customer Intelligence" subtitle="Analisis perilaku pelanggan, keanggotaan, dan retensi">
+    <MainLayout title="Customer Intelligence" subtitle="Customer behavior, membership, and retention analysis">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -293,7 +293,7 @@ export default function CustomerIntelligencePage() {
                       <Crown size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Membership Tier Distribution</Title>
-                    <Tooltip title="Proporsi tingkat (Tier) yang dipegang oleh seluruh pelanggan.">
+                    <Tooltip title="Proportion of tiers held by all customers.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -309,13 +309,13 @@ export default function CustomerIntelligencePage() {
                           paddingAngle={2} 
                           dataKey="value" 
                           stroke="none"
-                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 })}%`}
+                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}%`}
                           labelLine={false}
                         >
                           {customerStats.tierData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
                         <RechartsTooltip 
-                          formatter={(val: any) => [`${val.toLocaleString('id-ID')} Members`, 'Total']} 
+                          formatter={(val: any) => [`${val.toLocaleString('en-US')} Members`, 'Total']} 
                           contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                         />
                       </PieChart>
@@ -332,7 +332,7 @@ export default function CustomerIntelligencePage() {
                       <Star size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Top 5 Members (by Spending)</Title>
-                    <Tooltip title="Pelanggan teratas berdasarkan total pembelanjaan seumur hidup.">
+                    <Tooltip title="Top customers based on lifetime total spending.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -347,7 +347,7 @@ export default function CustomerIntelligencePage() {
                         <div key={member.member_code || idx}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                             <Text strong style={{ color: '#334155', fontSize: 13 }}>{idx + 1}. {member.member_name}</Text>
-                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {val.toLocaleString('id-ID')}</Text>
+                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {val.toLocaleString('en-US')}</Text>
                           </div>
                           <Progress percent={percent} showInfo={false} strokeColor="#8b5cf6" railColor="#f5f3ff" size="small" />
                         </div>
@@ -366,7 +366,7 @@ export default function CustomerIntelligencePage() {
                   <Users size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Customer Leaderboard</Title>
-                <Tooltip title="Tabel lengkap profil pelanggan berserta tingkat loyalti mereka.">
+                <Tooltip title="Complete table of customer profiles and their loyalty tiers.">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>

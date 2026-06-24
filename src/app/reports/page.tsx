@@ -43,26 +43,26 @@ export default function ReportsPage() {
   ];
 
   const tableStyles = { style: { breakInside: 'avoid' as any, marginBottom: '24px' } };
-  const emptyLocale = { emptyText: <Text type="secondary" italic>Data tidak tersedia untuk periode ini</Text> };
+  const emptyLocale = { emptyText: <Text type="secondary" italic>Data not available for this period</Text> };
 
   return (
-    <MainLayout title="Report Builder" subtitle="Auto-generate laporan operasional komprehensif">
+    <MainLayout title="Report Builder" subtitle="Auto-generate comprehensive operational reports">
       
       {/* Control Panel (No Print) */}
       <div className="no-print" style={{ marginBottom: 24, padding: 24, background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-end', justifyContent: 'space-between' }}>
         <Space size="large" wrap>
           <div>
-            <Text type="secondary" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600 }}>Tipe Laporan</Text>
-            <Select value={reportType} onChange={setReportType} style={{ width: 220 }} options={[{ value: 'executive', label: 'Executive Summary (Lengkap)' }, { value: 'audit', label: 'Financial Audit' }]} />
+            <Text type="secondary" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600 }}>Report Type</Text>
+            <Select value={reportType} onChange={setReportType} style={{ width: 220 }} options={[{ value: 'executive', label: 'Executive Summary (Complete)' }, { value: 'audit', label: 'Financial Audit' }]} />
           </div>
           <div>
-            <Text type="secondary" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600 }}>Periode Laporan</Text>
+            <Text type="secondary" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 600 }}>Report Period</Text>
             <RangePicker style={{ width: 280 }} />
           </div>
         </Space>
         <Space>
           {isReportReady && <Button icon={<Download size={16} />} size="large">Export CSV</Button>}
-          {isReportReady && <Button icon={<Printer size={16} />} size="large" onClick={handlePrint}>Cetak PDF</Button>}
+          {isReportReady && <Button icon={<Printer size={16} />} size="large" onClick={handlePrint}>Print PDF</Button>}
           <Button 
             type="primary" 
             icon={<Sparkles size={16} />} 
@@ -71,7 +71,7 @@ export default function ReportsPage() {
             loading={isGenerating}
             style={{ backgroundColor: '#1F5EFF' }}
           >
-            {isGenerating ? 'Menyusun Laporan...' : 'Auto Generate Report'}
+            {isGenerating ? 'Compiling Report...' : 'Auto Generate Report'}
           </Button>
         </Space>
       </div>
@@ -79,16 +79,16 @@ export default function ReportsPage() {
       {isGenerating && (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
           <Spin size="large" />
-          <Title level={4} style={{ marginTop: 24 }}>Mengalkulasi Data & Menulis Kesimpulan...</Title>
-          <Text type="secondary">Menghubungkan ke 6 modul database Supabase</Text>
+          <Title level={4} style={{ marginTop: 24 }}>Calculating Data & Writing Conclusions...</Title>
+          <Text type="secondary">Connecting to 6 Supabase database modules</Text>
         </div>
       )}
 
       {!isGenerating && !isReportReady && (
         <div style={{ textAlign: 'center', padding: '80px 0', background: '#f8fafc', borderRadius: 12, border: '1px dashed #cbd5e1' }}>
           <Sparkles size={48} color="#94a3b8" style={{ margin: '0 auto 16px' }} />
-          <Title level={4} style={{ color: '#475569' }}>Laporan Belum Digenerasi</Title>
-          <Text type="secondary">Pilih rentang waktu dan tekan "Auto Generate Report" untuk memulai kompilasi data otomatis.</Text>
+          <Title level={4} style={{ color: '#475569' }}>Report Not Generated</Title>
+          <Text type="secondary">Select a time range and click "Auto Generate Report" to start automatic data compilation.</Text>
         </div>
       )}
 
@@ -116,7 +116,7 @@ export default function ReportsPage() {
             </div>
             <div style={{ textAlign: 'right' }}>
               <Title level={3} style={{ margin: 0, color: '#0f172a', textTransform: 'uppercase' }}>Comprehensive Report</Title>
-              <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>Periode: 1 Jun 2026 - 24 Jun 2026</Text>
+              <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>Period: 1 Jun 2026 - 24 Jun 2026</Text>
               <Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: 2 }}>Auto-Generated System Report</Text>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function ReportsPage() {
 
           {/* 2. AI Insights & Analysis */}
           <div style={{ marginBottom: 24, breakInside: 'avoid' }}>
-            <Title level={4} style={{ color: '#0f172a', borderBottom: '1px solid #e2e8f0', paddingBottom: 8, marginBottom: 16 }}>2. Ringkasan, Analisis & Rekomendasi AI</Title>
+            <Title level={4} style={{ color: '#0f172a', borderBottom: '1px solid #e2e8f0', paddingBottom: 8, marginBottom: 16 }}>2. AI Summary, Analysis & Recommendations</Title>
             {dashboardData.aiInsights && dashboardData.aiInsights.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {dashboardData.aiInsights.map((insight: any) => (
@@ -148,7 +148,7 @@ export default function ReportsPage() {
               </div>
             ) : (
               <div style={{ padding: 16, background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: 8, textAlign: 'center' }}>
-                <Text type="secondary" italic>Tidak ada ringkasan atau rekomendasi AI untuk periode ini.</Text>
+                <Text type="secondary" italic>No AI summary or recommendations available for this period.</Text>
               </div>
             )}
           </div>

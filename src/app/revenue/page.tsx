@@ -79,7 +79,7 @@ export default function RevenueIntelligencePage() {
 
   // Dynamic Summary
   const summaryInsight = useMemo(() => {
-    if (!orders.length || !orderItems.length) return "Mengumpulkan data untuk membuat ringkasan...";
+    if (!orders.length || !orderItems.length) return "Gathering data to build summary...";
     
     // Most popular payment method
     const topPayment = paymentData[0]?.name || '-';
@@ -90,24 +90,24 @@ export default function RevenueIntelligencePage() {
       if (d.revenue > highestDay.revenue) highestDay = d;
     });
     
-    const bestDay = highestDay.date !== '-' ? new Date(highestDay.date).toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
+    const bestDay = highestDay.date !== '-' ? new Date(highestDay.date).toLocaleDateString('en-US', { weekday: 'long' }) : '-';
     
-    return `Berdasarkan data dari ${orders.length} transaksi terakhir, tren transaksi saat ini didominasi oleh pembayaran via ${topPayment}. Pencapaian omzet tertinggi tercatat pada hari ${bestDay}. Rekomendasi: Fokuskan kampanye promosi pada metode ${topPayment} menjelang jam sibuk di hari ${bestDay}.`;
+    return `Based on data from the last ${orders.length} transactions, current transaction trends are dominated by ${topPayment} payments. The highest revenue achievement was recorded on ${bestDay}. Recommendation: Focus promotion campaigns on ${topPayment} methods leading up to rush hours on ${bestDay}.`;
   }, [orders, orderItems, paymentData, revenueTrendData]);
 
   const kpiCards = [
-    { label: 'Net Revenue', tooltip: 'Total pendapatan bersih setelah diskon.', value: `Rp ${(metrics.net / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: Wallet, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
-    { label: 'Gross Revenue', tooltip: 'Total pendapatan sebelum potongan.', value: `Rp ${(metrics.gross / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: TrendingUp, color: '#0ea5e9', bg: '#f0f9ff', trend: '+5.2%' },
-    { label: 'Total Discount', tooltip: 'Total nilai diskon yang diberikan.', value: `Rp ${(metrics.discount / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: Percent, color: '#8b5cf6', bg: '#f5f3ff', trend: '-2.1%' },
-    { label: 'Avg Order Value', tooltip: 'Rata-rata nilai per transaksi.', value: `Rp ${(metrics.aov).toLocaleString('id-ID', { maximumFractionDigits: 0 })}`, icon: DollarSign, color: '#14b8a6', bg: '#f0fdfa', trend: '+8.1%' },
+    { label: 'Net Revenue', tooltip: 'Total net revenue after discounts.', value: `Rp ${(metrics.net / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: Wallet, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
+    { label: 'Gross Revenue', tooltip: 'Total gross revenue before deductions.', value: `Rp ${(metrics.gross / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: TrendingUp, color: '#0ea5e9', bg: '#f0f9ff', trend: '+5.2%' },
+    { label: 'Total Discount', tooltip: 'Total discount value given.', value: `Rp ${(metrics.discount / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: Percent, color: '#8b5cf6', bg: '#f5f3ff', trend: '-2.1%' },
+    { label: 'Avg Order Value', tooltip: 'Average value per transaction.', value: `Rp ${(metrics.aov).toLocaleString('en-US', { maximumFractionDigits: 0 })}`, icon: DollarSign, color: '#14b8a6', bg: '#f0fdfa', trend: '+8.1%' },
   ];
 
   const paymentColumns = [
     { title: 'Payment Channel', dataIndex: 'payment_channel', key: 'channel', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Transaction ID', dataIndex: 'transaction_id', key: 'trx' },
-    { title: 'Gross Amount', dataIndex: 'gross_amount', key: 'gross', render: (v: number) => `Rp ${v?.toLocaleString('id-ID') || 0}` },
+    { title: 'Gross Amount', dataIndex: 'gross_amount', key: 'gross', render: (v: number) => `Rp ${v?.toLocaleString('en-US') || 0}` },
     { title: 'MDR Fee (%)', dataIndex: 'mdr_fee_percentage', key: 'mdr', render: (v: number) => `${v}%` },
-    { title: 'Net Amount', dataIndex: 'net_amount', key: 'net', render: (v: number) => <Text strong style={{color: '#10b981'}}>{`Rp ${v?.toLocaleString('id-ID') || 0}`}</Text> }
+    { title: 'Net Amount', dataIndex: 'net_amount', key: 'net', render: (v: number) => <Text strong style={{color: '#10b981'}}>{`Rp ${v?.toLocaleString('en-US') || 0}`}</Text> }
   ];
 
   const voidColumns = [
@@ -115,15 +115,15 @@ export default function RevenueIntelligencePage() {
     { title: 'Order ID', dataIndex: ['orders', 'order_id'], key: 'order', render: (t: string) => <Text strong>#{t}</Text> },
     { title: 'Reason', dataIndex: 'reason', key: 'reason' },
     { title: 'Authorized By', dataIndex: 'authorized_by', key: 'auth' },
-    { title: 'Amount', dataIndex: 'amount', key: 'amount', render: (v: number) => `Rp ${v?.toLocaleString('id-ID') || 0}` }
+    { title: 'Amount', dataIndex: 'amount', key: 'amount', render: (v: number) => `Rp ${v?.toLocaleString('en-US') || 0}` }
   ];
 
   const taxColumns = [
     { title: 'Order ID', dataIndex: 'order_id', key: 'id', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Subtotal', dataIndex: 'subtotal', key: 'sub', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'PB1 (Tax)', dataIndex: 'tax_amount', key: 'tax', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Service Charge', dataIndex: 'service_charge', key: 'svc', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Total Amount', dataIndex: 'total_amount', key: 'total', align: 'right' as const, render: (v: number) => <Text strong style={{color: '#1F5EFF'}}>{`Rp ${v?.toLocaleString('id-ID')}`}</Text> }
+    { title: 'Subtotal', dataIndex: 'subtotal', key: 'sub', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'PB1 (Tax)', dataIndex: 'tax_amount', key: 'tax', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'Service Charge', dataIndex: 'service_charge', key: 'svc', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'Total Amount', dataIndex: 'total_amount', key: 'total', align: 'right' as const, render: (v: number) => <Text strong style={{color: '#1F5EFF'}}>{`Rp ${v?.toLocaleString('en-US')}`}</Text> }
   ];
 
   const columns = [
@@ -135,7 +135,7 @@ export default function RevenueIntelligencePage() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Text strong style={{ color: '#0f172a' }}>#{text}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            {new Date(record.transaction_date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
+            {new Date(record.transaction_date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
           </Text>
         </div>
       ) 
@@ -177,7 +177,7 @@ export default function RevenueIntelligencePage() {
       align: 'right' as const, 
       render: (val: number, record: any) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 14, color: '#0f172a' }}>Rp {val?.toLocaleString('id-ID') || 0}</Text>
+          <Text strong style={{ fontSize: 14, color: '#0f172a' }}>Rp {val?.toLocaleString('en-US') || 0}</Text>
           {Number(record.total_discount) > 0 && (
             <Text type="secondary" style={{ fontSize: 12, color: '#ef4444' }}>
               - Rp {Number(record.total_discount).toLocaleString('id-ID')} (Discount)
@@ -208,7 +208,7 @@ export default function RevenueIntelligencePage() {
   ];
 
   return (
-    <MainLayout title="Revenue Intelligence" subtitle="Analisis pendapatan, metode pembayaran, dan riwayat transaksi">
+    <MainLayout title="Revenue Intelligence" subtitle="Revenue analysis, payment methods, and transaction history">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -260,7 +260,7 @@ export default function RevenueIntelligencePage() {
                   <Calendar size={18} />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Revenue Trend Over Time</Title>
-                <Tooltip title="Grafik area yang menampilkan fluktuasi total pendapatan harian selama periode transaksi terakhir.">
+                <Tooltip title="Area chart displaying daily total revenue fluctuations over the last transaction period.">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -277,9 +277,9 @@ export default function RevenueIntelligencePage() {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                     <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} tickFormatter={(val) => `Rp ${(val / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`} dx={-10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} tickFormatter={(val) => `Rp ${(val / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`} dx={-10} />
                     <RechartsTooltip 
-                      formatter={(val: any) => [`Rp ${val.toLocaleString('id-ID')}`, 'Revenue']}
+                      formatter={(val: any) => [`Rp ${val.toLocaleString('en-US')}`, 'Revenue']}
                       labelStyle={{ color: '#0f172a', fontWeight: 600, marginBottom: 8 }}
                       contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
                     />
@@ -288,7 +288,7 @@ export default function RevenueIntelligencePage() {
                   </ComposedChart>
                 </ResponsiveContainer>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>Belum ada data transaksi</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>No transaction data available</div>
               )}
             </div>
           </SectionContainer>
@@ -302,7 +302,7 @@ export default function RevenueIntelligencePage() {
                       <CreditCard size={18} />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Payment Method</Title>
-                    <Tooltip title="Distribusi pendapatan berdasarkan metode pembayaran (Tunai, Debit, QRIS, dll).">
+                    <Tooltip title="Revenue distribution by payment method (Cash, Debit, QRIS, etc).">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -325,13 +325,13 @@ export default function RevenueIntelligencePage() {
                           ))}
                         </Pie>
                         <RechartsTooltip 
-                          formatter={(val: any) => [`Rp ${val.toLocaleString('id-ID')}`, 'Revenue']}
+                          formatter={(val: any) => [`Rp ${val.toLocaleString('en-US')}`, 'Revenue']}
                           contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                         />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>Belum ada data pembayaran</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>No payment data available</div>
                   )}
                 </div>
               </SectionContainer>
@@ -345,7 +345,7 @@ export default function RevenueIntelligencePage() {
                       <ShoppingBag size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Order Type</Title>
-                    <Tooltip title="Pendapatan berdasarkan tipe pesanan (Dine-in, Takeaway, dan Delivery).">
+                    <Tooltip title="Revenue based on order type (Dine-in, Takeaway, and Delivery).">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -360,7 +360,7 @@ export default function RevenueIntelligencePage() {
                           cy="50%"
                           outerRadius={100}
                           dataKey="value"
-                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 })}%`}
+                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}%`}
                           labelLine={false}
                         >
                           {orderTypeData.map((entry, index) => (
@@ -368,13 +368,13 @@ export default function RevenueIntelligencePage() {
                           ))}
                         </Pie>
                         <RechartsTooltip 
-                          formatter={(val: any) => [`Rp ${val.toLocaleString('id-ID')}`, 'Revenue']}
+                          formatter={(val: any) => [`Rp ${val.toLocaleString('en-US')}`, 'Revenue']}
                           contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                         />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>Belum ada data tipe pesanan</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>No order type data available</div>
                   )}
                 </div>
               </SectionContainer>
@@ -387,7 +387,7 @@ export default function RevenueIntelligencePage() {
             <div style={{ marginBottom: 20 }}>
               <Space align="center">
                 <Title level={4} style={{ margin: 0 }}>Recent Transactions</Title>
-                <Tooltip title="Daftar transaksi terakhir, menampilkan 10 data per halaman.">
+                <Tooltip title="Recent transaction list, showing 10 records per page.">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -395,7 +395,7 @@ export default function RevenueIntelligencePage() {
             <Table 
               columns={columns} 
               dataSource={filteredOrders} 
-              pagination={{ pageSize: 5, showSizeChanger: false, showTotal: (t) => `Total ${t} transaksi` }}
+              pagination={{ pageSize: 5, showSizeChanger: false, showTotal: (t) => `Total ${t} transactions` }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}

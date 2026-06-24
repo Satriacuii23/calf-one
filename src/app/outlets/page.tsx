@@ -59,15 +59,15 @@ export default function OutletsPage() {
   }, [branches]);
 
   const summaryInsight = useMemo(() => {
-    if (!branches.length) return "Mengumpulkan data outlet...";
-    return `Terdapat ${outletStats.total} outlet yang beroperasi dan tersebar di ${outletStats.citiesCount} kota berbeda. Konsentrasi outlet terbesar berada di region ${outletStats.topRegion}. Pertumbuhan keanggotaan dan distribusi regional berada dalam status operasional normal. Rekomendasi: Alokasikan anggaran pemasaran lokal untuk melakukan penetrasi pasar pada wilayah di luar region ${outletStats.topRegion}.`;
+    if (!branches.length) return "Gathering outlet data...";
+    return `There are ${outletStats.total} operating outlets spread across ${outletStats.citiesCount} different cities. The largest concentration of outlets is in the ${outletStats.topRegion} region. Membership growth and regional distribution are in normal operational status. Recommendation: Allocate local marketing budgets to penetrate markets in areas outside the ${outletStats.topRegion} region.`;
   }, [branches, outletStats]);
 
   const kpiCards = [
-    { label: 'Total Outlets', tooltip: 'Jumlah total cabang yang terdaftar dalam sistem.', value: outletStats.total, icon: Store, trend: 'Active' },
-    { label: 'Regions Covered', tooltip: 'Jumlah wilayah besar jangkauan operasional.', value: outletStats.regionData.length, icon: Map, trend: 'Expanding' },
-    { label: 'Cities Present', tooltip: 'Jumlah kota spesifik di mana cabang berada.', value: outletStats.citiesCount, icon: MapPin, trend: 'Growing' },
-    { label: 'Primary Region', tooltip: 'Wilayah dengan jumlah cabang terbanyak.', value: outletStats.topRegion, icon: ShieldCheck, trend: 'Dominant' },
+    { label: 'Total Outlets', tooltip: 'Total number of branches registered in the system.', value: outletStats.total, icon: Store, trend: 'Active' },
+    { label: 'Regions Covered', tooltip: 'Total number of large operational coverage regions.', value: outletStats.regionData.length, icon: Map, trend: 'Expanding' },
+    { label: 'Cities Present', tooltip: 'Specific number of cities where branches are located.', value: outletStats.citiesCount, icon: MapPin, trend: 'Growing' },
+    { label: 'Primary Region', tooltip: 'Region with the highest number of branches.', value: outletStats.topRegion, icon: ShieldCheck, trend: 'Dominant' },
   ];
 
   const columns = [
@@ -125,7 +125,7 @@ export default function OutletsPage() {
 
   const kitchenColumns = [
     { title: 'Order ID', dataIndex: 'order_id', key: 'id', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Received At', dataIndex: 'ticket_received_at', key: 'recv', render: (d: string) => new Date(d).toLocaleTimeString('id-ID') },
+    { title: 'Received At', dataIndex: 'ticket_received_at', key: 'recv', render: (d: string) => new Date(d).toLocaleTimeString('en-US') },
     { title: 'Prep Time (sec)', dataIndex: 'prep_time_seconds', key: 'prep', render: (v: number) => <Text>{v}s</Text> },
     { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => <div style={{ background: t === 'completed' ? '#ecfdf5' : '#fffbeb', color: t === 'completed' ? '#10b981' : '#f59e0b', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t.toUpperCase()}</div> }
   ];
@@ -139,7 +139,7 @@ export default function OutletsPage() {
   ];
 
   return (
-    <MainLayout title="Outlet Intelligence" subtitle="Direktori lengkap cabang Calf beserta sebaran geografisnya">
+    <MainLayout title="Outlet Intelligence" subtitle="Complete directory of Calf branches and their geographical distribution">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -192,7 +192,7 @@ export default function OutletsPage() {
                       <Map size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Distribution by Region</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -208,7 +208,7 @@ export default function OutletsPage() {
                           paddingAngle={2} 
                           dataKey="value" 
                           stroke="none"
-                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 })}%`}
+                          label={({ name, percent }) => `${name} ${((percent || 0) * 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}%`}
                           labelLine={false}
                         >
                           {outletStats.regionData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
@@ -231,7 +231,7 @@ export default function OutletsPage() {
                       <Store size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Membership Types</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -270,7 +270,7 @@ export default function OutletsPage() {
                   <Store size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Outlet Directory</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
               </Space>

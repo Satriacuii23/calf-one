@@ -67,16 +67,16 @@ export default function ProductIntelligencePage() {
 
   // Dynamic Summary
   const summaryInsight = useMemo(() => {
-    if (!orderItems.length || !inventories.length) return "Mengumpulkan data untuk membuat ringkasan...";
+    if (!orderItems.length || !inventories.length) return "Gathering data to build summary...";
     
-    return `Performa produk menunjukkan bahwa ${topProduct.name} adalah penyumbang pendapatan tertinggi, sementara ${topProductByVol.name} merupakan produk yang paling laku secara kuantitas. Total keseluruhan item yang terjual mencapai ${totalItemsSold.toLocaleString('id-ID')} unit dengan rata-rata harga per item Rp ${avgItemPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}. Terdapat peringatan untuk ${lowStockItems.length} item inventaris yang stoknya menipis. Rekomendasi: Segera jadwalkan pengiriman stok (*restock*) untuk ${lowStockItems.length} barang tersebut dan pertimbangkan strategi *bundling* untuk produk unggulan ${topProduct.name}.`;
+    return `Product performance shows that ${topProduct.name} is the highest revenue contributor, while ${topProductByVol.name} is the most popular product by quantity. Total items sold reached ${totalItemsSold.toLocaleString('en-US')} units with an average price per item of Rp ${avgItemPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}. There is a warning for ${lowStockItems.length} inventory items that are running low. Recommendation: Immediately schedule a restock for those ${lowStockItems.length} items and consider a bundling strategy for the flagship product ${topProduct.name}.`;
   }, [orderItems, inventories, topProduct, topProductByVol, totalItemsSold, avgItemPrice, lowStockItems.length]);
 
   const kpiCards = [
-    { label: 'Total Items Sold', tooltip: 'Jumlah keseluruhan produk yang terjual.', value: totalItemsSold.toLocaleString('id-ID'), icon: ShoppingBag, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
-    { label: 'Top Selling Product', tooltip: 'Produk yang menghasilkan pendapatan tertinggi.', value: topProduct.name, icon: Star, color: '#f59e0b', bg: '#fffbeb', trend: 'Trending' },
-    { label: 'Avg Item Price', tooltip: 'Harga rata-rata dari seluruh produk yang dibeli.', value: `Rp ${avgItemPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`, icon: Tag, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
-    { label: 'Low Stock Alerts', tooltip: 'Jumlah item inventaris yang stoknya berada di bawah ambang batas aman.', value: lowStockItems.length, icon: PackageMinus, color: '#ef4444', bg: '#fef2f2', trend: 'Action Required' },
+    { label: 'Total Items Sold', tooltip: 'Total number of products sold.', value: totalItemsSold.toLocaleString('en-US'), icon: ShoppingBag, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
+    { label: 'Top Selling Product', tooltip: 'Product that generates the highest revenue.', value: topProduct.name, icon: Star, color: '#f59e0b', bg: '#fffbeb', trend: 'Trending' },
+    { label: 'Avg Item Price', tooltip: 'Average price of all purchased products.', value: `Rp ${avgItemPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, icon: Tag, color: '#14b8a6', bg: '#f0fdfa', trend: '+2.1%' },
+    { label: 'Low Stock Alerts', tooltip: 'Number of inventory items with stock below the safe threshold.', value: lowStockItems.length, icon: PackageMinus, color: '#ef4444', bg: '#fef2f2', trend: 'Action Required' },
   ];
 
   const columns = [
@@ -120,7 +120,7 @@ export default function ProductIntelligencePage() {
       align: 'right' as const, 
       render: (val: number) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 14, color: '#334155' }}>{val.toLocaleString('id-ID')}</Text>
+          <Text strong style={{ fontSize: 14, color: '#334155' }}>{val.toLocaleString('en-US')}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>Units</Text>
         </div>
       ) 
@@ -132,7 +132,7 @@ export default function ProductIntelligencePage() {
       align: 'right' as const, 
       render: (val: number) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 14, color: '#1F5EFF' }}>Rp {val.toLocaleString('id-ID')}</Text>
+          <Text strong style={{ fontSize: 14, color: '#1F5EFF' }}>Rp {val.toLocaleString('en-US')}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>Gross</Text>
         </div>
       ) 
@@ -155,8 +155,8 @@ export default function ProductIntelligencePage() {
         return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t}</div>;
       }
     },
-    { title: 'Total Cost', dataIndex: 'total_cost', key: 'cost', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Est. Delivery', dataIndex: 'expected_delivery', key: 'deliv', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+    { title: 'Total Cost', dataIndex: 'total_cost', key: 'cost', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'Est. Delivery', dataIndex: 'expected_delivery', key: 'deliv', render: (d: string) => new Date(d).toLocaleDateString('en-US') }
   ];
 
   const supplierColumns = [
@@ -170,11 +170,11 @@ export default function ProductIntelligencePage() {
     { title: 'Item', dataIndex: ['inventories', 'item_name'], key: 'item', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Adjustment Qty', dataIndex: 'adjustment_qty', key: 'qty', render: (v: number) => <Text type="danger">{v}</Text> },
     { title: 'Reason', dataIndex: 'reason', key: 'reason', render: (t: string) => <Text style={{ textTransform: 'capitalize' }}>{t?.replace('_', ' ')}</Text> },
-    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('en-US') }
   ];
 
   return (
-    <MainLayout title="Product Intelligence" subtitle="Analisis performa produk, penjualan menu, dan pergerakan item">
+    <MainLayout title="Product Intelligence" subtitle="Product performance analysis, menu sales, and item movement">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -228,7 +228,7 @@ export default function ProductIntelligencePage() {
                       <Star size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Top 5 Products (by Revenue)</Title>
-                    <Tooltip title="Peringkat 5 produk yang menghasilkan uang paling banyak.">
+                    <Tooltip title="Top 5 products generating the most revenue.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -242,7 +242,7 @@ export default function ProductIntelligencePage() {
                         <div key={item.name}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                             <Text strong style={{ color: '#334155', fontSize: 13 }}>{idx + 1}. {item.name}</Text>
-                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {item.revenue.toLocaleString('id-ID')}</Text>
+                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {item.revenue.toLocaleString('en-US')}</Text>
                           </div>
                           <Progress percent={percent} showInfo={false} strokeColor={COLORS[idx % COLORS.length]} railColor="#f1f5f9" size="small" />
                         </div>
@@ -260,7 +260,7 @@ export default function ProductIntelligencePage() {
                       <ShoppingBag size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Top 5 Products (by Volume)</Title>
-                    <Tooltip title="Peringkat 5 produk yang paling laku secara kuantitas.">
+                    <Tooltip title="Top 5 most popular products by quantity.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -274,7 +274,7 @@ export default function ProductIntelligencePage() {
                         <div key={item.name}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                             <Text strong style={{ color: '#334155', fontSize: 13 }}>{idx + 1}. {item.name}</Text>
-                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>{item.qty.toLocaleString('id-ID')} items</Text>
+                            <Text strong style={{ color: '#0f172a', fontSize: 13 }}>{item.qty.toLocaleString('en-US')} items</Text>
                           </div>
                           <Progress percent={percent} showInfo={false} strokeColor="#14b8a6" railColor="#ccfbf1" size="small" />
                         </div>
@@ -293,7 +293,7 @@ export default function ProductIntelligencePage() {
                   <BarChart3 size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Product Leaderboard</Title>
-                <Tooltip title="Tabel lengkap seluruh performa produk dari A-Z.">
+                <Tooltip title="Complete table of all product performance from A-Z.">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -308,7 +308,7 @@ export default function ProductIntelligencePage() {
             <Table 
               columns={columns} 
               dataSource={filteredStats} 
-              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} produk` }}
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} products` }}
               size="middle"
               rowKey="name"
               scroll={{ x: 600 }}
@@ -332,7 +332,7 @@ export default function ProductIntelligencePage() {
                       <AlertTriangle size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Critical Low Stock Items</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>

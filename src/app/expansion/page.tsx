@@ -79,19 +79,19 @@ export default function ExpansionPage() {
   }, [proposals]);
 
   const summaryInsight = useMemo(() => {
-    if (!proposals.length) return "Mengumpulkan data untuk membuat ringkasan ekspansi...";
+    if (!proposals.length) return "Gathering data to build expansion summary...";
     
-    const totalM = (expansionStats.totalInvestment / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const totalM = (expansionStats.totalInvestment / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const approvedCount = expansionStats.statusData.find(s => s.name.toLowerCase() === 'approved')?.value || 0;
     
-    return `Rencana ekspansi mencakup total investasi senilai Rp ${totalM} Juta untuk ${expansionStats.total} proyeksi lokasi. Rata-rata proyeksi ROI dari seluruh kandidat cabang adalah ${expansionStats.avgROI.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%. Saat ini, ${approvedCount} lokasi telah masuk tahap 'Approved' dan kota ${expansionStats.topCity} menjadi wilayah utama incaran pelebaran sayap Calf. Rekomendasi: Segera eksekusi ${approvedCount} proyek 'Approved' di kota ${expansionStats.topCity} dan kaji ulang lokasi dengan proyeksi ROI di bawah rata-rata.`;
+    return `The expansion plan includes a total investment of Rp ${totalM} Million for ${expansionStats.total} projected locations. The average projected ROI for all branch candidates is ${expansionStats.avgROI.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%. Currently, ${approvedCount} locations have entered the 'Approved' stage and the city of ${expansionStats.topCity} is the primary target area for Calf's expansion. Recommendation: Immediately execute the ${approvedCount} 'Approved' projects in ${expansionStats.topCity} and review locations with projected ROI below average.`;
   }, [proposals, expansionStats]);
 
   const kpiCards = [
-    { label: 'Total Investment Pipeline', tooltip: 'Estimasi total biaya untuk seluruh proposal cabang baru.', value: `Rp ${(expansionStats.totalInvestment / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: DollarSign, color: '#1F5EFF', bg: '#eff6ff', trend: '+2 Locations' },
-    { label: 'Avg Projected ROI', tooltip: 'Rata-rata proyeksi Return on Investment dari seluruh proposal.', value: `${expansionStats.avgROI.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, icon: TrendingUp, color: '#10b981', bg: '#ecfdf5', trend: 'Highly Viable' },
-    { label: 'Expansion Proposals', tooltip: 'Jumlah total lokasi yang sedang dalam radar.', value: expansionStats.total.toString(), icon: MapPin, color: '#f59e0b', bg: '#fffbeb', trend: 'Active' },
-    { label: 'Primary Target City', tooltip: 'Kota dengan jumlah proposal ekspansi terbanyak.', value: expansionStats.topCity, icon: Compass, color: '#8b5cf6', bg: '#f5f3ff', trend: 'Strategic' },
+    { label: 'Total Investment Pipeline', tooltip: 'Estimated total cost for all new branch proposals.', value: `Rp ${(expansionStats.totalInvestment / 1000000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: DollarSign, color: '#1F5EFF', bg: '#eff6ff', trend: '+2 Locations' },
+    { label: 'Avg Projected ROI', tooltip: 'Average projected Return on Investment for all proposals.', value: `${expansionStats.avgROI.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, icon: TrendingUp, color: '#10b981', bg: '#ecfdf5', trend: 'Highly Viable' },
+    { label: 'Expansion Proposals', tooltip: 'Total number of locations currently on the radar.', value: expansionStats.total.toString(), icon: MapPin, color: '#f59e0b', bg: '#fffbeb', trend: 'Active' },
+    { label: 'Primary Target City', tooltip: 'City with the highest number of expansion proposals.', value: expansionStats.topCity, icon: Compass, color: '#8b5cf6', bg: '#f5f3ff', trend: 'Strategic' },
   ];
 
   const columns = [
@@ -132,7 +132,7 @@ export default function ExpansionPage() {
       align: 'right' as const,
       render: (val: number) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 14, color: '#1F5EFF' }}>Rp {val?.toLocaleString('id-ID') || 0}</Text>
+          <Text strong style={{ fontSize: 14, color: '#1F5EFF' }}>Rp {val?.toLocaleString('en-US') || 0}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>CAPEX</Text>
         </div>
       )
@@ -144,7 +144,7 @@ export default function ExpansionPage() {
       align: 'right' as const, 
       render: (val: number) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 14, color: '#10b981' }}>{val?.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) || 0}%</Text>
+          <Text strong style={{ fontSize: 14, color: '#10b981' }}>{val?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) || 0}%</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>Annual Return</Text>
         </div>
       ) 
@@ -157,7 +157,7 @@ export default function ExpansionPage() {
       render: (date: string) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
           <Text strong style={{ fontSize: 14, color: '#334155' }}>
-            {date ? new Date(date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }) : '-'}
+            {date ? new Date(date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '-'}
           </Text>
           <Text type="secondary" style={{ fontSize: 12 }}>Timeline</Text>
         </div>
@@ -166,7 +166,7 @@ export default function ExpansionPage() {
   ];
 
   return (
-    <MainLayout title="Expansion Intelligence" subtitle="Pelacakan rencana pembukaan cabang baru, proyeksi investasi, dan kelayakan lokasi">
+    <MainLayout title="Expansion Intelligence" subtitle="Tracking of new branch opening plans, investment projections, and location viability">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -220,7 +220,7 @@ export default function ExpansionPage() {
                       <TrendingUp size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Investment Cost vs Projected ROI</Title>
-                    <Tooltip title="Perbandingan antara estimasi biaya (CAPEX) dengan persentase proyeksi ROI per lokasi.">
+                    <Tooltip title="Comparison between estimated cost (CAPEX) and projected ROI percentage per location.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -234,7 +234,7 @@ export default function ExpansionPage() {
                         <YAxis yAxisId="left" tickFormatter={(val) => `${val/1000000}M`} stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                         <YAxis yAxisId="right" orientation="right" tickFormatter={(val) => `${val}%`} stroke="#10b981" fontSize={12} tickLine={false} axisLine={false} />
                         <RechartsTooltip 
-                          formatter={(val: any, name: any) => [name === 'cost' ? `Rp ${val.toLocaleString('id-ID')}` : `${val}%`, name === 'cost' ? 'Est. Cost' : 'ROI']}
+                          formatter={(val: any, name: any) => [name === 'cost' ? `Rp ${val.toLocaleString('en-US')}` : `${val}%`, name === 'cost' ? 'Est. Cost' : 'ROI']}
                           contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                         />
                         <Bar yAxisId="left" dataKey="cost" fill="#1F5EFF" radius={[4, 4, 0, 0]} barSize={32} />
@@ -253,7 +253,7 @@ export default function ExpansionPage() {
                       <Target size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Pipeline Status</Title>
-                    <Tooltip title="Proporsi tahapan status dari seluruh kandidat lokasi cabang.">
+                    <Tooltip title="Proportion of status stages for all branch location candidates.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -299,7 +299,7 @@ export default function ExpansionPage() {
                   <MapPin size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Expansion Pipeline Directory</Title>
-                <Tooltip title="Tabel lengkap seluruh rencana ekspansi cabang beserta rincian biaya dan kelayakannya.">
+                <Tooltip title="Complete table of all branch expansion plans along with cost details and viability.">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -314,7 +314,7 @@ export default function ExpansionPage() {
             <Table 
               columns={columns} 
               dataSource={filteredProposals} 
-              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} lokasi` }}
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} locations` }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}

@@ -7,10 +7,10 @@ const { Text } = Typography;
 
 export default function SettingsPage() {
   return (
-    <MainLayout title="Settings" subtitle="Konfigurasi sistem dan preferensi pengguna">
+    <MainLayout title="Settings" subtitle="System configuration and user preferences">
       <Card style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Empty description={
-          <Text type="secondary">Modul Konfigurasi Global sedang dalam pengembangan.</Text>
+          <Text type="secondary">Global Configuration Module is currently under development.</Text>
         } />
       </Card>
     </MainLayout>

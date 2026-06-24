@@ -64,17 +64,17 @@ export default function OverviewPage() {
   const totalScore = Math.round(healthScoreData.reduce((acc, item) => acc + item.score * (item.weight / 100), 0));
 
   const kpiCards = [
-    { label: 'Total Revenue', tooltip: 'Total pendapatan kotor.', value: `Rp ${(dashboardData.totalRevenue / 1000000).toFixed(1)}M`, icon: TrendingUp, trend: '+12.5%' },
-    { label: 'Total Orders', tooltip: 'Jumlah keseluruhan pesanan.', value: formatNumber(dashboardData.totalTransactions), icon: ShoppingBag, trend: '+5.2%' },
-    { label: 'Active Members', tooltip: 'Pelanggan aktif loyalitas.', value: formatNumber(dashboardData.totalCustomers), icon: Users, trend: '+18.4%' },
-    { label: 'Active Outlets', tooltip: 'Jumlah gerai beroperasi.', value: `${dashboardData.totalOutlets}`, icon: Building2, trend: '0%' },
-    { label: 'Health Score', tooltip: 'Indeks kesehatan operasional.', value: `${totalScore}/100`, icon: ShieldCheck, trend: '+1.2%' },
+    { label: 'Total Revenue', tooltip: 'Total gross revenue.', value: `Rp ${(dashboardData.totalRevenue / 1000000).toFixed(1)}M`, icon: TrendingUp, trend: '+12.5%' },
+    { label: 'Total Orders', tooltip: 'Total number of orders.', value: formatNumber(dashboardData.totalTransactions), icon: ShoppingBag, trend: '+5.2%' },
+    { label: 'Active Members', tooltip: 'Active loyalty customers.', value: formatNumber(dashboardData.totalCustomers), icon: Users, trend: '+18.4%' },
+    { label: 'Active Outlets', tooltip: 'Number of operating outlets.', value: `${dashboardData.totalOutlets}`, icon: Building2, trend: '0%' },
+    { label: 'Health Score', tooltip: 'Operational health index.', value: `${totalScore}/100`, icon: ShieldCheck, trend: '+1.2%' },
   ];
 
-  const summaryInsight = "Data eksekutif menunjukkan performa stabil dengan total pendapatan mencapai target harian. Infrastruktur fisik beroperasi optimal pada tingkat 100%, didukung oleh metrik sentimen pelanggan yang terus menunjukkan tren positif. Rekomendasi utama: Tingkatkan utilisasi AI Executive Insights untuk mengidentifikasi pola anomali lebih awal.";
+  const summaryInsight = "Executive data shows stable performance with total revenue reaching the daily target. Physical infrastructure is operating optimally at 100%, supported by customer sentiment metrics that continue to show a positive trend. Key recommendation: Increase utilization of AI Executive Insights to identify anomaly patterns earlier.";
 
   return (
-    <MainLayout title="Executive Command Center" subtitle="Ringkasan performa Kopi Calf secara real-time">
+    <MainLayout title="Executive Command Center" subtitle="Real-time Calf Coffee performance summary">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -125,7 +125,7 @@ export default function OverviewPage() {
                       <TrendingUp size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Revenue Trend</Title>
-                    <Tooltip title="Pergerakan pendapatan kotor."><InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} /></Tooltip>
+                    <Tooltip title="Gross revenue movement."><InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} /></Tooltip>
                   </Space>
                   <Segmented options={['7D', '30D', '90D', '12M']} value={revenueFilter} onChange={setRevenueFilter} />
                 </div>
@@ -184,7 +184,7 @@ export default function OverviewPage() {
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Top Outlets Performer</Title>
                   </Space>
-                  <Button type="link" size="small">Lihat Detail</Button>
+                  <Button type="link" size="small">View Details</Button>
                 </div>
                 <div style={{ padding: '0 24px 24px 24px' }}>
                   <OutletsMap />

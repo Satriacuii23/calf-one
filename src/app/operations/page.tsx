@@ -55,15 +55,15 @@ export default function OperationsPage() {
   }, [infrastructures, branches]);
 
   const summaryInsight = useMemo(() => {
-    if (!infrastructures.length) return "Mengumpulkan data operasional...";
-    const infraHealth = infrastructures.length > 0 ? ((opsStats.cctvOnline / infrastructures.length) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 }) : 0;
-    return `Sistem memantau operasional di ${opsStats.totalBranches} cabang aktif. Saat ini, kesehatan infrastruktur (CCTV) berada di tingkat ${infraHealth}%. Rekomendasi: Kirimkan teknisi pemeliharaan ke cabang dengan gangguan infrastruktur dan pastikan absensi kasir terpantau.`;
+    if (!infrastructures.length) return "Gathering operational data...";
+    const infraHealth = infrastructures.length > 0 ? ((opsStats.cctvOnline / infrastructures.length) * 100).toLocaleString('en-US', { maximumFractionDigits: 0 }) : 0;
+    return `The system is monitoring operations across ${opsStats.totalBranches} active branches. Currently, infrastructure health (CCTV) is at ${infraHealth}%. Recommendation: Dispatch maintenance technicians to branches with infrastructure issues and ensure cashier attendance is monitored.`;
   }, [infrastructures, opsStats]);
 
   const kpiCards = [
-    { label: 'Active Branches', tooltip: 'Jumlah total cabang yang sedang aktif beroperasi saat ini.', value: opsStats.totalBranches, icon: ActivitySquare, trend: 'Stable' },
-    { label: 'CCTV Online', tooltip: 'Rasio kamera pengawas yang terhubung dan aktif.', value: `${opsStats.cctvOnline} / ${infrastructures.length}`, icon: Video, trend: 'Monitor' },
-    { label: 'Internet Online', tooltip: 'Rasio koneksi internet yang stabil di setiap cabang.', value: `${opsStats.internetOnline} / ${infrastructures.length}`, icon: Wifi, trend: 'Monitor' }
+    { label: 'Active Branches', tooltip: 'Total number of branches currently active and operating.', value: opsStats.totalBranches, icon: ActivitySquare, trend: 'Stable' },
+    { label: 'CCTV Online', tooltip: 'Ratio of connected and active surveillance cameras.', value: `${opsStats.cctvOnline} / ${infrastructures.length}`, icon: Video, trend: 'Monitor' },
+    { label: 'Internet Online', tooltip: 'Ratio of stable internet connections in each branch.', value: `${opsStats.internetOnline} / ${infrastructures.length}`, icon: Wifi, trend: 'Monitor' }
   ];
 
   const columns = [
@@ -115,8 +115,8 @@ export default function OperationsPage() {
       align: 'right' as const,
       render: (val: string) => (
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
-          <Text strong style={{ fontSize: 13, color: '#334155' }}>{val ? new Date(val).toLocaleDateString('id-ID') : '-'}</Text>
-          <Text type="secondary" style={{ fontSize: 12 }}>{val ? new Date(val).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-'}</Text>
+          <Text strong style={{ fontSize: 13, color: '#334155' }}>{val ? new Date(val).toLocaleDateString('en-US') : '-'}</Text>
+          <Text type="secondary" style={{ fontSize: 12 }}>{val ? new Date(val).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '-'}</Text>
         </div>
       )
     }
@@ -124,21 +124,21 @@ export default function OperationsPage() {
 
   const shiftColumns = [
     { title: 'Cashier Name', dataIndex: 'cashier_name', key: 'cashier', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Start Time', dataIndex: 'shift_start', key: 'start', render: (d: string) => new Date(d).toLocaleString('id-ID') },
-    { title: 'Expected Cash', dataIndex: 'expected_cash', key: 'expected', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Actual Cash', dataIndex: 'actual_cash', key: 'actual', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Variance', dataIndex: 'cash_variance', key: 'var', align: 'right' as const, render: (v: number) => <Text type={v < 0 ? 'danger' : 'success'}>{v === 0 ? '-' : `Rp ${v?.toLocaleString('id-ID')}`}</Text> }
+    { title: 'Start Time', dataIndex: 'shift_start', key: 'start', render: (d: string) => new Date(d).toLocaleString('en-US') },
+    { title: 'Expected Cash', dataIndex: 'expected_cash', key: 'expected', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'Actual Cash', dataIndex: 'actual_cash', key: 'actual', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('en-US')}` },
+    { title: 'Variance', dataIndex: 'cash_variance', key: 'var', align: 'right' as const, render: (v: number) => <Text type={v < 0 ? 'danger' : 'success'}>{v === 0 ? '-' : `Rp ${v?.toLocaleString('en-US')}`}</Text> }
   ];
 
   const attendanceColumns = [
     { title: 'Employee', dataIndex: 'employee_name', key: 'emp', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Role', dataIndex: 'role', key: 'role' },
-    { title: 'Clock In', dataIndex: 'clock_in', key: 'in', render: (d: string) => new Date(d).toLocaleString('id-ID') },
+    { title: 'Clock In', dataIndex: 'clock_in', key: 'in', render: (d: string) => new Date(d).toLocaleString('en-US') },
     { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => <div style={{ background: t === 'present' ? '#ecfdf5' : '#fef2f2', color: t === 'present' ? '#10b981' : '#ef4444', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t.toUpperCase()}</div> }
   ];
 
   return (
-    <MainLayout title="Operations Center" subtitle="Pemantauan kesehatan infrastruktur dan logistik cabang">
+    <MainLayout title="Operations Center" subtitle="Infrastructure health and branch logistics monitoring">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -191,7 +191,7 @@ export default function OperationsPage() {
                       <Server size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>CCTV Health Status</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -235,7 +235,7 @@ export default function OperationsPage() {
             <div style={{ maxWidth: 1000, margin: '0 auto' }}>
               <div style={{ textAlign: 'center', marginBottom: 32 }}>
                 <Title level={2} style={{ margin: 0, color: '#1e293b', fontWeight: 700 }}>Calf One CCTV Streaming</Title>
-                <Text style={{ color: '#64748b', fontSize: 16 }}>Pantau kondisi lalu lintas dan fasilitas operasional cabang secara real-time.</Text>
+                <Text style={{ color: '#64748b', fontSize: 16 }}>Monitor real-time traffic conditions and operational facilities of branches.</Text>
               </div>
 
               {cctvStreams.length > 0 && (
@@ -302,28 +302,28 @@ export default function OperationsPage() {
               
               <div style={{ textAlign: 'center', marginBottom: 32 }}>
                 <Title level={4} style={{ margin: 0, color: '#334155' }}>
-                  {cctvStreams[activeBranchIndex]?.title || "Memuat Lokasi..."}
+                  {cctvStreams[activeBranchIndex]?.title || "Loading Location..."}
                 </Title>
               </div>
 
               <Row gutter={[32, 32]}>
                 <Col xs={24} md={16}>
-                  <Title level={4} style={{ color: '#334155', marginBottom: 16 }}>Informasi Pantauan</Title>
+                  <Title level={4} style={{ color: '#334155', marginBottom: 16 }}>Monitoring Information</Title>
                   <Text style={{ color: '#475569', fontSize: 15, lineHeight: 1.6, display: 'block' }}>
-                    Layanan CCTV streaming ini disediakan secara terbuka oleh Departemen Operasional Calf One untuk mempermudah pimpinan dan manajer area dalam memantau kelancaran operasional dan kondisi fasilitas setiap cabang secara langsung.
+                    This streaming CCTV service is provided openly by the Calf One Operations Department to facilitate leaders and area managers in directly monitoring the smooth operation and facility conditions of each branch.
                   </Text>
                   <Text style={{ color: '#475569', fontSize: 15, lineHeight: 1.6, display: 'block', marginTop: 12 }}>
-                    Website ini hanya menampilkan streaming CCTV gabungan (Grid View) secara terpusat melalui saluran siaran resmi. Untuk kendali penuh pada setiap kamera di tiap sudut cabang, silakan gunakan Aplikasi Internal Operasional Calf One.
+                    This website only displays aggregated CCTV streaming (Grid View) centrally through official broadcast channels. For full control of every camera in every corner of the branch, please use the Calf One Internal Operations Application.
                   </Text>
                 </Col>
                 <Col xs={24} md={8}>
                   <div style={{ background: '#f8fafc', padding: 24, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                    <Title level={5} style={{ margin: '0 0 16px 0', color: '#334155' }}>Akses Kamera Penuh</Title>
+                    <Title level={5} style={{ margin: '0 0 16px 0', color: '#334155' }}>Full Camera Access</Title>
                     <Text style={{ color: '#64748b', fontSize: 14, display: 'block', marginBottom: 20 }}>
-                      Gunakan Aplikasi CalfGov / Internal Ops untuk mengendalikan setiap titik kamera secara terpisah tanpa jeda.
+                      Use the CalfGov / Internal Ops App to control each camera point separately without delay.
                     </Text>
                     <div style={{ background: '#3b82f6', color: '#fff', padding: '12px 24px', borderRadius: 8, textAlign: 'center', fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = '#2563eb'} onMouseLeave={(e) => e.currentTarget.style.background = '#3b82f6'}>
-                      Kunjungi Calf Ops App
+                      Visit Calf Ops App
                     </div>
                   </div>
                 </Col>
@@ -338,7 +338,7 @@ export default function OperationsPage() {
                   <ServerCrash size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Infrastructure Directory</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
               </Space>

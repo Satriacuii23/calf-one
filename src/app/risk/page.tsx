@@ -56,23 +56,23 @@ export default function RiskPage() {
   }, [alerts]);
 
   const summaryInsight = useMemo(() => {
-    if (!alerts.length) return "Memuat analisis risiko...";
+    if (!alerts.length) return "Loading risk analysis...";
     const activeAlerts = alerts.filter((a: any) => !a.is_dismissed);
     const highRisk = activeAlerts.filter((a: any) => a.severity === 'high').length;
     
     if (highRisk > 0) {
-      return `⚠️ Perhatian: Terdapat ${highRisk} insiden berisiko TINGGI yang membutuhkan tindakan segera. Rekomendasi: Tinjau dan delegasikan tim investigasi ke cabang terkait hari ini.`;
+      return `⚠️ Attention: There are ${highRisk} HIGH-risk incidents requiring immediate action. Recommendation: Review and delegate investigation teams to relevant branches today.`;
     } else if (activeAlerts.length > 0) {
-      return `✅ Situasi terkendali. Terdapat ${activeAlerts.length} peringatan aktif dengan tingkat risiko rendah/menengah. Rekomendasi: Lakukan pemantauan berkala sesuai SOP standar.`;
+      return `✅ Situation under control. There are ${activeAlerts.length} active alerts with low/medium risk levels. Recommendation: Conduct regular monitoring according to standard SOP.`;
     }
-    return `✅ Tidak ada peringatan aktif saat ini. Operasional berjalan sangat aman. Rekomendasi: Lanjutkan strategi maintenance preventif Anda.`;
+    return `✅ No active alerts at this time. Operations are running very safely. Recommendation: Continue your preventive maintenance strategy.`;
   }, [alerts]);
 
   const kpiCards = [
-    { label: 'Active Alerts', tooltip: 'Jumlah ancaman atau anomali operasional yang belum diselesaikan.', value: riskStats.active, icon: BellRing, trend: 'Needs Review' },
-    { label: 'High Severity', tooltip: 'Peringatan tingkat tinggi yang butuh tindakan instan.', value: riskStats.highSeverity, icon: ShieldAlert, trend: 'Critical' },
-    { label: 'Dismissed', tooltip: 'Jumlah peringatan yang telah diselesaikan atau diabaikan.', value: riskStats.dismissed, icon: CheckCircle, trend: 'Resolved' },
-    { label: 'Total Incidents', tooltip: 'Rekam jejak seluruh peringatan historis.', value: riskStats.total, icon: AlertOctagon, trend: 'Log' },
+    { label: 'Active Alerts', tooltip: 'Number of operational threats or anomalies that have not been resolved.', value: riskStats.active, icon: BellRing, trend: 'Needs Review' },
+    { label: 'High Severity', tooltip: 'High-level warnings that require instant action.', value: riskStats.highSeverity, icon: ShieldAlert, trend: 'Critical' },
+    { label: 'Dismissed', tooltip: 'Number of alerts that have been resolved or ignored.', value: riskStats.dismissed, icon: CheckCircle, trend: 'Resolved' },
+    { label: 'Total Incidents', tooltip: 'Track record of all historical alerts.', value: riskStats.total, icon: AlertOctagon, trend: 'Log' },
   ];
 
   const columns = [
@@ -82,8 +82,8 @@ export default function RiskPage() {
       key: 'date',
       render: (val: string) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Text strong style={{ fontSize: 13, color: '#334155' }}>{val ? new Date(val).toLocaleDateString('id-ID') : '-'}</Text>
-          <Text type="secondary" style={{ fontSize: 12 }}>{val ? new Date(val).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-'}</Text>
+          <Text strong style={{ fontSize: 13, color: '#334155' }}>{val ? new Date(val).toLocaleDateString('en-US') : '-'}</Text>
+          <Text type="secondary" style={{ fontSize: 12 }}>{val ? new Date(val).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '-'}</Text>
         </div>
       )
     },
@@ -142,11 +142,11 @@ export default function RiskPage() {
     { title: 'Title', dataIndex: 'title', key: 'title', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Description & Recommendation', dataIndex: 'description', key: 'desc', render: (t: string) => <Text type="secondary">{t}</Text> },
     { title: 'Impact', dataIndex: 'expected_impact', key: 'impact', render: (t: string) => <Text style={{ color: t === 'High' ? '#ef4444' : t === 'Medium' ? '#f59e0b' : '#10b981' }}>{t}</Text> },
-    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('en-US') }
   ];
 
   return (
-    <MainLayout title="Risk Center" subtitle="Pusat peringatan dini dan manajemen risiko operasional Calf">
+    <MainLayout title="Risk Center" subtitle="Calf early warning center and operational risk management">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Spin size="large" />
@@ -199,7 +199,7 @@ export default function RiskPage() {
                       <ShieldAlert size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Active Threat Levels</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -244,7 +244,7 @@ export default function RiskPage() {
                       <Flag size={18} color="#475569" />
                     </div>
                     <Title level={4} style={{ margin: 0 }}>Risk Type Distribution</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
                   </Space>
@@ -277,7 +277,7 @@ export default function RiskPage() {
                   <AlertOctagon size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Incident Log Directory</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
+                    <Tooltip title="Click the menu icon for more detailed information about this metric.">
                       <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                     </Tooltip>
               </Space>

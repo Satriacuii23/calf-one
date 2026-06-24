@@ -51,7 +51,7 @@ export default function LoginPage() {
       if (error) {
         setErrorMsg(error.message || 'Invalid login credentials');
       } else {
-        messageApi.success('Berhasil login ke dalam dashboard!');
+        messageApi.success('Successfully logged into the dashboard!');
         setTimeout(() => {
           router.refresh();
           router.push('/');

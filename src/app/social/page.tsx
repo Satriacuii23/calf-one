@@ -20,7 +20,7 @@ export default function SocialPage() {
   const { sentiments, isLoading } = useSocialData();
 
   const summaryInsight = useMemo(() => {
-    if (!sentiments || sentiments.length === 0) return "Mengumpulkan data sentimen media sosial...";
+    if (!sentiments || sentiments.length === 0) return "Gathering social media sentiment data...";
     const positiveCount = sentiments.filter((s: any) => s.sentiment === 'positive').length;
     const negativeCount = sentiments.filter((s: any) => s.sentiment === 'negative').length;
     const total = sentiments.length;
@@ -28,15 +28,15 @@ export default function SocialPage() {
     
     let rec = "";
     if (negativeCount > positiveCount) {
-      rec = "Terdapat lonjakan sentimen negatif. Segera kordinasi dengan tim operasional untuk memitigasi keluhan.";
+      rec = "There is a spike in negative sentiment. Immediately coordinate with the operational team to mitigate complaints.";
     } else {
-      rec = "Kinerja sosial brand cukup baik. Fokuskan promosi pada sentimen positif yang sering dibahas pelanggan.";
+      rec = "Brand social performance is quite good. Focus promotions on positive sentiments frequently discussed by customers.";
     }
-    return `Dari total ${total} interaksi sosial terbaru, ${positiveRate}% bersentimen positif. ${rec}`;
+    return `Out of a total of ${total} latest social interactions, ${positiveRate}% have a positive sentiment. ${rec}`;
   }, [sentiments]);
 
   const columns = [
-    { title: 'Date', dataIndex: 'post_date', key: 'date', width: 120, render: (d: string) => <Text>{new Date(d).toLocaleDateString()}</Text> },
+    { title: 'Date', dataIndex: 'post_date', key: 'date', width: 120, render: (d: string) => <Text>{new Date(d).toLocaleDateString('en-US')}</Text> },
     { title: 'Platform', dataIndex: 'platform', key: 'platform', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Sentiment', dataIndex: 'sentiment', key: 'sentiment', render: (s: string) => {
       const color = s === 'positive' ? 'success' : s === 'negative' ? 'error' : 'default';
@@ -46,7 +46,7 @@ export default function SocialPage() {
   ];
 
   return (
-    <MainLayout title="Social Intelligence" subtitle="Pemantauan sentimen media sosial dan ulasan pelanggan">
+    <MainLayout title="Social Intelligence" subtitle="Social media sentiment monitoring and customer reviews">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Spin size="large" /></div>
       ) : (
@@ -70,7 +70,7 @@ export default function SocialPage() {
                   <Users size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Social Media Mentions & Reviews</Title>
-                <Tooltip title="Pemantauan opini, komentar, dan tingkat kepuasan pelanggan di seluruh platform (Google, Instagram, dll).">
+                <Tooltip title="Monitoring opinions, comments, and customer satisfaction levels across all platforms (Google, Instagram, etc).">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -78,7 +78,7 @@ export default function SocialPage() {
             <Table 
               columns={columns} 
               dataSource={sentiments} 
-              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} interaksi` }} 
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} interactions` }} 
               size="middle" 
               rowKey="id" 
               scroll={{ x: 800 }} 

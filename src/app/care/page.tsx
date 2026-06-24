@@ -20,23 +20,23 @@ export default function CarePage() {
   const { complaints, isLoading } = useCustomerCareData();
 
   const summaryInsight = useMemo(() => {
-    if (!complaints || complaints.length === 0) return "Mengumpulkan data keluhan pelanggan...";
+    if (!complaints || complaints.length === 0) return "Gathering customer complaint data...";
     const openCount = complaints.filter((c: any) => c.status === 'open').length;
     const highPriority = complaints.filter((c: any) => c.priority === 'high' && c.status === 'open').length;
     
     let rec = "";
     if (highPriority > 0) {
-      rec = `Terdapat ${highPriority} keluhan berprioritas tinggi yang belum terselesaikan. Segera tugaskan tim khusus untuk menanganinya.`;
+      rec = `There are ${highPriority} unresolved high priority complaints. Immediately assign a dedicated team to handle them.`;
     } else if (openCount > 0) {
-      rec = `Selesaikan ${openCount} tiket yang masih berstatus terbuka untuk menjaga kepuasan pelanggan.`;
+      rec = `Resolve ${openCount} open tickets to maintain customer satisfaction.`;
     } else {
-      rec = "Semua keluhan pelanggan telah tertangani. Pertahankan kualitas pelayanan di setiap cabang.";
+      rec = "All customer complaints have been handled. Maintain service quality in every branch.";
     }
-    return `Kinerja Customer Care saat ini memantau ${complaints.length} tiket. ${rec}`;
+    return `Customer Care performance is currently monitoring ${complaints.length} tickets. ${rec}`;
   }, [complaints]);
 
   const columns = [
-    { title: 'Date', dataIndex: 'created_at', key: 'date', width: 120, render: (d: string) => <Text>{new Date(d).toLocaleDateString()}</Text> },
+    { title: 'Date', dataIndex: 'created_at', key: 'date', width: 120, render: (d: string) => <Text>{new Date(d).toLocaleDateString('en-US')}</Text> },
     { title: 'Branch', dataIndex: ['branches', 'branch_name'], key: 'branch', render: (t: string) => <Text strong>{t || 'HQ'}</Text> },
     { title: 'Customer', dataIndex: ['members', 'member_name'], key: 'member' },
     { title: 'Issue Type', dataIndex: 'issue_type', key: 'type', render: (t: string) => <Text strong>{t}</Text> },
@@ -51,7 +51,7 @@ export default function CarePage() {
   ];
 
   return (
-    <MainLayout title="Customer Care" subtitle="Manajemen tiket keluhan pelanggan dan resolusi masalah">
+    <MainLayout title="Customer Care" subtitle="Customer complaint ticket management and issue resolution">
       {isLoading ? (
         <div style={{ height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Spin size="large" /></div>
       ) : (
@@ -75,7 +75,7 @@ export default function CarePage() {
                   <ActivitySquare size={18} color="#475569" />
                 </div>
                 <Title level={4} style={{ margin: 0 }}>Active & Historical Customer Complaints</Title>
-                <Tooltip title="Log aduan, keluhan, dan tiket dukungan pelanggan dari berbagai kanal (WhatsApp, Form, dll).">
+                <Tooltip title="Logs of complaints, grievances, and customer support tickets from various channels (WhatsApp, Form, etc.).">
                   <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
                 </Tooltip>
               </Space>
@@ -83,7 +83,7 @@ export default function CarePage() {
             <Table 
               columns={columns} 
               dataSource={complaints} 
-              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} tiket` }} 
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} tickets` }} 
               size="middle" 
               rowKey="id" 
               scroll={{ x: 1000 }} 

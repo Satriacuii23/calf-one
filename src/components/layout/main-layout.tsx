@@ -149,7 +149,7 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
 
         {!collapsed && (
           <div style={{ padding: '20px 16px', borderTop: '1px solid #f1f5f9', background: '#fafafa' }}>
-            <Tooltip title="Indikator kesehatan bisnis Kopi Calf secara menyeluruh" placement="right">
+            <Tooltip title="Overall Calf Coffee business health indicator" placement="right">
               <div style={{ padding: 16, backgroundColor: '#ffffff', borderRadius: 12, border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', marginBottom: 16, cursor: 'pointer' }}>
                 <Text type="secondary" strong style={{ fontSize: 11, display: 'block', marginBottom: 12, letterSpacing: 0.5 }}>CALF HEALTH SCORE</Text>
                 <Space align="center" size="middle">
@@ -196,15 +196,15 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
             {!isMobile && (
               <>
                 <Input 
-                  placeholder="Cari insight, outlet, laporan..." 
+                  placeholder="Search insights, outlets, reports..." 
                   prefix={<Search size={16} style={{ color: '#94a3b8' }} />}
                   style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 280, padding: '6px 16px' }}
                 />
-                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>24 Juni 2026</Text>
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>June 24, 2026</Text>
               </>
             )}
             
-            <Tooltip title="Peringatan & Notifikasi Sistem">
+            <Tooltip title="System Alerts & Notifications">
               <Popover 
                 placement="bottomRight" 
                 title={<div style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><Text strong>Notifications</Text><Button type="link" size="small" style={{ fontSize: 12 }}>Mark all as read</Button></div>}
@@ -215,9 +215,9 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
                         <AlertTriangle size={14} color="#ef4444" />
                       </div>
                       <div>
-                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>1 Alert Risiko baru terdeteksi</Text>
-                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Lonjakan waktu tunggu (waiting time) di area Drive Thru Kelapa Gading melebihi batas.</Text>
-                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>5 menit yang lalu</Text>
+                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>1 New Risk Alert detected</Text>
+                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Drive Thru wait time at Kelapa Gading area exceeded limit.</Text>
+                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>5 minutes ago</Text>
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
@@ -225,12 +225,12 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
                         <FileText size={14} color="#3b82f6" />
                       </div>
                       <div>
-                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>Laporan Harian Siap Diunduh</Text>
-                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Ringkasan eksekutif pendapatan dan operasional tanggal 23 Juni 2026 telah digenerasi.</Text>
-                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>1 jam yang lalu</Text>
+                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>Daily Report Ready for Download</Text>
+                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Executive summary of revenue and operations for June 23, 2026 has been generated.</Text>
+                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>1 hour ago</Text>
                       </div>
                     </div>
-                    <Button type="dashed" block style={{ marginTop: 8 }}>Lihat Semua Notifikasi</Button>
+                    <Button type="dashed" block style={{ marginTop: 8 }}>View All Notifications</Button>
                   </div>
                 } 
                 trigger="click"
@@ -244,8 +244,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
             <Dropdown 
               menu={{ 
                 items: [
-                  { key: 'profile', label: 'Pengaturan Akun', icon: <User size={14} /> }, 
-                  { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }
+                  { key: 'profile', label: 'Account Settings', icon: <User size={14} /> }, 
+                  { key: 'logout', label: 'Log Out', icon: <LogOut size={14} />, danger: true }
                 ],
                 onClick: (e) => {
                   if (e.key === 'logout') {
