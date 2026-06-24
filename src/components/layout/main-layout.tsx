@@ -24,7 +24,8 @@ import {
 } from 'lucide-react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
@@ -82,6 +83,14 @@ interface MainLayoutProps {
 export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.refresh();
+    router.push('/login');
+  };
 
   const menuItems = navGroups.map((group, index) => ({
     key: `group-${index}`,
@@ -224,7 +233,20 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
               </Popover>
             </Tooltip>
             
-            <Dropdown menu={{ items: [{ key: 'profile', label: 'Pengaturan Akun', icon: <User size={14} /> }, { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }] }} trigger={['click']}>
+            <Dropdown 
+              menu={{ 
+                items: [
+                  { key: 'profile', label: 'Pengaturan Akun', icon: <User size={14} /> }, 
+                  { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }
+                ],
+                onClick: (e) => {
+                  if (e.key === 'logout') {
+                    handleLogout();
+                  }
+                }
+              }} 
+              trigger={['click']}
+            >
               <Avatar size={36} style={{ backgroundColor: '#1F5EFF', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>F</Avatar>
             </Dropdown>
           </Space>
