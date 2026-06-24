@@ -1,238 +1,326 @@
-'use client';
+"use client"
 
+import { MainLayout } from "@/components/layout/main-layout";
+import {
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Table,
+  Paper,
+  Avatar,
+  RingProgress,
+  ThemeIcon,
+  Box,
+  Button,
+} from '@mantine/core';
+import { DonutChart } from '@mantine/charts';
 import {
   Users,
-  TrendingUp,
   UserPlus,
-  Heart,
-  Crown,
+  Repeat,
+  Award,
+  TrendingUp,
+  CreditCard,
   AlertTriangle,
-  Star,
-  Search,
+  Brain,
+  Heart,
+  ArrowUpRight,
+  ArrowDownRight,
 } from 'lucide-react';
-import { MainLayout } from '@/components/layout/main-layout';
-import { KPICard } from '@/components/dashboard/kpi-card';
-import { CustomerPieChart } from '@/components/dashboard/charts';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Input } from '@/components/ui/input';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { customers, formatCurrencyShort, getSegmentColor } from '@/lib/data';
-import { cn } from '@/lib/utils';
-
-const customerSegments = [
-  { name: 'VIP', value: 8, color: '#8b5cf6' },
-  { name: 'Regular', value: 45, color: '#3b82f6' },
-  { name: 'Churn Risk', value: 22, color: '#f59e0b' },
-  { name: 'New', value: 25, color: '#22c55e' },
-];
-
-const topCustomers = [
-  { name: 'Rizky Pratama', transactions: 234, spent: 41250000, segment: 'vip' },
-  { name: 'Anisa Wahyuni', transactions: 189, spent: 28350000, segment: 'vip' },
-  { name: 'Dimas Ardiansyah', transactions: 156, spent: 23400000, segment: 'regular' },
-  { name: 'Siti Nurhaliza', transactions: 134, spent: 20100000, segment: 'regular' },
-  { name: 'Bagus Permana', transactions: 112, spent: 16800000, segment: 'new' },
-];
+  customerStats,
+  customerFunnel,
+  customerSegments,
+  churnRiskData,
+  topCustomers,
+} from "@/lib/data";
+import { formatNumber } from "@/lib/utils";
 
 export default function CustomersPage() {
+  const funnelData = customerFunnel.map((item) => ({
+    name: item.stage,
+    value: item.percentage,
+  }));
+
   return (
-    <MainLayout title="Customers" subtitle="Customer analytics and segmentation">
-      <div className="space-y-6">
-        {/* KPI Cards */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <KPICard
-            title="Total Customers"
-            value="48,521"
-            change={8.7}
-            icon={Users}
-            iconColor="text-blue-600 dark:text-blue-400"
-            iconBg="bg-blue-100 dark:bg-blue-500/20"
-          />
-          <KPICard
-            title="Active Today"
-            value="3,856"
-            change={12.4}
-            icon={TrendingUp}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-500/20"
-          />
-          <KPICard
-            title="New Customers"
-            value="234"
-            change={15.2}
-            icon={UserPlus}
-            iconColor="text-purple-600 dark:text-purple-400"
-            iconBg="bg-purple-100 dark:bg-purple-500/20"
-          />
-          <KPICard
-            title="Churn Risk"
-            value="1,284"
-            change={-5.8}
-            icon={AlertTriangle}
-            iconColor="text-amber-600 dark:text-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-500/20"
-          />
-        </div>
+    <MainLayout title="Customer Intelligence" subtitle="Customer 360 insight and analytics">
+      {/* KPI Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Total Customers</Text>
+                <Text fw={700} size="lg">{formatNumber(customerStats.total)}</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+12.5%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <Users size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Segments + Top Customers */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h3 className="text-lg font-semibold mb-4">Customer Segments</h3>
-              <div className="flex flex-col lg:flex-row items-center gap-6">
-                <CustomerPieChart data={customerSegments} />
-              </div>
-              <div className="mt-6 space-y-3">
-                {customerSegments.map((segment) => (
-                  <div key={segment.name} className="flex items-center justify-between p-3 rounded-lg bg-muted">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${segment.color}20` }}>
-                        {segment.name === 'VIP' && <Crown className="h-5 w-5" style={{ color: segment.color }} />}
-                        {segment.name === 'Regular' && <Star className="h-5 w-5" style={{ color: segment.color }} />}
-                        {segment.name === 'Churn Risk' && <AlertTriangle className="h-5 w-5" style={{ color: segment.color }} />}
-                        {segment.name === 'New' && <UserPlus className="h-5 w-5" style={{ color: segment.color }} />}
-                      </div>
-                      <div>
-                        <p className="font-medium">{segment.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {(segment.value * 485).toLocaleString('id-ID')} customers
-                        </p>
-                      </div>
-                    </div>
-                    <Badge variant="outline" style={{ borderColor: segment.color, color: segment.color }}>
-                      {segment.value}%
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>New Customers</Text>
+                <Text fw={700} size="lg">{formatNumber(customerStats.new)}</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+8.3%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="teal">
+                <UserPlus size={20} />
+              </ThemeIcon>
+            </Group>
           </Card>
+        </Grid.Col>
 
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h3 className="text-lg font-semibold mb-4">Top Customers</h3>
-              <div className="space-y-3">
-                {topCustomers.map((customer, index) => (
-                  <div key={customer.name} className="flex items-center gap-4 p-3 rounded-lg bg-muted hover:bg-accent transition-colors cursor-pointer">
-                    <span className={cn(
-                      'flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold',
-                      index === 0 && 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400',
-                      index === 1 && 'bg-gray-200 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400',
-                      index === 2 && 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400',
-                      index > 2 && 'bg-muted text-muted-foreground'
-                    )}>
-                      {index + 1}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium truncate">{customer.name}</p>
-                        <Badge variant="outline" className={cn(
-                          customer.segment === 'vip' && 'border-purple-300 text-purple-700 dark:border-purple-500/30 dark:text-purple-400',
-                          customer.segment === 'regular' && 'border-blue-300 text-blue-700 dark:border-blue-500/30 dark:text-blue-400',
-                          customer.segment === 'new' && 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400'
-                        )}>
-                          {customer.segment}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{customer.transactions} transactions</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold font-number text-blue-600 dark:text-blue-400">
-                        {formatCurrencyShort(customer.spent)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Repeat Customers</Text>
+                <Text fw={700} size="lg">{formatNumber(customerStats.repeat)}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="teal" variant="light" size="xs">{customerStats.retention}% retention</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="violet">
+                <Repeat size={20} />
+              </ThemeIcon>
+            </Group>
           </Card>
-        </div>
+        </Grid.Col>
 
-        {/* All Customers Table */}
-        <Card>
-          <div className="p-4 lg:p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">All Customers</h3>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search customers..." className="w-[250px] pl-10" />
-              </div>
-            </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Segment</TableHead>
-                  <TableHead className="text-right">Transactions</TableHead>
-                  <TableHead className="text-right">Total Spent</TableHead>
-                  <TableHead>Last Visit</TableHead>
-                  <TableHead className="text-right">Lifetime Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customers.map((customer) => (
-                  <TableRow key={customer.id}>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{customer.name}</p>
-                        <p className="text-sm text-muted-foreground">{customer.email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={getSegmentColor(customer.segment)}>
-                        {customer.segment}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-number">{customer.totalTransactions}</TableCell>
-                    <TableCell className="text-right font-number">{formatCurrencyShort(customer.totalSpent)}</TableCell>
-                    <TableCell>{customer.lastVisit}</TableCell>
-                    <TableCell className="text-right font-number text-blue-600 dark:text-blue-400">
-                      {formatCurrencyShort(customer.lifetimeValue)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Active Members</Text>
+                <Text fw={700} size="lg">{formatNumber(customerStats.active)}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="blue" variant="light" size="xs">18.1% of total</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <Award size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Metrics */}
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Customer Retention</h4>
-              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">87.4%</div>
-              <Progress value={87.4} className="h-2" />
-              <p className="text-sm text-muted-foreground mt-2">+2.3% from last month</p>
-            </div>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Retention Rate</Text>
+                <Text fw={700} size="lg">{customerStats.retention}%</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+2.3%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="green">
+                <TrendingUp size={20} />
+              </ThemeIcon>
+            </Group>
           </Card>
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Avg Order Frequency</h4>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">4.2x</div>
-              <Progress value={42} className="h-2" />
-              <p className="text-sm text-muted-foreground mt-2">per customer per month</p>
-            </div>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Avg. Spend</Text>
+                <Text fw={700} size="lg">Rp {formatNumber(customerStats.avgSpend)}</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">per visit</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="orange">
+                <CreditCard size={20} />
+              </ThemeIcon>
+            </Group>
           </Card>
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Acquisition Cost</h4>
-              <div className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-2">Rp 12.5K</div>
-              <Progress value={65} className="h-2" />
-              <p className="text-sm text-muted-foreground mt-2">-8% from last month</p>
-            </div>
+        </Grid.Col>
+      </Grid>
+
+      {/* Charts Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Text fw={600} size="lg" mb="lg">Customer Funnel</Text>
+            <DonutChart
+              data={funnelData}
+              h={220}
+              thickness={30}
+              chartLabel="250K"
+              valueFormatter={(value) => `${value.toFixed(1)}%`}
+            />
+            <Stack gap="xs" mt="md">
+              {customerFunnel.map((item) => (
+                <Group key={item.stage} justify="space-between">
+                  <Text size="sm">{item.stage}</Text>
+                  <Group gap="xs">
+                    <Text size="sm" fw={500}>{formatNumber(item.count)}</Text>
+                    <Text size="xs" c="dimmed">({item.percentage}%)</Text>
+                  </Group>
+                </Group>
+              ))}
+            </Stack>
           </Card>
-        </div>
-      </div>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Text fw={600} size="lg" mb="lg">Customer Segments</Text>
+            <Stack gap="md">
+              {customerSegments.map((segment) => (
+                <Box key={segment.name}>
+                  <Group justify="space-between" mb={4}>
+                    <Group gap="xs">
+                      <Box w={10} h={10} style={{ borderRadius: '50%', backgroundColor: segment.color }} />
+                      <Text size="sm" fw={500}>{segment.name}</Text>
+                    </Group>
+                    <Group gap="xs">
+                      <Text size="sm" fw={600}>{formatNumber(segment.count)}</Text>
+                      <Badge variant="outline" size="xs">{segment.percentage}%</Badge>
+                    </Group>
+                  </Group>
+                  <Progress value={segment.percentage} size="sm" color={segment.color} radius="xl" />
+                </Box>
+              ))}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Top Customers */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder mb="xl">
+        <Group justify="space-between" mb="lg">
+          <Text fw={600} size="lg">Top Customers</Text>
+          <Button variant="outline" size="xs" rightSection={<ArrowUpRight size={12} />}>
+            View All
+          </Button>
+        </Group>
+        <Table striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Customer</Table.Th>
+              <Table.Th>Segment</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Total Spent</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Visits</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Last Visit</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {topCustomers.map((customer) => (
+              <Table.Tr key={customer.id}>
+                <Table.Td>
+                  <Group gap="sm">
+                    <Avatar color="blue" radius="md" size="sm">
+                      {customer.name.split(' ').map((n) => n[0]).join('')}
+                    </Avatar>
+                    <Text size="sm" fw={500}>{customer.name}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
+                  <Badge
+                    color={customer.segment === 'VIP' ? 'blue' : customer.segment === 'Loyal' ? 'teal' : 'gray'}
+                    variant="light"
+                    size="sm"
+                  >
+                    {customer.segment}
+                  </Badge>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm" fw={600}>Rp {(customer.totalSpent / 1000000).toFixed(0)}M</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm">{customer.visitCount}</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm" c="dimmed">{customer.lastVisit}</Text>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Card>
+
+      {/* Churn Risk & AI Insights */}
+      <Grid gutter="md">
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Text fw={600} size="lg">Churn Risk Distribution</Text>
+              <Badge color="red" variant="light">{churnRiskData.high} At Risk</Badge>
+            </Group>
+            <Stack gap="md">
+              <Group justify="space-between" p="md" style={{ backgroundColor: '#f0fdf4', borderRadius: 8 }}>
+                <Group gap="xs">
+                  <Box w={8} h={8} style={{ borderRadius: '50%', backgroundColor: '#22c55e' }} />
+                  <Text size="sm">Low Risk</Text>
+                </Group>
+                <Text size="sm" fw={600}>{formatNumber(churnRiskData.low)}</Text>
+              </Group>
+              <Group justify="space-between" p="md" style={{ backgroundColor: '#fefce8', borderRadius: 8 }}>
+                <Group gap="xs">
+                  <Box w={8} h={8} style={{ borderRadius: '50%', backgroundColor: '#eab308' }} />
+                  <Text size="sm">Medium Risk</Text>
+                </Group>
+                <Text size="sm" fw={600}>{formatNumber(churnRiskData.medium)}</Text>
+              </Group>
+              <Group justify="space-between" p="md" style={{ backgroundColor: '#fef2f2', borderRadius: 8 }}>
+                <Group gap="xs">
+                  <Box w={8} h={8} style={{ borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                  <Text size="sm">High Risk</Text>
+                </Group>
+                <Text size="sm" fw={600} c="red">{formatNumber(churnRiskData.high)}</Text>
+              </Group>
+            </Stack>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder style={{ backgroundColor: '#eff6ff', borderColor: '#bfdbfe' }}>
+            <Group gap="sm" mb="lg">
+              <ThemeIcon size={40} radius="md" style={{ backgroundColor: '#0F2D6B' }}>
+                <Brain size={20} color="white" />
+              </ThemeIcon>
+              <Box>
+                <Text fw={600}>AI Customer Insight</Text>
+                <Text size="xs" c="dimmed">Powered by CALF AI</Text>
+              </Box>
+            </Group>
+            <Stack gap="md">
+              <Paper p="md" radius="md" withBorder>
+                <Group justify="space-between">
+                  <Box>
+                    <Text size="sm" fw={500}>Churn Prediction</Text>
+                    <Text size="xs" c="dimmed">{formatNumber(churnRiskData.high)} customers likely to churn in 30 days</Text>
+                  </Box>
+                  <Button size="xs" leftSection={<Heart size={12} />} color="teal">
+                    Send Retention Offer
+                  </Button>
+                </Group>
+              </Paper>
+              <Text size="xs" c="dimmed">Expected impact: +5.3% retention</Text>
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
     </MainLayout>
   );
 }

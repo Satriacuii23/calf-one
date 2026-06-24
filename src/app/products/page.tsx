@@ -1,197 +1,262 @@
-'use client';
+"use client"
 
+import { MainLayout } from "@/components/layout/main-layout";
+import {
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Table,
+  Paper,
+  ThemeIcon,
+  Box,
+  Button,
+} from '@mantine/core';
+import { BarChart as MantineBarChart } from '@mantine/charts';
 import {
   Package,
   TrendingUp,
-  TrendingDown,
-  Minus,
-  Coffee,
-  Cookie,
-  Utensils,
-  Droplet,
+  ShoppingCart,
+  DollarSign,
+  ArrowUpRight,
+  ArrowDownRight,
+  Filter,
+  Download,
 } from 'lucide-react';
-import { MainLayout } from '@/components/layout/main-layout';
-import { KPICard } from '@/components/dashboard/kpi-card';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { products, formatCurrencyShort } from '@/lib/data';
-import { cn } from '@/lib/utils';
-
-const categoryIcons: Record<string, React.ElementType> = {
-  Coffee: Coffee,
-  Signature: Coffee,
-  'Non-Coffee': Droplet,
-  Pastry: Cookie,
-  Food: Utensils,
-  Beverage: Droplet,
-};
+import { productsData } from "@/lib/data";
+import { formatNumber } from "@/lib/utils";
 
 export default function ProductsPage() {
-  const sortedProducts = [...products].sort((a, b) => b.revenue - a.revenue);
-  const categories = [...new Set(products.map((p) => p.category))];
-  const totalRevenue = products.reduce((acc, p) => acc + p.revenue, 0);
-  const totalSold = products.reduce((acc, p) => acc + p.soldToday, 0);
+  const totalProducts = productsData.length;
+  const totalRevenue = productsData.reduce((acc, p) => acc + p.revenue, 0);
+  const totalUnits = productsData.reduce((acc, p) => acc + p.units, 0);
+  const avgGrowth = productsData.reduce((acc, p) => acc + p.growth, 0) / productsData.length;
+
+  const topProduct = productsData.reduce((prev, curr) => prev.revenue > curr.revenue ? prev : curr);
+  const bestGrowth = productsData.reduce((prev, curr) => prev.growth > curr.growth ? prev : curr);
+
+  const chartData = productsData.map((item) => ({
+    name: item.name,
+    revenue: item.revenue / 1000000,
+    units: item.units / 1000,
+  }));
 
   return (
-    <MainLayout title="Products" subtitle="Product analytics and performance">
-      <div className="space-y-6">
-        {/* KPI Cards */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <KPICard
-            title="Total Products"
-            value={products.length.toString()}
-            icon={Package}
-            iconColor="text-blue-600 dark:text-blue-400"
-            iconBg="bg-blue-100 dark:bg-blue-500/20"
-          />
-          <KPICard
-            title="Total Revenue"
-            value={formatCurrencyShort(totalRevenue)}
-            change={12.4}
-            icon={TrendingUp}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-500/20"
-          />
-          <KPICard
-            title="Items Sold"
-            value={totalSold.toLocaleString('id-ID')}
-            change={8.7}
-            icon={Package}
-            iconColor="text-purple-600 dark:text-purple-400"
-            iconBg="bg-purple-100 dark:bg-purple-500/20"
-          />
-          <KPICard
-            title="Avg Price"
-            value={formatCurrencyShort(28000)}
-            icon={TrendingUp}
-            iconColor="text-amber-600 dark:text-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-500/20"
-          />
-        </div>
+    <MainLayout title="Product Intelligence" subtitle="Product performance and analytics">
+      {/* KPI Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Total Products</Text>
+                <Text fw={700} size="lg">{totalProducts}</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">menu items</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <Package size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Top Products Table */}
-        <Card>
-          <div className="p-4 lg:p-6">
-            <h3 className="text-lg font-semibold mb-4">Top Selling Products</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>#</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">Sold</TableHead>
-                  <TableHead className="text-right">Revenue</TableHead>
-                  <TableHead>%</TableHead>
-                  <TableHead>Trend</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedProducts.map((product, index) => {
-                  const Icon = categoryIcons[product.category] || Package;
-                  const percentage = ((product.revenue / totalRevenue) * 100).toFixed(1);
-                  return (
-                    <TableRow key={product.id}>
-                      <TableCell>
-                        <span className={cn(
-                          'flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold',
-                          index === 0 && 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400',
-                          index === 1 && 'bg-gray-200 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400',
-                          index === 2 && 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400',
-                          index > 2 && 'bg-muted text-muted-foreground'
-                        )}>
-                          {index + 1}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center">
-                            <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <span className="font-medium">{product.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell><Badge variant="outline">{product.category}</Badge></TableCell>
-                      <TableCell className="text-right font-number">{formatCurrencyShort(product.price)}</TableCell>
-                      <TableCell className="text-right font-number">{product.soldToday.toLocaleString('id-ID')}</TableCell>
-                      <TableCell className="text-right font-number font-semibold">{formatCurrencyShort(product.revenue)}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Progress value={parseFloat(percentage)} className="h-2 w-16" />
-                          <span className="text-sm text-muted-foreground">{percentage}%</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={cn(
-                          product.trend === 'up' && 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400',
-                          product.trend === 'down' && 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400',
-                          product.trend === 'stable' && 'border-gray-300 text-gray-600 dark:border-gray-500/30 dark:text-muted-foreground'
-                        )}>
-                          {product.trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
-                          {product.trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
-                          {product.trend === 'stable' && <Minus className="h-3 w-3 mr-1" />}
-                          {product.trend}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Total Revenue</Text>
+                <Text fw={700} size="lg">Rp {(totalRevenue / 1000000000).toFixed(1)}B</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+12.5%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="teal">
+                <DollarSign size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Category Performance */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => {
-            const categoryProducts = products.filter((p) => p.category === category);
-            const categoryRevenue = categoryProducts.reduce((acc, p) => acc + p.revenue, 0);
-            const categorySold = categoryProducts.reduce((acc, p) => acc + p.soldToday, 0);
-            const Icon = categoryIcons[category] || Package;
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Units Sold</Text>
+                <Text fw={700} size="lg">{formatNumber(totalUnits)}</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+8.3%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="violet">
+                <ShoppingCart size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-            return (
-              <Card key={category}>
-                <div className="p-4 lg:p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center">
-                      <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">{category}</p>
-                      <p className="text-sm text-muted-foreground">{categoryProducts.length} products</p>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Revenue</span>
-                      <span className="font-semibold font-number">{formatCurrencyShort(categoryRevenue)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Items Sold</span>
-                      <span className="font-semibold font-number">{categorySold.toLocaleString('id-ID')}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">% of Total</span>
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">
-                        {((categoryRevenue / totalRevenue) * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      </div>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Avg Growth</Text>
+                <Text fw={700} size="lg">{avgGrowth >= 0 ? '+' : ''}{avgGrowth.toFixed(1)}%</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color={avgGrowth >= 0 ? 'teal' : 'red'} variant="light" size="xs">
+                    {avgGrowth >= 0 ? 'Growing' : 'Declining'}
+                  </Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="green">
+                <TrendingUp size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Top Revenue</Text>
+                <Text fw={700} size="lg">{topProduct.name}</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">Rp {(topProduct.revenue / 1000000000).toFixed(1)}B</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <Award size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Best Growth</Text>
+                <Text fw={700} size="lg">{bestGrowth.name}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="teal" variant="light" size="xs">+{bestGrowth.growth}%</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="green">
+                <TrendingUp size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Charts Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 12, lg: 8 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Text fw={600} size="lg" mb="lg">Product Revenue Comparison</Text>
+            <MantineBarChart
+              h={300}
+              data={chartData}
+              dataKey="name"
+              series={[{ name: 'revenue', color: 'blue.6' }]}
+              orientation="vertical"
+              valueFormatter={(value) => `Rp ${value.toFixed(0)}M`}
+            />
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, lg: 4 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder h="100%">
+            <Text fw={600} size="lg" mb="lg">Category Distribution</Text>
+            <Stack gap="md">
+              {['Coffee', 'Non-Coffee', 'Food'].map((cat) => {
+                const catData = productsData.filter((p) => p.category === cat);
+                const catRevenue = catData.reduce((acc, p) => acc + p.revenue, 0);
+                const percentage = Math.round((catRevenue / totalRevenue) * 100);
+                return (
+                  <Box key={cat}>
+                    <Group justify="space-between" mb={4}>
+                      <Text size="sm" fw={500}>{cat}</Text>
+                      <Text size="sm" fw={600}>{percentage}%</Text>
+                    </Group>
+                    <Progress value={percentage} size="lg" color="blue" radius="xl" />
+                    <Text size="xs" c="dimmed" mt={4}>Rp {(catRevenue / 1000000000).toFixed(1)}B</Text>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Products Table */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder>
+        <Group justify="space-between" mb="lg">
+          <Box>
+            <Text fw={600} size="lg">All Products</Text>
+            <Text size="xs" c="dimmed">Performance metrics for all menu items</Text>
+          </Box>
+          <Group gap="sm">
+            <Button variant="outline" size="xs" leftSection={<Filter size={12} />}>Filter</Button>
+            <Button variant="outline" size="xs" leftSection={<Download size={12} />}>Export</Button>
+          </Group>
+        </Group>
+        <Table striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Category</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Revenue</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Units Sold</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Avg. Price</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Growth</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {productsData.map((product) => (
+              <Table.Tr key={product.id}>
+                <Table.Td fw={500}>{product.name}</Table.Td>
+                <Table.Td>
+                  <Badge
+                    color={product.category === 'Coffee' ? 'blue' : product.category === 'Non-Coffee' ? 'teal' : 'gray'}
+                    variant="light"
+                    size="sm"
+                  >
+                    {product.category}
+                  </Badge>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm" fw={600}>Rp {(product.revenue / 1000000).toFixed(0)}M</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm">{formatNumber(product.units)}</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm">Rp {formatNumber(product.revenue / product.units)}</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Group gap={4} justify="flex-end">
+                    {product.growth >= 0 ? (
+                      <ArrowUpRight size={14} className="text-teal-500" />
+                    ) : (
+                      <ArrowDownRight size={14} className="text-red-500" />
+                    )}
+                    <Text size="sm" fw={500} c={product.growth >= 0 ? 'teal' : 'red'}>
+                      {product.growth >= 0 ? '+' : ''}{product.growth}%
+                    </Text>
+                  </Group>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Card>
     </MainLayout>
   );
 }

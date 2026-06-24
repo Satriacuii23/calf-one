@@ -1,250 +1,308 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
+import { MainLayout } from "@/components/layout/main-layout";
 import {
-  Store,
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Table,
+  Paper,
+  Avatar,
+  RingProgress,
+  ThemeIcon,
+  Box,
+  TextInput,
+  Select,
+} from '@mantine/core';
+import {
+  Building2,
   MapPin,
-  Star,
   TrendingUp,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
   Search,
   Filter,
+  Video,
+  Wifi,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
-import { MainLayout } from '@/components/layout/main-layout';
-import { KPICard } from '@/components/dashboard/kpi-card';
-import { OutletCard } from '@/components/dashboard/outlet-card';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { outlets, formatCurrencyShort, cityPerformance } from '@/lib/data';
-import { cn } from '@/lib/utils';
+import { allOutlets, cctvData, internetData } from "@/lib/data";
+import { formatNumber } from "@/lib/utils";
 
 export default function OutletsPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [cityFilter, setCityFilter] = useState<string>('all');
+  const onlineCount = allOutlets.filter((o) => o.status === 'online').length;
+  const totalCCTVOnline = allOutlets.reduce((acc, o) => acc + o.cctvOnline, 0);
+  const totalCCTVTotal = allOutlets.reduce((acc, o) => acc + o.cctvTotal, 0);
 
-  const filteredOutlets = outlets.filter((outlet) => {
-    const matchesSearch =
-      outlet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      outlet.city.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || outlet.status === statusFilter;
-    const matchesCity = cityFilter === 'all' || outlet.city === cityFilter;
-    return matchesSearch && matchesStatus && matchesCity;
-  });
-
-  const sortedOutlets = [...filteredOutlets].sort((a, b) => b.revenueToday - a.revenueToday);
-  const cities = [...new Set(outlets.map((o) => o.city))];
-
-  const totalOutlets = outlets.length;
-  const avgPerformance = outlets.reduce((acc, o) => acc + (o.revenueToday / o.revenueTarget) * 100, 0) / outlets.length;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'online':
+        return 'teal';
+      case 'warning':
+        return 'yellow';
+      case 'offline':
+        return 'red';
+      default:
+        return 'gray';
+    }
+  };
 
   return (
-    <MainLayout title="Outlets" subtitle="Monitor all Kopi Calf outlets">
-      <div className="space-y-6">
-        {/* KPI Cards */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <KPICard
-            title="Total Outlets"
-            value={totalOutlets.toString()}
-            icon={Store}
-            iconColor="text-blue-600 dark:text-blue-400"
-            iconBg="bg-blue-100 dark:bg-blue-500/20"
-          />
-          <KPICard
-            title="Active Today"
-            value={(totalOutlets - 1).toString()}
-            icon={TrendingUp}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-500/20"
-          />
-          <KPICard
-            title="Avg Performance"
-            value={`${avgPerformance.toFixed(1)}%`}
-            change={2.3}
-            icon={Star}
-            iconColor="text-amber-600 dark:text-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-500/20"
-          />
-          <KPICard
-            title="Total Cities"
-            value={cities.length.toString()}
-            icon={MapPin}
-            iconColor="text-purple-600 dark:text-purple-400"
-            iconBg="bg-purple-100 dark:bg-purple-500/20"
-          />
-        </div>
+    <MainLayout title="Outlets Management" subtitle="Monitor and manage all outlet operations">
+      {/* KPI Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Total Outlets</Text>
+                <Text fw={700} size="lg">{allOutlets.length}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="teal" variant="light" size="xs">{onlineCount} Online</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <Building2 size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Search & Filter */}
-        <Card>
-          <div className="p-4 flex flex-col lg:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search outlets..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Avg Health Score</Text>
+                <Text fw={700} size="lg">
+                  {Math.round(allOutlets.reduce((acc, o) => acc + o.healthScore, 0) / allOutlets.length)}
+                </Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="teal" variant="light" size="xs">Healthy</Badge>
+                </Group>
+              </Box>
+              <RingProgress
+                size={50}
+                thickness={5}
+                sections={[{ value: 85, color: 'teal' }]}
               />
-            </div>
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v || 'all')}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="excellent">Excellent</SelectItem>
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="needs-attention">Attention</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={cityFilter} onValueChange={(v) => setCityFilter(v || 'all')}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cities</SelectItem>
-                  {cities.map((city) => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Badge variant="outline">{filteredOutlets.length} outlets</Badge>
-          </div>
-        </Card>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Tabs */}
-        <Tabs defaultValue="grid" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="grid">Grid</TabsTrigger>
-            <TabsTrigger value="table">Table</TabsTrigger>
-          </TabsList>
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>CCTV Online</Text>
+                <Text fw={700} size="lg">{totalCCTVOnline} / {totalCCTVTotal}</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">{Math.round((totalCCTVOnline / totalCCTVTotal) * 100)}% operational</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="violet">
+                <Video size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-          <TabsContent value="grid">
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {sortedOutlets.map((outlet) => (
-                <OutletCard key={outlet.id} outlet={outlet} />
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Total Revenue</Text>
+                <Text fw={700} size="lg">Rp {formatNumber(allOutlets.reduce((acc, o) => acc + o.revenue, 0))}</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+12.5%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="green">
+                <TrendingUp size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Outlet Table */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder mb="xl">
+        <Group justify="space-between" mb="lg">
+          <Text fw={600} size="lg">All Outlets</Text>
+          <Group gap="sm">
+            <TextInput
+              placeholder="Search outlets..."
+              leftSection={<Search size={16} />}
+              radius="md"
+            />
+            <Select
+              placeholder="Filter by area"
+              leftSection={<Filter size={16} />}
+              data={['All Areas', 'Bandung', 'Jakarta', 'Bekasi', 'Tasikmalaya', 'Karawang', 'Cirebon']}
+              defaultValue="All Areas"
+              radius="md"
+            />
+          </Group>
+        </Group>
+
+        <Table striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Outlet</Table.Th>
+              <Table.Th>Area</Table.Th>
+              <Table.Th>Status</Table.Th>
+              <Table.Th>Health</Table.Th>
+              <Table.Th>CCTV</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Revenue</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Growth</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {allOutlets.map((outlet) => (
+              <Table.Tr key={outlet.id}>
+                <Table.Td>
+                  <Group gap="sm">
+                    <Avatar color="blue" radius="md" size="sm">
+                      {outlet.name.split(' ')[1]?.[0] || outlet.name[0]}
+                    </Avatar>
+                    <Text fw={500} size="sm">{outlet.name}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
+                  <Group gap={4}>
+                    <MapPin size={14} className="text-slate-400" />
+                    <Text size="sm" c="dimmed">{outlet.area}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
+                  <Badge color={getStatusColor(outlet.status)} variant="light" size="sm">
+                    {outlet.status}
+                  </Badge>
+                </Table.Td>
+                <Table.Td>
+                  <Group gap="xs">
+                    <Progress
+                      value={outlet.healthScore}
+                      color={outlet.healthScore >= 80 ? 'teal' : outlet.healthScore >= 60 ? 'yellow' : 'red'}
+                      size="sm"
+                      w={60}
+                      radius="xl"
+                    />
+                    <Text size="xs" fw={500}>{outlet.healthScore}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
+                  <Group gap="xs">
+                    {outlet.cctvOnline === outlet.cctvTotal ? (
+                      <CheckCircle size={16} className="text-teal-500" />
+                    ) : (
+                      <AlertTriangle size={16} className="text-amber-500" />
+                    )}
+                    <Text size="xs" c="dimmed">{outlet.cctvOnline}/{outlet.cctvTotal}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Text size="sm" fw={500}>Rp {(outlet.revenue / 1000000).toFixed(0)}M</Text>
+                </Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Group gap={4} justify="flex-end">
+                    {outlet.growth >= 0 ? (
+                      <ArrowUpRight size={14} className="text-teal-500" />
+                    ) : (
+                      <ArrowDownRight size={14} className="text-red-500" />
+                    )}
+                    <Text size="sm" fw={500} c={outlet.growth >= 0 ? 'teal' : 'red'}>
+                      {outlet.growth >= 0 ? '+' : ''}{outlet.growth}%
+                    </Text>
+                  </Group>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Card>
+
+      {/* Infrastructure Section */}
+      <Grid gutter="md">
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Text fw={600} size="lg">CCTV Status</Text>
+              <Badge color="blue" variant="light">{cctvData.filter((c) => c.status === 'online').length}/{cctvData.length} Online</Badge>
+            </Group>
+            <Stack gap="md">
+              {cctvData.map((camera) => (
+                <Paper key={camera.id} p="md" radius="md" withBorder>
+                  <Group justify="space-between">
+                    <Box>
+                      <Text size="sm" fw={500}>{camera.cameraName}</Text>
+                      <Group gap="xs">
+                        <MapPin size={12} className="text-slate-400" />
+                        <Text size="xs" c="dimmed">{camera.outletName}</Text>
+                      </Group>
+                    </Box>
+                    <Group gap="sm">
+                      <Text size="xs" c="dimmed">{camera.lastUpdate}</Text>
+                      {camera.status === 'online' ? (
+                        <CheckCircle size={16} className="text-teal-500" />
+                      ) : (
+                        <XCircle size={16} className="text-red-500" />
+                      )}
+                    </Group>
+                  </Group>
+                </Paper>
               ))}
-            </div>
-          </TabsContent>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-          <TabsContent value="table">
-            <Card>
-              <div className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>#</TableHead>
-                      <TableHead>Outlet</TableHead>
-                      <TableHead>Revenue</TableHead>
-                      <TableHead>Performance</TableHead>
-                      <TableHead>Transaksi</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedOutlets.map((outlet, index) => {
-                      const performance = (outlet.revenueToday / outlet.revenueTarget) * 100;
-                      return (
-                        <TableRow key={outlet.id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{outlet.name}</p>
-                              <p className="text-xs text-muted-foreground">{outlet.city}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-number">
-                            {formatCurrencyShort(outlet.revenueToday)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="w-20">
-                              <Progress value={performance} className="h-2" />
-                              <span className="text-xs text-muted-foreground">{performance.toFixed(0)}%</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>{outlet.transactions}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                              {outlet.rating}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className={cn(
-                              outlet.status === 'excellent' && 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400',
-                              outlet.status === 'good' && 'border-blue-300 text-blue-700 dark:border-blue-500/30 dark:text-blue-400',
-                              outlet.status === 'needs-attention' && 'border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400',
-                              outlet.status === 'critical' && 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400'
-                            )}>
-                              {outlet.status.replace('-', ' ')}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* City Performance */}
-        <Card>
-          <div className="p-4 lg:p-6">
-            <h3 className="text-lg font-semibold mb-4">City Performance</h3>
-            <div className="space-y-4">
-              {cityPerformance.sort((a, b) => b.revenue - a.revenue).map((city) => {
-                const performance = (city.revenue / city.target) * 100;
-                return (
-                  <div key={city.city} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{city.city}</span>
-                        <Badge variant="outline" className="text-xs">{city.outlets} outlets</Badge>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-number text-sm text-muted-foreground">
-                          {formatCurrencyShort(city.revenue)}
-                        </span>
-                        <Badge variant="outline" className={cn(
-                          city.growth >= 0 ? 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400' : 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400'
-                        )}>
-                          {city.growth >= 0 ? '+' : ''}{city.growth.toFixed(1)}%
-                        </Badge>
-                      </div>
-                    </div>
-                    <Progress value={performance} className="h-2" />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </Card>
-      </div>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Text fw={600} size="lg">Internet Status</Text>
+              <Badge color="teal" variant="light">{internetData.filter((i) => i.status === 'stable').length}/{internetData.length} Stable</Badge>
+            </Group>
+            <Stack gap="md">
+              {internetData.map((connection, index) => (
+                <Paper key={index} p="md" radius="md" withBorder>
+                  <Group justify="space-between">
+                    <Box>
+                      <Text size="sm" fw={500}>{connection.outlet}</Text>
+                      <Group gap="xs">
+                        <Wifi size={12} className="text-slate-400" />
+                        <Text size="xs" c="dimmed">{connection.isp}</Text>
+                      </Group>
+                    </Box>
+                    <Group gap="md">
+                      <Box ta="center">
+                        <Text size="xs" c="dimmed">Speed</Text>
+                        <Text size="sm" fw={500}>{connection.speed} Mbps</Text>
+                      </Box>
+                      <Box ta="center">
+                        <Text size="xs" c="dimmed">Latency</Text>
+                        <Text size="sm" fw={500}>{connection.latency} ms</Text>
+                      </Box>
+                      <Badge
+                        color={connection.status === 'stable' ? 'teal' : 'yellow'}
+                        variant="light"
+                      >
+                        {connection.status}
+                      </Badge>
+                    </Group>
+                  </Group>
+                </Paper>
+              ))}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
     </MainLayout>
   );
 }

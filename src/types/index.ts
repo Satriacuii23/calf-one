@@ -1,121 +1,111 @@
 export interface KPIData {
-  revenueToday: number;
-  revenueMTD: number;
-  revenueYTD: number;
-  transactionsToday: number;
-  activeCustomers: number;
-  healthScore: number;
-  revenueGrowth: number;
-  customerGrowth: number;
-  topOutlet: string;
-  avgTransaction: number;
-}
-
-export interface Outlet {
-  id: string;
-  name: string;
-  city: string;
-  status: 'excellent' | 'good' | 'needs-attention' | 'critical';
-  revenueToday: number;
-  revenueTarget: number;
-  transactions: number;
-  rating: number;
-  lastUpdated: string;
-  address: string;
-  manager: string;
-}
-
-export interface Risk {
-  id: string;
-  type: 'revenue' | 'operations' | 'inventory' | 'customer' | 'vehicle';
-  severity: 'critical' | 'warning' | 'info';
-  title: string;
-  description: string;
-  outlet?: string;
-  timestamp: string;
-  actionable: boolean;
-  suggestedAction?: string;
-}
-
-export interface AIInsight {
-  id: string;
-  category: 'revenue' | 'operations' | 'customer' | 'inventory' | 'expansion';
-  title: string;
-  description: string;
-  confidence: number;
-  expectedImpact: string;
-  potentialRevenue?: number;
-  actionItems: string[];
-  timestamp: string;
-  icon: string;
-}
-
-export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  totalTransactions: number;
-  totalSpent: number;
-  lastVisit: string;
-  segment: 'vip' | 'regular' | 'churn-risk' | 'new';
-  lifetimeValue: number;
-  joinDate: string;
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  soldToday: number;
-  revenue: number;
-  trend: 'up' | 'down' | 'stable';
-  image?: string;
+  label: string
+  value: string | number
+  change?: number
+  changeLabel?: string
+  icon?: string
 }
 
 export interface RevenueData {
-  date: string;
-  today: number;
-  yesterday: number;
-  lastWeek: number;
+  date: string
+  revenue: number
+  transactions: number
 }
 
-export interface HourlyRevenue {
-  hour: string;
-  revenue: number;
-  transactions: number;
+export interface OutletData {
+  id: string
+  name: string
+  area: string
+  revenue: number
+  growth: number
+  healthScore: number
+  status: "online" | "warning" | "offline"
+  cctvOnline: number
+  cctvTotal: number
 }
 
-export interface CityPerformance {
-  city: string;
-  outlets: number;
-  revenue: number;
-  growth: number;
-  target: number;
+export interface CustomerData {
+  id: string
+  name: string
+  totalSpent: number
+  visitCount: number
+  lastVisit: string
+  segment: "VIP" | "Loyal" | "Regular" | "New"
+  churnRisk: "low" | "medium" | "high"
 }
 
-export interface Vehicle {
-  id: string;
-  plateNumber: string;
-  status: 'active' | 'maintenance' | 'idle';
-  location: string;
-  lastDelivery: string;
-  efficiency: number;
+export interface AlertData {
+  id: string
+  type: "danger" | "warning" | "info"
+  message: string
+  outlet?: string
+  timestamp: string
+  isRead: boolean
 }
 
-export interface Notification {
-  id: string;
-  type: 'info' | 'warning' | 'success' | 'error';
-  title: string;
-  message: string;
-  timestamp: string;
-  read: boolean;
+export interface InfrastructureStatus {
+  category: string
+  online: number
+  total: number
+  status: "healthy" | "warning" | "critical"
 }
 
-export interface NavItem {
-  title: string;
-  href: string;
-  icon: string;
-  badge?: number;
+export interface CCTVData {
+  id: string
+  outletName: string
+  cameraName: string
+  status: "online" | "offline"
+  lastUpdate: string
+  thumbnail?: string
+}
+
+export interface InternetData {
+  outlet: string
+  isp: string
+  status: "stable" | "unstable" | "offline"
+  speed: number
+  latency: number
+}
+
+export interface ProductData {
+  id: string
+  name: string
+  category: string
+  revenue: number
+  units: number
+  growth: number
+}
+
+export interface HealthScore {
+  category: string
+  score: number
+  weight: number
+  trend: "up" | "down" | "stable"
+}
+
+export interface ChartDataPoint {
+  name: string
+  value: number
+  [key: string]: string | number
+}
+
+export interface AreaRevenue {
+  area: string
+  revenue: number
+  outlets: number
+  growth: number
+}
+
+export interface CustomerFunnel {
+  stage: string
+  count: number
+  percentage: number
+}
+
+export interface SocialMention {
+  platform: "instagram" | "twitter" | "facebook" | "tiktok"
+  content: string
+  sentiment: "positive" | "neutral" | "negative"
+  date: string
+  engagement: number
 }

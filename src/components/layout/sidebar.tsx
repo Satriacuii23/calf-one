@@ -1,210 +1,244 @@
-'use client';
+"use client"
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Image from 'next/image';
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   LayoutDashboard,
   TrendingUp,
-  Store,
+  Building2,
   Users,
   Package,
   AlertTriangle,
-  MapPin,
-  Brain,
   Settings,
-  ChevronDown,
+  BarChart3,
+  Zap,
+  Brain,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Menu,
   LogOut,
   User,
-  Sun,
-  Moon,
-} from 'lucide-react';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
+  Bell,
+} from "lucide-react"
+import { useState, useEffect } from "react"
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 
-const navItems = [
-  { title: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { title: 'Revenue', href: '/revenue', icon: TrendingUp },
-  { title: 'Outlets', href: '/outlets', icon: Store },
-  { title: 'Customers', href: '/customers', icon: Users },
-  { title: 'Products', href: '/products', icon: Package },
-  { title: 'Risk Center', href: '/risk', icon: AlertTriangle, badge: 6 },
-  { title: 'Expansion', href: '/expansion', icon: MapPin },
-  { title: 'AI Insights', href: '/insights', icon: Brain, badge: 5 },
-];
+const navigation = [
+  { name: "Overview", href: "/", icon: LayoutDashboard },
+  { name: "Revenue", href: "/revenue", icon: TrendingUp },
+  { name: "Outlets", href: "/outlets", icon: Building2 },
+  { name: "Customers", href: "/customers", icon: Users },
+  { name: "Products", href: "/products", icon: Package },
+  { name: "Risk Center", href: "/risk", icon: AlertTriangle },
+  { name: "AI Insights", href: "/insights", icon: Brain },
+  { name: "Reports", href: "/reports", icon: FileText },
+  { name: "Settings", href: "/settings", icon: Settings },
+]
 
-interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
-  mobileOpen: boolean;
-  onMobileClose: () => void;
-}
+const secondaryNav = [
+  { name: "Expansions", href: "/expansion", icon: Zap },
+  { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
+]
 
-export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
-  const pathname = usePathname();
-  const [theme, setTheme] = useState<'dark' | 'light'>('light');
+export function Sidebar() {
+  const pathname = usePathname()
+  const [collapsed, setCollapsed] = useState(true)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-    document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-  return (
-    <div className={cn(
-      'flex flex-col h-full bg-blue-900 text-white',
-      collapsed ? 'w-[64px]' : 'w-[220px]'
-    )}>
-      {/* Logo */}
-      <div className="flex items-center h-14 px-4 border-b border-blue-800">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="relative h-8 w-8 overflow-hidden rounded bg-white">
-            <Image
-              src="/images/logo.jpeg"
-              alt="CALF"
-              fill
-              className="object-contain"
-            />
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-tight">CALF</span>
-              <span className="text-[9px] font-semibold text-blue-300">ONE</span>
-            </div>
-          )}
-        </Link>
-      </div>
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [mobileOpen])
 
-      {/* Navigation */}
-      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
+  const NavItems = ({ onLinkClick }: { onLinkClick?: () => void }) => (
+    <>
+      {navigation.map((item) => {
+        const isActive = pathname === item.href
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            onClick={onLinkClick}
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+              isActive
+                ? "bg-white/10 text-white border-l-2 border-white/30"
+                : "text-white/70 hover:bg-white/5 hover:text-white"
+            )}
+          >
+            <item.icon className={cn("h-5 w-5 shrink-0", collapsed && "mx-auto")} />
+            <span className={cn("transition-opacity duration-200", collapsed && "lg:hidden")}>
+              {item.name}
+            </span>
+          </Link>
+        )
+      })}
+
+      <div className={cn("mt-6 pt-4", collapsed ? "px-0" : "px-3")}>
+        <div className={cn("h-px bg-white/10 mb-4", collapsed ? "mx-3" : "")} />
+        <p className={cn(
+          "px-3 mb-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider",
+          collapsed && "lg:hidden"
+        )}>
+          More
+        </p>
+        {secondaryNav.map((item) => {
+          const isActive = pathname === item.href
           return (
             <Link
-              key={item.href}
+              key={item.name}
               href={item.href}
-              onClick={onMobileClose}
+              onClick={onLinkClick}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? 'bg-blue-700 text-white'
-                  : 'text-blue-100 hover:bg-blue-800'
+                  ? "bg-white/10 text-white border-l-2 border-white/30"
+                  : "text-white/70 hover:bg-white/5 hover:text-white"
               )}
             >
-              <item.icon className="h-5 w-5 shrink-0" />
-              {!collapsed && (
-                <>
-                  <span className="flex-1">{item.title}</span>
-                  {item.badge && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded bg-white/20 px-1.5 text-[10px] font-semibold">
-                      {item.badge}
-                    </span>
-                  )}
-                </>
-              )}
+              <item.icon className={cn("h-5 w-5 shrink-0", collapsed && "mx-auto")} />
+              <span className={cn("transition-opacity duration-200", collapsed && "lg:hidden")}>
+                {item.name}
+              </span>
             </Link>
-          );
+          )
         })}
-      </nav>
-
-      {/* Theme Toggle */}
-      <div className="p-2 border-t border-blue-800">
-        <button
-          onClick={toggleTheme}
-          className="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm font-medium text-blue-100 hover:bg-blue-800 transition-colors"
-        >
-          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          {!collapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
-        </button>
-      </div>
-
-      {/* Settings */}
-      <div className="p-2 border-t border-blue-800">
-        <Link
-          href="/settings"
-          onClick={onMobileClose}
-          className={cn(
-            'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
-            pathname === '/settings'
-              ? 'bg-blue-700 text-white'
-              : 'text-blue-100 hover:bg-blue-800'
-          )}
-        >
-          <Settings className="h-5 w-5" />
-          {!collapsed && <span>Settings</span>}
-        </Link>
-      </div>
-
-      {/* User Profile */}
-      {!collapsed && (
-        <div className="p-2 border-t border-blue-800">
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-3 w-full rounded-md p-2 bg-blue-800/50 hover:bg-blue-800 transition-colors">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-xs font-bold">
-                  SA
-                </div>
-                <div className="flex-1 text-left min-w-0">
-                  <p className="text-sm font-medium truncate">Satria A</p>
-                  <p className="text-[10px] text-blue-300 truncate">Founder</p>
-                </div>
-                <ChevronDown className="h-4 w-4 text-blue-300" />
-              </button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                align="end"
-                sideOffset={8}
-                className="min-w-[180px] rounded-lg border border-slate-200 bg-white p-1 shadow-xl z-50"
-              >
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-slate-700">
-                  <User className="h-4 w-4" /> Profile
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-slate-700">
-                  <Settings className="h-4 w-4" /> Settings
-                </DropdownMenu.Item>
-                <DropdownMenu.Separator className="h-px bg-slate-200 my-1" />
-                <DropdownMenu.Item className="flex items-center gap-2 px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-slate-100 outline-none text-red-600">
-                  <LogOut className="h-4 w-4" /> Sign Out
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface MobileSidebarProps {
-  open: boolean;
-  onClose: () => void;
-  collapsed: boolean;
-  onToggle: () => void;
-}
-
-export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
-  return (
-    <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-      <div
-        className={cn(
-          'fixed left-0 top-0 z-50 h-full transition-transform duration-300 lg:hidden',
-          open ? 'translate-x-0' : '-translate-x-full'
-        )}
-      >
-        <Sidebar
-          collapsed={false}
-          onToggle={() => {}}
-          mobileOpen={open}
-          onMobileClose={onClose}
-        />
       </div>
     </>
-  );
+  )
+
+  return (
+    <TooltipProvider delayDuration={0}>
+      {/* Desktop Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{ width: collapsed ? 72 : 240 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="hidden lg:flex fixed left-0 top-0 z-40 h-screen flex-col bg-[#0F2D6B]"
+      >
+        {/* Logo */}
+        <div className="flex h-16 items-center border-b border-white/10 shrink-0">
+          <Link href="/" className="flex items-center gap-3 px-4 w-full">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10">
+              <span className="text-sm font-bold text-white">C1</span>
+            </div>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: collapsed ? 0 : 1 }}
+              className="text-sm font-bold text-white whitespace-nowrap"
+            >
+              CALF ONE
+            </motion.span>
+          </Link>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+          <NavItems />
+        </nav>
+
+        {/* Collapse Button */}
+        <div className="border-t border-white/10 p-3 shrink-0">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex w-full items-center justify-center rounded-lg p-2 text-white/50 hover:bg-white/5 hover:text-white transition-colors"
+          >
+            <motion.div
+              animate={{ rotate: collapsed ? 0 : 180 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </motion.div>
+          </button>
+        </div>
+      </motion.aside>
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="fixed left-0 top-0 z-50 h-screen w-[280px] flex flex-col bg-[#0F2D6B] lg:hidden"
+            >
+              {/* Logo */}
+              <div className="flex h-16 items-center justify-between border-b border-white/10 px-4 shrink-0">
+                <Link href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10">
+                    <span className="text-sm font-bold text-white">C1</span>
+                  </div>
+                  <span className="text-sm font-bold text-white">CALF ONE</span>
+                </Link>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="p-2 rounded-lg hover:bg-white/10"
+                >
+                  <X className="h-5 w-5 text-white/70" />
+                </button>
+              </div>
+
+              {/* Navigation */}
+              <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <NavItems onLinkClick={() => setMobileOpen(false)} />
+              </nav>
+
+              {/* User */}
+              <div className="border-t border-white/10 p-4 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">Admin</p>
+                    <p className="text-xs text-white/50 truncate">Manager</p>
+                  </div>
+                  <button className="p-2 rounded-lg hover:bg-white/10">
+                    <LogOut className="h-4 w-4 text-white/50" />
+                  </button>
+                </div>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-30 p-2.5 rounded-xl bg-[#0F2D6B] shadow-lg"
+      >
+        <Menu className="h-5 w-5 text-white" />
+      </button>
+    </TooltipProvider>
+  )
 }

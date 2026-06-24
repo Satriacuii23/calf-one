@@ -1,0 +1,275 @@
+"use client"
+
+import { MainLayout } from "@/components/layout/main-layout";
+import {
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Table,
+  Paper,
+  ThemeIcon,
+  Box,
+} from '@mantine/core';
+import {
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  Bell,
+  Shield,
+  Eye,
+  Wifi,
+  Video,
+  Building2,
+  Clock,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react';
+import { alertFeed, infrastructureStatus } from "@/lib/data";
+
+export default function RiskPage() {
+  const criticalAlerts = alertFeed.filter((a) => a.type === 'danger').length;
+  const warningAlerts = alertFeed.filter((a) => a.type === 'warning').length;
+
+  const getAlertStyle = (type: string) => {
+    switch (type) {
+      case 'danger':
+        return { borderColor: '#fee2e2', backgroundColor: '#fef2f2' };
+      case 'warning':
+        return { borderColor: '#fef3c7', backgroundColor: '#fffbeb' };
+      default:
+        return { borderColor: '#dbeafe', backgroundColor: '#eff6ff' };
+    }
+  };
+
+  const getAlertColor = (type: string) => {
+    switch (type) {
+      case 'danger':
+        return 'red';
+      case 'warning':
+        return 'yellow';
+      default:
+        return 'blue';
+    }
+  };
+
+  return (
+    <MainLayout title="Risk Center" subtitle="Proactive risk monitoring and alerts">
+      {/* KPI Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Critical Alerts</Text>
+                <Text fw={700} size="lg">{criticalAlerts}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="red" variant="light" size="xs">Action required</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="red">
+                <AlertCircle size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Warnings</Text>
+                <Text fw={700} size="lg">{warningAlerts}</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="yellow" variant="light" size="xs">Monitor</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="yellow">
+                <AlertTriangle size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>CCTV Issues</Text>
+                <Text fw={700} size="lg}>47</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">of 1,032 cameras</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="violet">
+                <Video size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 6, sm: 4, md: 3 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Outlet Issues</Text>
+                <Text fw={700} size="lg">4</Text>
+                <Group gap={4} mt="xs">
+                  <Badge color="yellow" variant="light" size="xs">Needs attention</Badge>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="orange">
+                <Building2 size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      <Grid gutter="md">
+        {/* Alert Feed */}
+        <Grid.Col span={{ base: 12, lg: 8 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Box>
+                <Text fw={600} size="lg">Active Alerts</Text>
+                <Text size="xs" c="dimmed">Real-time risk notifications</Text>
+              </Box>
+              <Group gap="sm">
+                <Badge color="red" variant="light">{criticalAlerts} Critical</Badge>
+                <Badge color="yellow" variant="light">{warningAlerts} Warning</Badge>
+              </Group>
+            </Group>
+            <Stack gap="md">
+              {alertFeed.map((alert) => {
+                const style = getAlertStyle(alert.type);
+                const color = getAlertColor(alert.type);
+                return (
+                  <Paper
+                    key={alert.id}
+                    p="md"
+                    radius="md"
+                    withBorder
+                    style={style}
+                  >
+                    <Group justify="space-between" wrap="nowrap">
+                      <Group gap="sm" wrap="nowrap">
+                        {alert.type === 'danger' ? (
+                          <AlertCircle size={18} className="text-red-500" />
+                        ) : alert.type === 'warning' ? (
+                          <AlertTriangle size={18} className="text-amber-500" />
+                        ) : (
+                          <Info size={18} className="text-blue-500" />
+                        )}
+                        <Box>
+                          <Text size="sm" fw={500}>{alert.message}</Text>
+                          <Group gap="xs">
+                            {alert.outlet && <Text size="xs" c="dimmed">{alert.outlet}</Text>}
+                            <Text size="xs" c="dimmed">{alert.timestamp}</Text>
+                          </Group>
+                        </Box>
+                      </Group>
+                      <Group gap="sm">
+                        <Badge color={color} variant="light" size="sm">{alert.type}</Badge>
+                        {!alert.isRead && <Badge size="xs" color="red">New</Badge>}
+                      </Group>
+                    </Group>
+                  </Paper>
+                );
+              })}
+            </Stack>
+          </Card>
+        </Grid.Col>
+
+        {/* Risk Categories */}
+        <Grid.Col span={{ base: 12, lg: 4 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Text fw={600} size="lg" mb="lg">Risk Categories</Text>
+            <Stack gap="md">
+              {[
+                { icon: Video, label: 'CCTV Offline', count: 47, total: 1032, color: 'amber', bgColor: 'bg-amber-50' },
+                { icon: Wifi, label: 'Internet Down', count: 3, total: 115, color: 'red', bgColor: 'bg-red-50' },
+                { icon: Building2, label: 'Outlet Offline', count: 1, total: 115, color: 'red', bgColor: 'bg-red-50' },
+                { icon: Shield, label: 'Revenue Anomaly', count: 2, color: 'amber', bgColor: 'bg-amber-50' },
+              ].map((item) => (
+                <Paper key={item.label} p="md" radius="md" withBorder>
+                  <Group justify="space-between">
+                    <Group gap="sm">
+                      <ThemeIcon size={36} radius="md" variant="light" color={item.color}>
+                        <item.icon size={18} />
+                      </ThemeIcon>
+                      <Box>
+                        <Text size="sm" fw={500}>{item.label}</Text>
+                        {item.total && <Text size="xs" c="dimmed">of {item.total} total</Text>}
+                      </Box>
+                    </Group>
+                    <Badge color={item.color} variant="light">{item.count}</Badge>
+                  </Group>
+                </Paper>
+              ))}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Infrastructure Health */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder mt="xl">
+        <Group justify="space-between" mb="lg">
+          <Box>
+            <Text fw={600} size="lg">Infrastructure Health</Text>
+            <Text size="xs" c="dimmed">System-wide health monitoring</Text>
+          </Box>
+          <Group gap="xs">
+            <CheckCircle size={16} className="text-teal-500" />
+            <Text size="sm" fw={500} c="teal">All Systems Operational</Text>
+          </Group>
+        </Group>
+        <Grid gutter="md">
+          <Grid.Col span={{ base: 6, md: 3 }}>
+            <Paper p="md" radius="md" withBorder>
+              <Group justify="space-between" mb="sm">
+                <Text size="sm" fw={500}>CCTV</Text>
+                <Text size="sm" fw={600}>{infrastructureStatus.cctv.online}/{infrastructureStatus.cctv.total}</Text>
+              </Group>
+              <Progress value={(infrastructureStatus.cctv.online / infrastructureStatus.cctv.total) * 100} color="blue" size="sm" radius="xl" />
+              <Text size="xs" c="dimmed" mt="xs">{Math.round((infrastructureStatus.cctv.online / infrastructureStatus.cctv.total) * 100)}% online</Text>
+            </Paper>
+          </Grid.Col>
+          <Grid.Col span={{ base: 6, md: 3 }}>
+            <Paper p="md" radius="md" withBorder>
+              <Group justify="space-between" mb="sm">
+                <Text size="sm" fw={500}>Internet</Text>
+                <Text size="sm" fw={600}>{infrastructureStatus.internet.online}/{infrastructureStatus.internet.total}</Text>
+              </Group>
+              <Progress value={(infrastructureStatus.internet.online / infrastructureStatus.internet.total) * 100} color="teal" size="sm" radius="xl" />
+              <Text size="xs" c="dimmed" mt="xs">{Math.round((infrastructureStatus.internet.online / infrastructureStatus.internet.total) * 100)}% online</Text>
+            </Paper>
+          </Grid.Col>
+          <Grid.Col span={{ base: 6, md: 3 }}>
+            <Paper p="md" radius="md" withBorder>
+              <Group justify="space-between" mb="sm">
+                <Text size="sm" fw={500}>Vehicles</Text>
+                <Text size="sm" fw={600}>{infrastructureStatus.vehicle.online}/{infrastructureStatus.vehicle.total}</Text>
+              </Group>
+              <Progress value={(infrastructureStatus.vehicle.online / infrastructureStatus.vehicle.total) * 100} color="violet" size="sm" radius="xl" />
+              <Text size="xs" c="dimmed" mt="xs">{Math.round((infrastructureStatus.vehicle.online / infrastructureStatus.vehicle.total) * 100)}% active</Text>
+            </Paper>
+          </Grid.Col>
+          <Grid.Col span={{ base: 6, md: 3 }}>
+            <Paper p="md" radius="md" withBorder>
+              <Group justify="space-between" mb="sm">
+                <Text size="sm" fw={500}>Open Complaints</Text>
+                <Text size="sm" fw={600}>{infrastructureStatus.openComplaint}</Text>
+              </Group>
+              <Progress value={infrastructureStatus.openComplaint} color="amber" size="sm" radius="xl" />
+              <Text size="xs" c="dimmed" mt="xs">Open tickets</Text>
+            </Paper>
+          </Grid.Col>
+        </Grid>
+      </Card>
+    </MainLayout>
+  );
+}

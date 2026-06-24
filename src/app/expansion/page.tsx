@@ -1,210 +1,248 @@
-'use client';
+"use client"
 
+import { MainLayout } from "@/components/layout/main-layout";
 import {
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Paper,
+  ThemeIcon,
+  Box,
+} from '@mantine/core';
+import {
+  Zap,
   MapPin,
+  Building2,
   TrendingUp,
+  Calendar,
   Target,
-  DollarSign,
-  Building,
-  Users,
-  ArrowRight,
+  CheckCircle,
+  Clock,
 } from 'lucide-react';
-import { MainLayout } from '@/components/layout/main-layout';
-import { KPICard } from '@/components/dashboard/kpi-card';
-import { ChartCard, CityPerformanceChart } from '@/components/dashboard/charts';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { cityPerformance, formatCurrencyShort } from '@/lib/data';
-import { cn } from '@/lib/utils';
 
-const targetOutlets = 200;
-const currentOutlets = 115;
-const totalRevenue = cityPerformance.reduce((acc, c) => acc + c.revenue, 0);
-const targetRevenue = 50000000000;
+const expansionPlans = [
+  { region: "Bandung", current: 35, target: 50, color: '#1F5EFF', growth: "+15 outlets planned" },
+  { region: "Jakarta", current: 28, target: 45, color: '#0F2D6B', growth: "+17 outlets planned" },
+  { region: "Bekasi", current: 18, target: 30, color: '#3B82F6', growth: "+12 outlets planned" },
+  { region: "Tasikmalaya", current: 15, target: 25, color: '#60A5FA', growth: "+10 outlets planned" },
+  { region: "Karawang", current: 12, target: 20, color: '#93C5FD', growth: "+8 outlets planned" },
+  { region: "Cirebon", current: 7, target: 15, color: '#BFDBFE', growth: "+8 outlets planned" },
+];
 
-const expansionLocations = [
-  { city: 'BSD/Tangerang', priority: 'High', potential: 850000000, status: 'Planning' },
-  { city: 'Depok', priority: 'High', potential: 620000000, status: 'Planning' },
-  { city: 'Bekasi', priority: 'Medium', potential: 580000000, status: 'Scouting' },
-  { city: 'Karawang', priority: 'Medium', potential: 420000000, status: 'Scouting' },
-  { city: 'Cibubur', priority: 'Medium', potential: 380000000, status: 'Scouting' },
-  { city: 'Sentul', priority: 'Low', potential: 290000000, status: 'Research' },
-  { city: 'Solo', priority: 'Medium', potential: 350000000, status: 'Research' },
-  { city: 'Semarang', priority: 'High', potential: 520000000, status: 'Active' },
+const upcomingOutlets = [
+  { name: "Calf Trans Studio", area: "Bandung", status: "Planning", date: "Q3 2026" },
+  { name: "Calf Bandung Timur", area: "Bandung", status: "Construction", date: "Q3 2026" },
+  { name: "Calf Kelapa Gading", area: "Jakarta", status: "Planning", date: "Q4 2026" },
+  { name: "Calf Pantai Indah", area: "Jakarta", status: "Site Survey", date: "Q4 2026" },
+  { name: "Calf Jababeka", area: "Bekasi", status: "Planning", date: "Q4 2026" },
 ];
 
 export default function ExpansionPage() {
-  const outletProgress = (currentOutlets / targetOutlets) * 100;
-  const revenueProgress = (totalRevenue / targetRevenue) * 100;
+  const totalCurrent = expansionPlans.reduce((acc, p) => acc + p.current, 0);
+  const totalTarget = expansionPlans.reduce((acc, p) => acc + p.target, 0);
+  const expansionRate = Math.round(((totalTarget - totalCurrent) / totalCurrent) * 100);
 
   return (
-    <MainLayout title="Expansion" subtitle="Plan Kopi Calf expansion strategy">
-      <div className="space-y-6">
-        {/* KPI Cards */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <KPICard
-            title="Current Outlets"
-            value={currentOutlets.toString()}
-            change={8.5}
-            icon={Building}
-            iconColor="text-blue-600 dark:text-blue-400"
-            iconBg="bg-blue-100 dark:bg-blue-500/20"
-          />
-          <KPICard
-            title="Target Outlets"
-            value={targetOutlets.toString()}
-            icon={Target}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-500/20"
-          />
-          <KPICard
-            title="Total Revenue"
-            value={formatCurrencyShort(totalRevenue)}
-            change={15.2}
-            icon={DollarSign}
-            iconColor="text-purple-600 dark:text-purple-400"
-            iconBg="bg-purple-100 dark:bg-purple-500/20"
-          />
-          <KPICard
-            title="Target Revenue"
-            value={`${(targetRevenue / 1000000000).toFixed(0)}B`}
-            icon={TrendingUp}
-            iconColor="text-amber-600 dark:text-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-500/20"
-          />
-        </div>
-
-        {/* Progress Overview */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h4 className="text-sm font-medium text-muted-foreground mb-4">Outlet Expansion</h4>
-              <div className="flex items-end gap-3 mb-4">
-                <span className="text-4xl font-bold font-number text-blue-600 dark:text-blue-400">
-                  {currentOutlets}
-                </span>
-                <span className="text-lg text-muted-foreground mb-1">/ {targetOutlets}</span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden mb-3">
-                <div className="h-full rounded-full bg-blue-600 dark:bg-blue-500" style={{ width: `${outletProgress}%` }} />
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-semibold">{outletProgress.toFixed(1)}%</span>
-              </div>
-            </div>
+    <MainLayout title="Expansion Plans" subtitle="Strategic outlet growth roadmap">
+      {/* Stats */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 3 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder style={{ backgroundColor: '#eff6ff', borderColor: '#bfdbfe' }}>
+            <Group gap="md">
+              <ThemeIcon size={48} radius="md" variant="light" color="blue">
+                <Building2 size={24} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={700} size="xl">{totalCurrent}</Text>
+                <Text size="xs" c="dimmed">Current Outlets</Text>
+              </Box>
+            </Group>
           </Card>
+        </Grid.Col>
 
-          <Card>
-            <div className="p-4 lg:p-6">
-              <h4 className="text-sm font-medium text-muted-foreground mb-4">Revenue Target</h4>
-              <div className="flex items-end gap-3 mb-4">
-                <span className="text-4xl font-bold font-number text-emerald-600 dark:text-emerald-400">
-                  {formatCurrencyShort(totalRevenue)}
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden mb-3">
-                <div className="h-full rounded-full bg-emerald-600 dark:bg-emerald-500" style={{ width: `${revenueProgress}%` }} />
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Target: {formatCurrencyShort(targetRevenue)}</span>
-                <span className="font-semibold">{revenueProgress.toFixed(1)}%</span>
-              </div>
-            </div>
+        <Grid.Col span={{ base: 6, sm: 3 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }}>
+            <Group gap="md">
+              <ThemeIcon size={48} radius="md" variant="light" color="teal">
+                <Target size={24} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={700} size="xl">{totalTarget}</Text>
+                <Text size="xs" c="dimmed">Target Outlets</Text>
+              </Box>
+            </Group>
           </Card>
-        </div>
+        </Grid.Col>
 
-        {/* City Performance */}
-        <ChartCard title="Current City Performance" subtitle="Revenue and target by city">
-          <CityPerformanceChart
-            data={cityPerformance.map((city) => ({
-              city: city.city,
-              revenue: city.revenue,
-              target: city.target,
-              growth: city.growth,
-            }))}
-          />
-        </ChartCard>
+        <Grid.Col span={{ base: 6, sm: 3 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group gap="md">
+              <ThemeIcon size={48} radius="md" variant="light" color="violet">
+                <Zap size={24} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={700} size="xl" c="violet">+{totalTarget - totalCurrent}</Text>
+                <Text size="xs" c="dimmed">New Outlets</Text>
+              </Box>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Expansion Pipeline */}
-        <Card>
-          <div className="p-4 lg:p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              Expansion Pipeline
-            </h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {expansionLocations.map((location, index) => (
-                <div key={index} className="p-4 rounded-lg bg-muted border border-border hover:bg-accent transition-colors cursor-pointer">
-                  <div className="flex items-start justify-between mb-3">
-                    <h4 className="font-semibold">{location.city}</h4>
-                    <Badge variant="outline" className={cn(
-                      location.priority === 'High' && 'border-red-300 text-red-700 dark:border-red-500/30 dark:text-red-400',
-                      location.priority === 'Medium' && 'border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400',
-                      location.priority === 'Low' && 'border-gray-300 text-gray-600 dark:border-gray-500/30 dark:text-muted-foreground'
-                    )}>
-                      {location.priority}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">{location.status}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Potential</span>
-                    <span className="font-semibold font-number text-emerald-600 dark:text-emerald-400">
-                      {formatCurrencyShort(location.potential)}
-                    </span>
-                  </div>
-                  <div className="mt-3 flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Est. {Math.floor(location.potential / 150000)} customers</span>
-                  </div>
-                </div>
+        <Grid.Col span={{ base: 6, sm: 3 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group gap="md">
+              <ThemeIcon size={48} radius="md" variant="light" color="yellow">
+                <TrendingUp size={24} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={700} size="xl" c="yellow">+{expansionRate}%</Text>
+                <Text size="xs" c="dimmed">Growth Rate</Text>
+              </Box>
+            </Group>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      <Grid gutter="xl">
+        {/* Regional Expansion */}
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Box mb="lg">
+              <Text fw={600} size="lg">Regional Expansion Plan</Text>
+              <Text size="xs" c="dimmed">Outlet targets by region</Text>
+            </Box>
+            <Stack gap="lg">
+              {expansionPlans.map((plan) => (
+                <Box key={plan.region}>
+                  <Group justify="space-between" mb="xs">
+                    <Group gap="xs">
+                      <MapPin size={14} className="text-slate-400" />
+                      <Text size="sm" fw={500}>{plan.region}</Text>
+                    </Group>
+                    <Group gap="xs">
+                      <Text size="sm" fw={500}>{plan.current}</Text>
+                      <Text size="sm" c="dimmed">→</Text>
+                      <Text size="sm" fw={700} style={{ color: plan.color }}>{plan.target}</Text>
+                    </Group>
+                  </Group>
+                  <Progress
+                    value={(plan.current / plan.target) * 100}
+                    color={plan.color}
+                    size="sm"
+                    radius="xl"
+                  />
+                  <Text size="xs" c="dimmed" mt="xs">{plan.growth}</Text>
+                </Box>
               ))}
-            </div>
-          </div>
-        </Card>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-        {/* Strategic Recommendations */}
-        <Card>
-          <div className="p-4 lg:p-6">
-            <h3 className="text-lg font-semibold mb-4">Strategic Recommendations</h3>
-            <div className="space-y-4">
-              <div className="flex gap-4 p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">
-                <div className="h-10 w-10 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center shrink-0">
-                  <ArrowRight className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Prioritize Jabodetabek Expansion</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Focus on BSD, Depok, and Bekasi areas with high population density. Expected ROI: 18-24 months.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4 p-4 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
-                <div className="h-10 w-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center shrink-0">
-                  <Target className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Strengthen Underperforming Cities</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Semarang and Medan outlets need attention. Consider operational improvements.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20">
-                <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center shrink-0">
-                  <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Franchise Model Consideration</h4>
-                  <p className="text-sm text-muted-foreground">
-                    For tier-2 cities, consider franchise model to reduce capital expenditure.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
+        {/* Upcoming Outlets */}
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Box>
+                <Text fw={600} size="lg">Upcoming Outlets</Text>
+                <Text size="xs" c="dimmed">Outlets in pipeline</Text>
+              </Box>
+              <Badge color="teal" variant="light" leftSection={<Clock size={12} />}>
+                {upcomingOutlets.length} Planned
+              </Badge>
+            </Group>
+            <Stack gap="md">
+              {upcomingOutlets.map((outlet) => (
+                <Paper key={outlet.name} p="md" radius="md" withBorder>
+                  <Group justify="space-between">
+                    <Group gap="md">
+                      <ThemeIcon size={48} radius="md" variant="light" color="blue">
+                        <Building2 size={24} />
+                      </ThemeIcon>
+                      <Box>
+                        <Text size="sm" fw={500}>{outlet.name}</Text>
+                        <Text size="xs" c="dimmed">{outlet.area}</Text>
+                      </Box>
+                    </Group>
+                    <Box ta="right">
+                      <Badge
+                        color={outlet.status === "Construction" ? "yellow" : outlet.status === "Site Survey" ? "blue" : "gray"}
+                        variant="light"
+                        size="sm"
+                        mb="xs"
+                      >
+                        {outlet.status}
+                      </Badge>
+                      <Group gap={4} justify="flex-end">
+                        <Calendar size={10} className="text-slate-400" />
+                        <Text size="xs" c="dimmed">{outlet.date}</Text>
+                      </Group>
+                    </Box>
+                  </Group>
+                </Paper>
+              ))}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Timeline */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder mt="xl">
+        <Box mb="lg">
+          <Text fw={600} size="lg">Expansion Timeline 2026-2029</Text>
+        </Box>
+        <Stack gap="lg">
+          {[
+            { year: "2026", quarter: "Q1-Q2", title: "Phase 1: Foundation", desc: "Data Hub & Executive Command Center", progress: 75 },
+            { year: "2026", quarter: "Q3-Q4", title: "Phase 2: Scale Up", desc: "Operations Center & 10 new outlets", progress: 25 },
+            { year: "2027", quarter: "Q1-Q2", title: "Phase 3: Customer Focus", desc: "CRM System & Loyalty Program", progress: 0 },
+            { year: "2027", quarter: "Q3-Q4", title: "Phase 4: Expansion", desc: "25 new outlets across West Java", progress: 0 },
+            { year: "2028", quarter: "Q1-Q2", title: "Phase 5: Digital", desc: "Customer Care & Mobile Apps", progress: 0 },
+            { year: "2028", quarter: "Q3-Q4", title: "Phase 6: AI Integration", desc: "AI Layer & Predictive Analytics", progress: 0 },
+            { year: "2029", quarter: "All Year", title: "Phase 7: Market Leader", desc: "200+ outlets, Full ecosystem", progress: 0 },
+          ].map((phase, index) => (
+            <Paper key={phase.year} p="md" radius="md" withBorder>
+              <Group justify="space-between">
+                <Group gap="md">
+                  <Box
+                    w={32}
+                    h={32}
+                    style={{
+                      borderRadius: '50%',
+                      backgroundColor: phase.progress > 0 && phase.progress < 100 ? '#eab308' : phase.progress === 100 ? '#22c55e' : '#e2e8f0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {phase.progress === 100 ? (
+                      <CheckCircle size={16} color="white" />
+                    ) : (
+                      <Box w={12} h={12} style={{ borderRadius: '50%', backgroundColor: 'white' }} />
+                    )}
+                  </Box>
+                  <Box>
+                    <Group gap="xs" mb={4}>
+                      <Badge variant="outline" size="xs">{phase.year} {phase.quarter}</Badge>
+                      {phase.progress > 0 && phase.progress < 100 && (
+                        <Badge color="yellow" variant="light" size="xs">{phase.progress}%</Badge>
+                      )}
+                    </Group>
+                    <Text size="sm" fw={600}>{phase.title}</Text>
+                    <Text size="xs" c="dimmed">{phase.desc}</Text>
+                  </Box>
+                </Group>
+                {phase.progress > 0 && phase.progress < 100 && (
+                  <Progress value={phase.progress} w={100} color="yellow" size="sm" radius="xl" />
+                )}
+              </Group>
+            </Paper>
+          ))}
+        </Stack>
+      </Card>
     </MainLayout>
   );
 }

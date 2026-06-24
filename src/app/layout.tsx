@@ -1,85 +1,75 @@
-import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import "./globals.css";
+import '@mantine/core/styles.css';
+import '@mantine/charts/styles.css';
+import '@mantine/dates/styles.css';
+import './globals.css';
+
+import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { MainLayout } from '@/components/layout/main-layout';
 
 const inter = Inter({
-  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
+  display: "swap",
+})
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const theme = createTheme({
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+  primaryColor: 'blue',
+  colors: {
+    brand: [
+      '#e6f0ff',
+      '#cce0ff',
+      '#99c2ff',
+      '#66a3ff',
+      '#3385ff',
+      '#1F5EFF',
+      '#0F2D6B',
+      '#0a2459',
+      '#071c47',
+      '#041336',
+    ],
+  },
+  defaultRadius: 'md',
+  components: {
+    Card: {
+      defaultProps: {
+        shadow: 'sm',
+        padding: 'lg',
+        withBorder: true,
+      },
+    },
+    Button: {
+      defaultProps: {
+        radius: 'md',
+      },
+    },
+  },
 });
 
 export const metadata: Metadata = {
-  title: "CALF ONE - Executive Command Center",
-  description: "Executive Decision Platform for Kopi Calf",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "CALF ONE",
-  },
+  title: "CALF ONE | Executive Command Center",
+  description: "Executive & Operations Command Center for Kopi Calf Coffee & Milkbar Indonesia",
   icons: {
-    icon: [
-      {
-        url: "/images/logo.jpeg",
-        type: "image/jpeg",
-      },
-    ],
-    apple: [
-      {
-        url: "/images/logo.jpeg",
-        type: "image/jpeg",
-      },
-    ],
+    icon: "/images/logo.jpeg",
   },
-};
-
-export const viewport: Viewport = {
-  themeColor: "#1e40af",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-};
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" href="/images/logo.jpeg" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                      console.log('ServiceWorker registration successful');
-                    },
-                    function(err) {
-                      console.log('ServiceWorker registration failed: ', err);
-                    }
-                  );
-                });
-              }
-            `,
-          }}
-        />
+        <ColorSchemeScript defaultColorScheme="light" />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-slate-50 text-slate-900 antialiased`}>
-        {children}
+      <body className={inter.className}>
+        <MantineProvider theme={theme} defaultColorScheme="light">
+          {children}
+        </MantineProvider>
       </body>
     </html>
-  );
+  )
 }

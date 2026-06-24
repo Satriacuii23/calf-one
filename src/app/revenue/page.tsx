@@ -1,227 +1,304 @@
-'use client';
+"use client"
 
+import { MainLayout } from "@/components/layout/main-layout";
+import {
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Table,
+  Paper,
+  SimpleGrid,
+  Avatar,
+  RingProgress,
+  ThemeIcon,
+  Box,
+  Title,
+  SegmentedControl,
+} from '@mantine/core';
+import { AreaChart, DonutChart, BarChart as MantineBarChart } from '@mantine/charts';
 import {
   TrendingUp,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
   DollarSign,
-  CreditCard,
-  PieChart,
+  Receipt,
+  Percent,
+  ShoppingBag,
+  BarChart3,
 } from 'lucide-react';
-import { MainLayout } from '@/components/layout/main-layout';
-import { KPICard } from '@/components/dashboard/kpi-card';
 import {
-  ChartCard,
-  RevenueAreaChart,
-  HourlyBarChart,
-  CityPerformanceChart,
-} from '@/components/dashboard/charts';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  kpiData,
-  outlets,
-  revenueData,
-  hourlyRevenue,
-  cityPerformance,
-  formatCurrencyShort,
-} from '@/lib/data';
-import { cn } from '@/lib/utils';
-
-const paymentMethods = [
-  { method: 'GoPay', count: 1847, amount: 51250000, percentage: 38.3 },
-  { method: 'OVO', count: 1234, amount: 34280000, percentage: 25.6 },
-  { method: 'DANA', count: 892, amount: 24760000, percentage: 18.5 },
-  { method: 'Cash', count: 654, amount: 18170000, percentage: 13.6 },
-  { method: 'Debit/Credit', count: 200, amount: 5550000, percentage: 4 },
-];
+  revenueTrendData,
+  areaRevenueData,
+  productsData,
+} from "@/lib/data";
+import { formatNumber } from "@/lib/utils";
 
 export default function RevenuePage() {
-  const sortedOutlets = [...outlets].sort(
-    (a, b) => b.revenueToday - a.revenueToday
-  );
+  const areaChartData = areaRevenueData.map((item) => ({
+    name: item.area,
+    revenue: item.revenue / 1000000,
+    outlets: item.outlets,
+    growth: item.growth,
+  }));
+
+  const productChartData = productsData.map((item) => ({
+    name: item.name,
+    revenue: item.revenue / 1000000,
+    units: item.units / 1000,
+  }));
 
   return (
-    <MainLayout
-      title="Revenue"
-      subtitle="Revenue analytics and insights"
-    >
-      <div className="space-y-6">
-        {/* KPI Cards */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <KPICard
-            title="Revenue Today"
-            value={formatCurrencyShort(kpiData.revenueToday)}
-            change={kpiData.revenueGrowth}
-            icon={DollarSign}
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-500/20"
-          />
-          <KPICard
-            title="Revenue MTD"
-            value={formatCurrencyShort(kpiData.revenueMTD)}
-            change={12.4}
-            icon={TrendingUp}
-            iconColor="text-blue-600 dark:text-blue-400"
-            iconBg="bg-blue-100 dark:bg-blue-500/20"
-          />
-          <KPICard
-            title="Avg Transaction"
-            value={formatCurrencyShort(kpiData.avgTransaction)}
-            change={3.2}
-            icon={CreditCard}
-            iconColor="text-purple-600 dark:text-purple-400"
-            iconBg="bg-purple-100 dark:bg-purple-500/20"
-          />
-          <KPICard
-            title="Target Achievement"
-            value="94.2%"
-            change={-5.8}
-            icon={PieChart}
-            iconColor="text-amber-600 dark:text-amber-400"
-            iconBg="bg-amber-100 dark:bg-amber-500/20"
-          />
-        </div>
+    <MainLayout title="Revenue Analytics" subtitle="Comprehensive revenue analysis and trends">
+      {/* KPI Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Revenue MTD</Text>
+                <Text fw={700} size="lg">Rp 14.8B</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+8.3%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <DollarSign size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Revenue Chart */}
-        <ChartCard title="Revenue Trend" subtitle="Hourly revenue today">
-          <RevenueAreaChart data={revenueData} />
-        </ChartCard>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Target MTD</Text>
+                <Text fw={700} size="lg">Rp 15.0B</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">98.7% achieved</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="teal">
+                <TrendingUp size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-        {/* Tabs */}
-        <Tabs defaultValue="outlets" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="outlets">By Outlet</TabsTrigger>
-            <TabsTrigger value="hourly">Hourly</TabsTrigger>
-            <TabsTrigger value="payment">Payment</TabsTrigger>
-            <TabsTrigger value="city">By City</TabsTrigger>
-          </TabsList>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Avg Transaction</Text>
+                <Text fw={700} size="lg">Rp 28.5K</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+2.1%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="violet">
+                <Receipt size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-          <TabsContent value="outlets">
-            <Card>
-              <div className="p-4 lg:p-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>#</TableHead>
-                      <TableHead>Outlet</TableHead>
-                      <TableHead>City</TableHead>
-                      <TableHead className="text-right">Revenue</TableHead>
-                      <TableHead className="text-right">Target</TableHead>
-                      <TableHead className="text-right">%</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedOutlets.map((outlet, index) => {
-                      const achievement = (outlet.revenueToday / outlet.revenueTarget) * 100;
-                      return (
-                        <TableRow key={outlet.id}>
-                          <TableCell className="font-medium">{index + 1}</TableCell>
-                          <TableCell className="font-medium">{outlet.name}</TableCell>
-                          <TableCell>{outlet.city}</TableCell>
-                          <TableCell className="text-right font-number">
-                            {formatCurrencyShort(outlet.revenueToday)}
-                          </TableCell>
-                          <TableCell className="text-right font-number text-muted-foreground">
-                            {formatCurrencyShort(outlet.revenueTarget)}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Badge variant="outline" className={cn(
-                              achievement >= 100
-                                ? 'border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400'
-                                : 'border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400'
-                            )}>
-                              {achievement.toFixed(0)}%
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-          </TabsContent>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Transactions</Text>
+                <Text fw={700} size="lg">{formatNumber(18642)}</Text>
+                <Group gap={4} mt="xs">
+                  <ArrowUpRight size={14} className="text-teal-500" />
+                  <Text size="xs" c="teal" fw={500}>+15.2%</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="orange">
+                <ShoppingBag size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-          <TabsContent value="hourly">
-            <Card>
-              <div className="p-4 lg:p-6">
-                <HourlyBarChart data={hourlyRevenue} />
-                <div className="mt-4 grid grid-cols-3 gap-4">
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">Peak Hour</p>
-                    <p className="text-lg font-bold">17:00 - 18:00</p>
-                    <p className="text-sm font-number text-emerald-600 dark:text-emerald-400">
-                      {formatCurrencyShort(85000000)}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">Morning Peak</p>
-                    <p className="text-lg font-bold">07:00 - 09:00</p>
-                    <p className="text-sm font-number text-emerald-600 dark:text-emerald-400">
-                      {formatCurrencyShort(30500000)}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm text-muted-foreground">Lunch Peak</p>
-                    <p className="text-lg font-bold">11:00 - 14:00</p>
-                    <p className="text-sm font-number text-emerald-600 dark:text-emerald-400">
-                      {formatCurrencyShort(145000000)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Growth Rate</Text>
+                <Text fw={700} size="lg">+12.5%</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">vs last month</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="green">
+                <Percent size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-          <TabsContent value="payment">
-            <Card>
-              <div className="p-4 lg:p-6 space-y-4">
-                {paymentMethods.map((method) => (
-                  <div key={method.method} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{method.method}</span>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">
-                          {method.count}
-                        </span>
-                        <span className="font-number font-semibold">
-                          {formatCurrencyShort(method.amount)}
-                        </span>
-                        <Badge variant="outline">{method.percentage}%</Badge>
-                      </div>
-                    </div>
-                    <Progress value={method.percentage} className="h-2" />
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </TabsContent>
+        <Grid.Col span={{ base: 6, sm: 4, md: 2 }}>
+          <Card shadow="xs" padding="md" radius="md" withBorder>
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Text size="xs" c="dimmed" fw={500} mb={4}>Projection</Text>
+                <Text fw={700} size="lg">Rp 18.2B</Text>
+                <Group gap={4} mt="xs">
+                  <Text size="xs" c="dimmed">end of month</Text>
+                </Group>
+              </Box>
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <BarChart3 size={20} />
+              </ThemeIcon>
+            </Group>
+          </Card>
+        </Grid.Col>
+      </Grid>
 
-          <TabsContent value="city">
-            <Card>
-              <div className="p-4 lg:p-6">
-                <CityPerformanceChart
-                  data={cityPerformance.map((city) => ({
-                    city: city.city,
-                    revenue: city.revenue,
-                    target: city.target,
-                    growth: city.growth,
-                  }))}
-                />
-              </div>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+      {/* Charts Section */}
+      <Grid gutter="md" mb="xl">
+        <Grid.Col span={{ base: 12, lg: 8 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder>
+            <Group justify="space-between" mb="lg">
+              <Text fw={600} size="lg">Revenue Trend</Text>
+              <SegmentedControl
+                size="xs"
+                data={[
+                  { label: '7D', value: '7d' },
+                  { label: '30D', value: '30d' },
+                  { label: '90D', value: '90d' },
+                ]}
+                defaultValue="30d"
+              />
+            </Group>
+            <AreaChart
+              h={300}
+              data={revenueTrendData}
+              dataKey="date"
+              series={[{ name: 'revenue', color: 'blue.6' }]}
+              curveType="natural"
+              withDots={false}
+              gridAxis="xy"
+              valueFormatter={(value) => `Rp ${(value / 1000000).toFixed(0)}M`}
+            />
+          </Card>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, lg: 4 }}>
+          <Card shadow="xs" padding="lg" radius="md" withBorder h="100%">
+            <Text fw={600} size="lg" mb="lg">Revenue by Area</Text>
+            <DonutChart
+              data={areaRevenueData.map((item) => ({
+                name: item.area,
+                value: item.revenue / 1000000,
+              }))}
+              h={200}
+              thickness={30}
+              chartLabel="Rp 14.8B"
+              valueFormatter={(value) => `Rp ${value.toFixed(0)}M`}
+            />
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+      {/* Area Performance */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder mb="xl">
+        <Text fw={600} size="lg" mb="lg">Area Performance</Text>
+        <MantineBarChart
+          h={300}
+          data={areaChartData}
+          dataKey="name"
+          series={[
+            { name: 'revenue', color: 'blue.6' },
+          ]}
+          tickLine="y"
+          valueFormatter={(value) => `Rp ${value.toFixed(0)}M`}
+        />
+        <Table mt="lg" striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Area</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Revenue</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Outlets</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Growth</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {areaRevenueData.map((item) => (
+              <Table.Tr key={item.area}>
+                <Table.Td fw={500}>{item.area}</Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>Rp {(item.revenue / 1000000000).toFixed(1)}B</Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>{item.outlets}</Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Group gap={4} justify="flex-end">
+                    {item.growth >= 0 ? (
+                      <ArrowUpRight size={14} className="text-teal-500" />
+                    ) : (
+                      <ArrowDownRight size={14} className="text-red-500" />
+                    )}
+                    <Text size="sm" fw={500} c={item.growth >= 0 ? 'teal' : 'red'}>
+                      {item.growth >= 0 ? '+' : ''}{item.growth}%
+                    </Text>
+                  </Group>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Card>
+
+      {/* Product Revenue */}
+      <Card shadow="xs" padding="lg" radius="md" withBorder>
+        <Text fw={600} size="lg" mb="lg">Product Revenue</Text>
+        <MantineBarChart
+          h={250}
+          data={productChartData}
+          dataKey="name"
+          series={[{ name: 'revenue', color: 'teal.6' }]}
+          orientation="vertical"
+          valueFormatter={(value) => `Rp ${value.toFixed(0)}M`}
+        />
+        <Table mt="lg" striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Category</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Revenue</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Units</Table.Th>
+              <Table.Th style={{ textAlign: 'right' }}>Growth</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {productsData.map((item) => (
+              <Table.Tr key={item.id}>
+                <Table.Td fw={500}>{item.name}</Table.Td>
+                <Table.Td><Badge variant="light" size="sm">{item.category}</Badge></Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>Rp {(item.revenue / 1000000).toFixed(0)}M</Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>{formatNumber(item.units)}</Table.Td>
+                <Table.Td style={{ textAlign: 'right' }}>
+                  <Group gap={4} justify="flex-end">
+                    {item.growth >= 0 ? (
+                      <ArrowUpRight size={14} className="text-teal-500" />
+                    ) : (
+                      <ArrowDownRight size={14} className="text-red-500" />
+                    )}
+                    <Text size="sm" fw={500} c={item.growth >= 0 ? 'teal' : 'red'}>
+                      {item.growth >= 0 ? '+' : ''}{item.growth}%
+                    </Text>
+                  </Group>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Card>
     </MainLayout>
   );
 }

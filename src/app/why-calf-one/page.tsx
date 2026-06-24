@@ -1,237 +1,360 @@
-'use client';
+"use client"
 
 import {
-  Zap,
-  Eye,
-  TrendingUp,
-  Users,
-  Brain,
-  Database,
-  Target,
-  Clock,
-  CheckCircle,
+  Grid,
+  Card,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Progress,
+  Paper,
+  ThemeIcon,
+  Box,
+  Button,
+} from '@mantine/core';
+import {
   ArrowRight,
-  Coffee,
+  Database,
+  LayoutDashboard,
+  Users,
+  Settings,
+  Brain,
+  ChevronRight,
+  CheckCircle2,
+  AlertTriangle,
+  Target,
+  TrendingUp,
+  Eye,
+  Building2,
+  Zap,
+  BarChart3,
+  MessageCircle,
+  Heart,
+  Globe,
+  Layers,
+  Shield,
 } from 'lucide-react';
-import Link from 'next/link';
-import { MainLayout } from '@/components/layout/main-layout';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
-const currentState = [
-  { icon: Database, title: 'Data Scattered', description: 'Data spread across multiple systems' },
-  { icon: Clock, title: 'Slow Decisions', description: 'Manual compilation takes hours' },
-  { icon: Eye, title: 'No Single Source', description: 'Different teams have different numbers' },
-  { icon: Target, title: 'Reactive Management', description: 'Finding problems too late' },
+const currentStateItems = [
+  { icon: Database, title: "Data Scattered", description: "ESB data underutilized across systems", color: 'red' },
+  { icon: Users, title: "No CRM", description: "Customer data not centralized", color: 'red' },
+  { icon: Heart, title: "No Loyalty", description: "Missing customer retention program", color: 'red' },
+  { icon: MessageCircle, title: "No Customer Care", description: "No dedicated support channel", color: 'red' },
+  { icon: Eye, title: "CCTV Not Centralized", description: "Fragmented monitoring systems", color: 'red' },
+  { icon: AlertTriangle, title: "No Single Source of Truth", description: "Inconsistent reporting across departments", color: 'red' },
 ];
 
-const futureState = [
-  { icon: Brain, title: 'One Intelligence', description: 'AI-powered unified insights' },
-  { icon: TrendingUp, title: 'Faster Decisions', description: 'Real-time dashboards' },
-  { icon: Eye, title: 'One Source', description: 'Everyone sees same data' },
-  { icon: Zap, title: 'Proactive Management', description: 'AI predicts issues early' },
+const futureStateItems = [
+  { icon: Layers, title: "One Data", description: "Centralized data warehouse", color: 'teal' },
+  { icon: LayoutDashboard, title: "One Dashboard", description: "Unified analytics platform", color: 'teal' },
+  { icon: Users, title: "One Customer", description: "360-degree customer view", color: 'teal' },
+  { icon: Settings, title: "One Operations Center", description: "Streamlined management", color: 'teal' },
+  { icon: Globe, title: "One Ecosystem", description: "Integrated business suite", color: 'teal' },
 ];
 
-const businessImpact = [
-  { metric: 'Decision Speed', current: '4 hours', target: '15 min', improvement: '93% faster' },
-  { metric: 'Revenue Visibility', current: '24 hours', target: 'Real-time', improvement: '100%' },
-  { metric: 'Cost Savings', current: '-', target: 'Rp 500M/year', improvement: 'AI opt' },
-  { metric: 'Customer Retention', current: '78%', target: '92%', improvement: '+14%' },
+const roadmapItems = [
+  { year: "2026", quarter: "Q1-Q2", title: "Data Hub", description: "Centralize all data sources", status: "current" },
+  { year: "2026", quarter: "Q3-Q4", title: "Executive Command Center", description: "CALF ONE Dashboard", status: "current" },
+  { year: "2027", quarter: "Q1-Q2", title: "Operations Command Center", description: "Real-time outlet monitoring", status: "planned" },
+  { year: "2027", quarter: "Q3-Q4", title: "CRM System", description: "Customer relationship management", status: "planned" },
+  { year: "2028", quarter: "Q1-Q2", title: "Loyalty Program", description: "Customer retention engine", status: "planned" },
+  { year: "2028", quarter: "Q3-Q4", title: "Customer Care", description: "Dedicated support platform", status: "planned" },
+  { year: "2029", quarter: "Q1-Q2", title: "Mobile Apps", description: "iOS & Android applications", status: "planned" },
+  { year: "2029", quarter: "Q3-Q4", title: "AI Layer", description: "Predictive analytics & automation", status: "planned" },
 ];
 
-const features = [
-  { icon: TrendingUp, title: 'Revenue Intelligence', description: 'Real-time tracking with AI forecasts' },
-  { icon: Eye, title: 'Outlet Command Center', description: 'Monitor all outlets in real-time' },
-  { icon: Users, title: 'Customer Intelligence', description: 'Deep analytics with churn prediction' },
-  { icon: Brain, title: 'AI Insights', description: 'Automated recommendations' },
-  { icon: Target, title: 'Risk Center', description: 'Proactive risk monitoring' },
-  { icon: Database, title: 'Expansion Planning', description: 'Data-driven location analysis' },
+const businessImpacts = [
+  { icon: TrendingUp, title: "Higher Revenue", description: "+15-25% through data-driven decisions", color: 'teal' },
+  { icon: Eye, title: "Better Visibility", description: "Real-time insights across all outlets", color: 'blue' },
+  { icon: Target, title: "Faster Decisions", description: "60-second company overview", color: 'violet' },
+  { icon: Heart, title: "Better Retention", description: "+20% customer loyalty", color: 'pink' },
+  { icon: Zap, title: "Digital Transformation", description: "Foundation for future growth", color: 'yellow' },
 ];
 
 export default function WhyCalfOnePage() {
   return (
-    <MainLayout title="Why CALF ONE?" subtitle="Executive Decision Platform for Kopi Calf">
-      <div className="space-y-12">
-        {/* Hero */}
-        <section className="text-center max-w-4xl mx-auto">
-          <Badge variant="outline" className="mb-4 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-500/30">
-            <Coffee className="h-3 w-3 mr-1" />
-            Executive Decision Platform
+    <Box>
+      {/* Hero Section */}
+      <Box
+        py={80}
+        px="xl"
+        style={{
+          background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 800,
+            height: 800,
+            background: 'radial-gradient(circle, rgba(31, 94, 255, 0.1) 0%, transparent 70%)',
+            borderRadius: '50%',
+          }}
+        />
+        <Box maw={1200} mx="auto" ta="center" style={{ position: 'relative' }}>
+          <Badge color="blue" variant="light" size="lg" mb="xl">
+            Kopi Calf Coffee & Milkbar Indonesia
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Every Decision.{' '}
-            <span className="text-blue-600 dark:text-blue-400">One Dashboard.</span>{' '}
-            Zero Guesswork.
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            CALF ONE transforms how Kopi Calf leadership makes decisions.
-            From scattered data to unified intelligence.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/">
-              <Button size="lg">
-                Go to Dashboard
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline">
+          <Text fw={800} size={48} mb="md" style={{ lineHeight: 1.2 }}>
+            Why{" "}
+            <Text component="span" fw={800} style={{ background: 'linear-gradient(135deg, #1F5EFF, #0F2D6B)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              CALF ONE
+            </Text>
+            ?
+          </Text>
+          <Text size="xl" c="dimmed" maw={700} mx="auto" mb="xl">
+            The Executive & Operations Command Center that transforms how management
+            understands and runs the business. One platform. Complete visibility.
+          </Text>
+          <Group justify="center" gap="md">
+            <Button size="lg" color="blue" rightSection={<ArrowRight size={16} />}>
               Request Demo
             </Button>
-          </div>
-        </section>
+            <Button size="lg" variant="outline" color="blue" rightSection={<ChevronRight size={16} />}>
+              View Features
+            </Button>
+          </Group>
+        </Box>
+      </Box>
 
-        {/* Current vs Future */}
-        <section className="grid gap-8 lg:grid-cols-2">
-          <Card className="border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/5">
-            <div className="p-4 lg:p-6">
-              <Badge variant="outline" className="mb-4 border-amber-300 text-amber-700 dark:border-amber-500/30 dark:text-amber-400">
-                Current State
-              </Badge>
-              <h2 className="text-2xl font-bold mb-4">The Challenge</h2>
-              <div className="space-y-4">
-                {currentState.map((item, index) => (
-                  <div key={index} className="flex gap-4 p-4 rounded-lg bg-white dark:bg-card">
-                    <div className="h-10 w-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center shrink-0">
-                      <item.icon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          <Card className="border-emerald-300 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/5">
-            <div className="p-4 lg:p-6">
-              <Badge variant="outline" className="mb-4 border-emerald-300 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400">
-                Future State
-              </Badge>
-              <h2 className="text-2xl font-bold mb-4">The Solution</h2>
-              <div className="space-y-4">
-                {futureState.map((item, index) => (
-                  <div key={index} className="flex gap-4 p-4 rounded-lg bg-white dark:bg-card">
-                    <div className="h-10 w-10 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center shrink-0">
-                      <item.icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-        </section>
-
-        {/* Business Impact */}
-        <section>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Business Impact</h2>
-            <p className="text-muted-foreground">Expected improvements</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {businessImpact.map((impact, index) => (
-              <Card key={index}>
-                <div className="p-4 lg:p-6 text-center">
-                  <p className="text-sm text-muted-foreground mb-4">{impact.metric}</p>
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-sm text-muted-foreground line-through">{impact.current}</span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{impact.target}</span>
-                  </div>
-                  <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30">
-                    {impact.improvement}
-                  </Badge>
-                </div>
-              </Card>
+      {/* Problem Statement */}
+      <Box py={60} px="xl" bg="white">
+        <Box maw={1200} mx="auto">
+          <Box ta="center" mb={48}>
+            <Badge color="yellow" variant="light" mb="md">Current State</Badge>
+            <Text fw={700} size={32} mb="md">Challenges We Face</Text>
+            <Text c="dimmed" maw={600} mx="auto">
+              Without CALF ONE, critical business data is fragmented across multiple systems,
+              making it difficult to make informed decisions quickly.
+            </Text>
+          </Box>
+          <Grid gutter="lg">
+            {currentStateItems.map((item) => (
+              <Grid.Col key={item.title} span={{ base: 12, md: 6, lg: 4 }}>
+                <Card shadow="xs" padding="lg" radius="md" withBorder h="100%" style={{ borderColor: '#fee2e2', backgroundColor: '#fef2f2' }}>
+                  <Group gap="md" align="flex-start">
+                    <ThemeIcon size={48} radius="md" variant="light" color="red">
+                      <item.icon size={24} />
+                    </ThemeIcon>
+                    <Box>
+                      <Text fw={600} mb="xs">{item.title}</Text>
+                      <Text size="sm" c="dimmed">{item.description}</Text>
+                    </Box>
+                  </Group>
+                </Card>
+              </Grid.Col>
             ))}
-          </div>
-        </section>
+          </Grid>
+        </Box>
+      </Box>
 
-        {/* Features */}
-        <section>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Platform Capabilities</h2>
-            <p className="text-muted-foreground">Six pillars of executive intelligence</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
-              <Card key={index} className="hover:bg-accent/50 transition-colors cursor-pointer">
-                <div className="p-4 lg:p-6">
-                  <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center mb-4">
-                    <feature.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
-                </div>
-              </Card>
+      {/* Solution Preview */}
+      <Box py={60} px="xl" style={{ backgroundColor: '#eff6ff' }}>
+        <Box maw={1200} mx="auto">
+          <Box ta="center" mb={48}>
+            <Badge color="teal" variant="light" mb="md">Future State</Badge>
+            <Text fw={700} size={32} mb="md">The CALF ONE Solution</Text>
+            <Text c="dimmed" maw={600} mx="auto">
+              One unified platform that brings together all aspects of your business
+              into a single, powerful command center.
+            </Text>
+          </Box>
+          <Grid gutter="lg">
+            {futureStateItems.map((item) => (
+              <Grid.Col key={item.title} span={{ base: 12, md: 6, lg: 4 }}>
+                <Card shadow="xs" padding="lg" radius="md" withBorder h="100%" style={{ borderColor: '#bbf7d0', backgroundColor: '#f0fdf4' }}>
+                  <Group gap="md" align="flex-start">
+                    <ThemeIcon size={48} radius="md" variant="light" color="teal">
+                      <item.icon size={24} />
+                    </ThemeIcon>
+                    <Box>
+                      <Text fw={600} mb="xs">{item.title}</Text>
+                      <Text size="sm" c="dimmed">{item.description}</Text>
+                    </Box>
+                  </Group>
+                </Card>
+              </Grid.Col>
             ))}
-          </div>
-        </section>
+          </Grid>
+        </Box>
+      </Box>
 
-        {/* Connected Ecosystem */}
-        <Card className="bg-blue-50 dark:bg-blue-500/5 border-blue-200 dark:border-blue-500/30">
-          <div className="p-4 lg:p-8">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold mb-4">Connected Ecosystem</h3>
-                <p className="text-muted-foreground mb-6">
-                  CALF ONE integrates with your existing systems. No more manual data entry.
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {['ESB POS Integration', 'Financial Systems', 'Customer Database', 'Supply Chain', 'Delivery Fleet', 'HR Systems'].map((item, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                      <span className="text-sm">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1 flex justify-center">
-                <div className="relative w-64 h-64">
-                  <div className="absolute inset-0 rounded-full border-2 border-blue-200 dark:border-blue-500/20" />
-                  <div className="absolute inset-8 rounded-full border-2 border-blue-300 dark:border-blue-500/30" />
-                  <div className="absolute inset-16 rounded-full border-2 border-blue-400 dark:border-blue-500/40" />
-                  <div className="absolute inset-24 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center">
-                    <Coffee className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
+      {/* Roadmap */}
+      <Box py={80} px="xl" bg="white">
+        <Box maw={1200} mx="auto">
+          <Box ta="center" mb={64}>
+            <Badge color="blue" variant="light" mb="md">Implementation Roadmap</Badge>
+            <Text fw={700} size={32} mb="md">Our Journey to Excellence</Text>
+            <Text c="dimmed" maw={600} mx="auto">
+              A phased approach to digital transformation, building a solid foundation
+              before adding advanced capabilities.
+            </Text>
+          </Box>
+          <Grid gutter="lg">
+            {roadmapItems.map((item) => (
+              <Grid.Col key={item.title} span={{ base: 12, md: 6 }}>
+                <Card
+                  shadow="xs"
+                  padding="lg"
+                  radius="md"
+                  withBorder
+                  style={{ borderColor: item.status === 'current' ? '#1F5EFF' : '#e2e8f0' }}
+                >
+                  <Group gap="md" align="flex-start">
+                    <Box
+                      w={32}
+                      h={32}
+                      style={{
+                        borderRadius: '50%',
+                        backgroundColor: item.status === 'current' ? '#1F5EFF' : '#e2e8f0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    />
+                    <Box>
+                      <Group gap="xs" mb="xs">
+                        <Badge variant="outline" size="xs">{item.year} {item.quarter}</Badge>
+                        {item.status === 'current' && (
+                          <Badge color="blue" variant="light" size="xs">In Progress</Badge>
+                        )}
+                      </Group>
+                      <Text fw={600} mb="xs">{item.title}</Text>
+                      <Text size="sm" c="dimmed">{item.description}</Text>
+                    </Box>
+                  </Group>
+                </Card>
+              </Grid.Col>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
 
-        {/* CTA */}
-        <Card className="bg-blue-100 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30">
-          <div className="p-8 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Transform?</h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Join Kopi Calf leadership in making faster, smarter decisions.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/">
-                <Button size="lg" className="gap-2">
-                  Start Using CALF ONE
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline">
-                Schedule a Demo
-              </Button>
-            </div>
-            <p className="mt-6 text-sm text-muted-foreground">
-              Tracking: <span className="font-semibold text-blue-600 dark:text-blue-400">115 outlets</span>,{' '}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">48,521 customers</span>,{' '}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">105 vehicles</span>
-            </p>
-          </div>
-        </Card>
-      </div>
-    </MainLayout>
+      {/* Business Impact */}
+      <Box py={80} px="xl" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0F2D6B 100%)' }}>
+        <Box maw={1200} mx="auto">
+          <Box ta="center" mb={64}>
+            <Text fw={700} size={32} c="white" mb="md">Expected Business Impact</Text>
+            <Text c="dimmed" maw={600} mx="auto">
+              CALF ONE delivers measurable results across all areas of the business,
+              from revenue growth to customer satisfaction.
+            </Text>
+          </Box>
+          <Grid gutter="lg">
+            {businessImpacts.map((impact) => (
+              <Grid.Col key={impact.title} span={{ base: 6, md: 4, lg: 2 }}>
+                <Card shadow="xs" padding="lg" radius="md" h="100%" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <Box ta="center">
+                    <ThemeIcon
+                      size={56}
+                      radius="xl"
+                      mx="auto"
+                      mb="md"
+                      variant="light"
+                      color={impact.color}
+                    >
+                      <impact.icon size={28} />
+                    </ThemeIcon>
+                    <Text fw={600} c="white" mb="xs">{impact.title}</Text>
+                    <Text size="sm" c="dimmed">{impact.description}</Text>
+                  </Box>
+                </Card>
+              </Grid.Col>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
+
+      {/* Key Features */}
+      <Box py={80} px="xl" bg="white">
+        <Box maw={1200} mx="auto">
+          <Box ta="center" mb={64}>
+            <Badge color="blue" variant="light" mb="md">Core Features</Badge>
+            <Text fw={700} size={32} mb="md">Everything You Need in One Place</Text>
+          </Box>
+          <Grid gutter="lg">
+            {[
+              { icon: BarChart3, title: "Business Performance", desc: "Revenue, transactions, growth metrics" },
+              { icon: Building2, title: "Outlet Performance", desc: "Real-time status for all 115 outlets" },
+              { icon: Users, title: "Customer Intelligence", desc: "360-degree customer view" },
+              { icon: Eye, title: "CCTV Monitoring", desc: "Live feeds from 1,032 cameras" },
+              { icon: AlertTriangle, title: "Risk Center", desc: "Proactive issue detection" },
+              { icon: Settings, title: "Operations Center", desc: "Internet, power, vehicle tracking" },
+              { icon: Brain, title: "AI Insights", desc: "Predictive recommendations" },
+              { icon: Shield, title: "Company Health Score", desc: "89/100 overall health" },
+            ].map((feature) => (
+              <Grid.Col key={feature.title} span={{ base: 12, sm: 6, lg: 3 }}>
+                <Card shadow="xs" padding="lg" radius="md" withBorder h="100%">
+                  <Box ta="center">
+                    <ThemeIcon size={48} radius="md" variant="light" color="blue" mx="auto" mb="md">
+                      <feature.icon size={24} />
+                    </ThemeIcon>
+                    <Text fw={600} mb="xs">{feature.title}</Text>
+                    <Text size="sm" c="dimmed">{feature.desc}</Text>
+                  </Box>
+                </Card>
+              </Grid.Col>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
+
+      {/* CTA */}
+      <Box py={80} px="xl" style={{ background: 'linear-gradient(135deg, #1F5EFF 0%, #0F2D6B 100%)' }}>
+        <Box maw={800} mx="auto" ta="center">
+          <Text fw={700} size={36} c="white" mb="md">
+            Ready to Transform Your Business?
+          </Text>
+          <Text size="lg" mb="xl" style={{ color: 'rgba(255,255,255,0.8)' }}>
+            Join the digital transformation journey and give your management team
+            the visibility they need to make better decisions, faster.
+          </Text>
+          <Group justify="center" gap="md">
+            <Button size="lg" color="white" c="blue.8" rightSection={<ArrowRight size={16} />}>
+              Schedule a Demo
+            </Button>
+            <Button size="lg" variant="white" style={{ color: 'white', borderColor: 'white' }} rightSection={<ChevronRight size={16} />}>
+              Learn More
+            </Button>
+          </Group>
+        </Box>
+      </Box>
+
+      {/* Footer */}
+      <Box py={32} px="xl" style={{ backgroundColor: '#0f172a' }}>
+        <Box maw={1200} mx="auto">
+          <Group justify="space-between" align="center">
+            <Group gap="md">
+              <Box
+                w={36}
+                h={36}
+                style={{
+                  borderRadius: 8,
+                  background: 'linear-gradient(135deg, #1F5EFF, #0F2D6B)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text fw={700} c="white">C1</Text>
+              </Box>
+              <Box>
+                <Text size="sm" fw={600} c="white">CALF ONE</Text>
+                <Text size="xs" c="dimmed">Executive Command Center</Text>
+              </Box>
+            </Group>
+            <Text size="sm" c="dimmed">
+              Kopi Calf Coffee & Milkbar Indonesia © 2026
+            </Text>
+          </Group>
+        </Box>
+      </Box>
+    </Box>
   );
 }
