@@ -260,8 +260,10 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
           </Space>
         </Header>
         
-        <Content style={{ margin: isMobile ? '16px' : '24px', overflow: 'initial' }}>
-          {children}
+        <Content style={{ margin: isMobile ? '16px' : '24px', overflow: 'initial', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: 1440 }}>
+            {children}
+          </div>
         </Content>
       </Layout>
     </Layout>

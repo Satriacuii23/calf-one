@@ -84,7 +84,7 @@ export default function OverviewPage() {
           <div style={{ marginBottom: 32, padding: '8px 0 24px 0', borderBottom: '1px solid #f1f5f9' }}>
             <Row gutter={[24, 24]}>
               {kpiCards.map((kpi) => (
-                <Col xs={24} sm={12} lg={4} key={kpi.label} style={{ flex: '1 1 auto' }}>
+                <Col xs={24} sm={12} lg={4} key={kpi.label} style={{ flex: '1 1 18%', minWidth: 200 }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
