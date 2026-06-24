@@ -78,7 +78,7 @@ export default function OutletsPage() {
       render: (text: string, record: any) => (
         <Space>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
-            <Store size={14} color="#64748b" />
+            <Store size={14} color="#475569" />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Text strong style={{ color: '#0f172a' }}>{text || 'Unknown'}</Text>
@@ -279,7 +279,7 @@ export default function OutletsPage() {
                 value={searchText} 
                 onChange={(e) => setSearchText(e.target.value)} 
                 style={{ width: '100%', maxWidth: 300, borderRadius: 8 }} 
-                prefix={<Search size={14} color="#94a3b8" />} 
+                prefix={<Search size={14} color="#475569" />} 
               />
             </div>
             <Table 

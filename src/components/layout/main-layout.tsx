@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider, Tooltip } from 'antd';
+import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider, Tooltip, Popover } from 'antd';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -104,14 +104,25 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         onCollapse={(value) => setCollapsed(value)}
         style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, borderRight: '1px solid #f0f0f0', zIndex: 100 }}
       >
-        <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', borderBottom: '1px solid #f0f0f0' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#1F5EFF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: collapsed ? 0 : 12 }}>
-            <Text strong style={{ color: 'white', fontSize: 14 }}>C1</Text>
-          </div>
-          {!collapsed && (
-            <div>
-              <Text strong style={{ fontSize: 16, display: 'block', lineHeight: 1.2 }}>CALF ONE</Text>
-              <Text type="secondary" style={{ fontSize: 11, display: 'block', lineHeight: 1.2 }}>Command Center</Text>
+        <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', borderBottom: '1px solid #f0f0f0', justifyContent: collapsed ? 'center' : 'flex-start', overflow: 'hidden' }}>
+          {collapsed ? (
+            <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: '#0A34A6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Text strong style={{ color: 'white', fontSize: 16, fontFamily: 'Pacifico, cursive', fontStyle: 'italic' }}>C</Text>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 12 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
+                  <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
+                </div>
+                <div style={{ fontSize: 32, fontWeight: 400, color: '#134cd8', fontFamily: 'Pacifico, cursive', lineHeight: 1, marginTop: -4 }}>Calf</div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
+                  <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
+                </div>
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2.5, color: '#134cd8', marginTop: 4 }}>COFFEE & MILKBAR</div>
             </div>
           )}
         </div>
@@ -177,11 +188,40 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
             <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>24 Juni 2026</Text>
             
             <Tooltip title="Peringatan & Notifikasi Sistem">
-              <Dropdown menu={{ items: [{ key: '1', label: 'Laporan harian siap diunduh' }, { key: '2', label: '1 Alert Risiko baru terdeteksi' }] }} trigger={['click']}>
+              <Popover 
+                placement="bottomRight" 
+                title={<div style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><Text strong>Notifications</Text><Button type="link" size="small" style={{ fontSize: 12 }}>Mark all as read</Button></div>}
+                content={
+                  <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 12, paddingTop: 12 }}>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: '#fef2f2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <AlertTriangle size={14} color="#ef4444" />
+                      </div>
+                      <div>
+                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>1 Alert Risiko baru terdeteksi</Text>
+                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Lonjakan waktu tunggu (waiting time) di area Drive Thru Kelapa Gading melebihi batas.</Text>
+                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>5 menit yang lalu</Text>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <FileText size={14} color="#3b82f6" />
+                      </div>
+                      <div>
+                        <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.2, marginBottom: 4 }}>Laporan Harian Siap Diunduh</Text>
+                        <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: 1.4 }}>Ringkasan eksekutif pendapatan dan operasional tanggal 23 Juni 2026 telah digenerasi.</Text>
+                        <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 4, color: '#94a3b8' }}>1 jam yang lalu</Text>
+                      </div>
+                    </div>
+                    <Button type="dashed" block style={{ marginTop: 8 }}>Lihat Semua Notifikasi</Button>
+                  </div>
+                } 
+                trigger="click"
+              >
                 <Badge dot color="#ef4444" offset={[-4, 4]}>
                   <Button type="text" shape="circle" icon={<Bell size={18} style={{ color: '#475569' }} />} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
                 </Badge>
-              </Dropdown>
+              </Popover>
             </Tooltip>
             
             <Dropdown menu={{ items: [{ key: 'profile', label: 'Pengaturan Akun', icon: <User size={14} /> }, { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }] }} trigger={['click']}>

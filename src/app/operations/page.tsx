@@ -1,12 +1,15 @@
 "use client"
 
 import { MainLayout } from "@/components/layout/main-layout";
-import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Progress, Input } from 'antd';
+import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Progress, Input, Button } from 'antd';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { ActivitySquare, Video, Wifi, PackageMinus, Info, Search, Sparkles, Building2, Server, ServerCrash, AlertTriangle } from 'lucide-react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useOperationsData } from '@/hooks/useDashboardModules';
 import { useState, useMemo } from "react";
+import dynamic from 'next/dynamic';
+
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 const { Title, Text } = Typography;
 
@@ -20,6 +23,17 @@ export default function OperationsPage() {
   const { infrastructures, branches, shifts, attendances, isLoading } = useOperationsData();
 
   const [searchText, setSearchText] = useState("");
+  const [cctvStreams, setCctvStreams] = useState<any[]>([
+    { title: "HQ Sudirman - Area Depan", videoId: "1-iS7LArMPA" },
+    { title: "Senopati - Main Entrance", videoId: "HpdO5Kq3o7Y" },
+    { title: "Kelapa Gading - Drive Thru", videoId: "bW0n4ZICVxQ" },
+    { title: "Menteng - Outdoor Seating", videoId: "ViXg9r09KkM" },
+    { title: "Kuningan - Parking Area", videoId: "PgJ0VzE1tAM" }
+  ]);
+  const [activeBranchIndex, setActiveBranchIndex] = useState<number>(0);
+
+  // We use static continuous live streams (YouTube Live 24/7 Cams) to prevent looping
+  // and provide a true real-time surveillance feel.
 
   const filteredInfra = useMemo(() => infrastructures.filter((i: any) => {
     const branchName = i.branches?.branch_name || '';
@@ -217,6 +231,93 @@ export default function OperationsPage() {
 
           </Row>
 
+          <SectionContainer style={{ marginBottom: 24, padding: 40, border: 'none', background: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+            <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+              <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                <Title level={2} style={{ margin: 0, color: '#1e293b', fontWeight: 700 }}>Calf One CCTV Streaming</Title>
+                <Text style={{ color: '#64748b', fontSize: 16 }}>Pantau kondisi lalu lintas dan fasilitas operasional cabang secara real-time.</Text>
+              </div>
+
+              {cctvStreams.length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+                  {cctvStreams.map((stream, index) => (
+                    <Button 
+                      key={index} 
+                      type={activeBranchIndex === index ? "primary" : "default"}
+                      onClick={() => setActiveBranchIndex(index)}
+                      style={{ borderRadius: 20, padding: '0 20px', background: activeBranchIndex === index ? '#1e293b' : undefined, borderColor: activeBranchIndex === index ? '#1e293b' : undefined }}
+                    >
+                      {stream.title.split(' - ')[0]}
+                    </Button>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ width: '100%', borderRadius: 16, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', marginBottom: 24, background: '#000', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 10px #ef4444' }} className="animate-pulse" />
+                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>LIVE</Text>
+                </div>
+                
+                <div style={{ position: 'relative', paddingTop: '56.25%' }}>
+                  {cctvStreams.length > 0 && cctvStreams[activeBranchIndex]?.videoId ? (
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                      <ReactPlayer 
+                        key={cctvStreams[activeBranchIndex].videoId}
+                        {...{
+                          url: `https://www.youtube.com/watch?v=${cctvStreams[activeBranchIndex].videoId}`,
+                          playing: true,
+                          muted: true,
+                          width: '100%',
+                          height: '100%',
+                          controls: false,
+                          config: {
+                            youtube: {
+                              playerVars: { showinfo: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1 }
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Spin size="large" />
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                <Title level={4} style={{ margin: 0, color: '#334155' }}>
+                  {cctvStreams[activeBranchIndex]?.title || "Memuat Lokasi..."}
+                </Title>
+              </div>
+
+              <Row gutter={[32, 32]}>
+                <Col xs={24} md={16}>
+                  <Title level={4} style={{ color: '#334155', marginBottom: 16 }}>Informasi Pantauan</Title>
+                  <Text style={{ color: '#475569', fontSize: 15, lineHeight: 1.6, display: 'block' }}>
+                    Layanan CCTV streaming ini disediakan secara terbuka oleh Departemen Operasional Calf One untuk mempermudah pimpinan dan manajer area dalam memantau kelancaran operasional dan kondisi fasilitas setiap cabang secara langsung.
+                  </Text>
+                  <Text style={{ color: '#475569', fontSize: 15, lineHeight: 1.6, display: 'block', marginTop: 12 }}>
+                    Website ini hanya menampilkan streaming CCTV gabungan (Grid View) secara terpusat melalui saluran siaran resmi. Untuk kendali penuh pada setiap kamera di tiap sudut cabang, silakan gunakan Aplikasi Internal Operasional Calf One.
+                  </Text>
+                </Col>
+                <Col xs={24} md={8}>
+                  <div style={{ background: '#f8fafc', padding: 24, borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                    <Title level={5} style={{ margin: '0 0 16px 0', color: '#334155' }}>Akses Kamera Penuh</Title>
+                    <Text style={{ color: '#64748b', fontSize: 14, display: 'block', marginBottom: 20 }}>
+                      Gunakan Aplikasi CalfGov / Internal Ops untuk mengendalikan setiap titik kamera secara terpisah tanpa jeda.
+                    </Text>
+                    <div style={{ background: '#3b82f6', color: '#fff', padding: '12px 24px', borderRadius: 8, textAlign: 'center', fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = '#2563eb'} onMouseLeave={(e) => e.currentTarget.style.background = '#3b82f6'}>
+                      Kunjungi Calf Ops App
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </SectionContainer>
+
           <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '24px 24px 0 24px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
               <Space align="center">
@@ -233,7 +334,7 @@ export default function OperationsPage() {
                 value={searchText} 
                 onChange={(e) => setSearchText(e.target.value)} 
                 style={{ width: '100%', maxWidth: 300, borderRadius: 8 }} 
-                prefix={<Search size={14} color="#94a3b8" />} 
+                prefix={<Search size={14} color="#475569" />} 
               />
             </div>
             <Table 

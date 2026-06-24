@@ -1,9 +1,9 @@
 "use client"
 
 import { MainLayout } from "@/components/layout/main-layout";
-import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Progress , Input } from 'antd';
+import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Progress, Input, Tabs } from 'antd';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { Users, Award, Crown, CalendarCheck, Sparkles, Star , Search } from 'lucide-react';
+import { Users, Award, Crown, CalendarCheck, Sparkles, Star, Search, MapPin, Bike, ShoppingBag } from 'lucide-react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIntelligenceData } from '@/hooks/useIntelligenceData';
 import { useCustomerCareData, useSocialData } from '@/hooks/useDashboardModules';
@@ -24,6 +24,34 @@ const SectionContainer = ({ children, style }: { children: React.ReactNode, styl
     {children}
   </div>
 );
+
+// External Reviews Mock Data
+const MOCK_GOOGLE_REVIEWS = [
+  { id: 1, outlet: 'HQ Sudirman', name: 'Budi Santoso', rating: 5, comment: 'Tempatnya cozy banget buat WFC. Kopinya konsisten enak, barista ramah.', date: '2026-06-20' },
+  { id: 2, outlet: 'Senopati', name: 'Andi Wijaya', rating: 4, comment: 'Kopinya mantap, tapi parkirannya agak susah kalau bawa mobil karena sempit.', date: '2026-06-21' },
+  { id: 3, outlet: 'Kelapa Gading', name: 'Siti Aminah', rating: 5, comment: 'Pelayanan cepat, tempatnya bersih. Selalu pesan Aren Latte kalau kesini.', date: '2026-06-22' },
+  { id: 4, outlet: 'Menteng', name: 'Reza Rahardian', rating: 3, comment: 'AC nya kurang dingin pas siang hari, mungkin bisa diperbaiki. Kopi oke.', date: '2026-06-19' },
+  { id: 5, outlet: 'Kuningan', name: 'Dian Sastro', rating: 5, comment: 'Suka banget sama ambiance outdoor-nya pas sore. Pastry nya fresh.', date: '2026-06-23' },
+  { id: 6, outlet: 'HQ Sudirman', name: 'Hendra', rating: 4, comment: 'Kopinya enak tapi antrian lumayan panjang kalau jam makan siang.', date: '2026-06-18' }
+];
+
+const MOCK_GOFOOD_REVIEWS = [
+  { id: 1, outlet: 'Senopati', name: 'Kevin', rating: 5, comment: 'Pengiriman cepat, packaging super aman pakai double seal. Kopi gak tumpah.', date: '2026-06-24' },
+  { id: 2, outlet: 'Kelapa Gading', name: 'Ayu', rating: 4, comment: 'Rasa kopi enak, cuma es batunya udah lumayan cair pas sampai.', date: '2026-06-23' },
+  { id: 3, outlet: 'Kuningan', name: 'Riko', rating: 5, comment: 'Mantap ada promo diskon ongkir. Kualitas kopi Calf One selalu juara.', date: '2026-06-22' },
+  { id: 4, outlet: 'HQ Sudirman', name: 'Nadia', rating: 2, comment: 'Pesanan agak lama disiapkan dari restonya, driver nunggu lama.', date: '2026-06-21' },
+  { id: 5, outlet: 'Menteng', name: 'Fariz', rating: 5, comment: 'Sesuai pesanan (less sugar). Packaging rapi banget.', date: '2026-06-20' },
+  { id: 6, outlet: 'Senopati', name: 'Tika', rating: 5, comment: 'Rasa kopinya pas banget buat naikin mood kerja pagi.', date: '2026-06-19' }
+];
+
+const MOCK_SHOPEE_REVIEWS = [
+  { id: 1, outlet: 'HQ Sudirman', name: 'Cinta', rating: 5, comment: 'Dapat flash sale, harganya jadi murah banget! Kualitas tetap mantap.', date: '2026-06-24' },
+  { id: 2, outlet: 'Menteng', name: 'Dimas', rating: 5, comment: 'Voucher shopeefood nya lumayan. Es Kopi Susu Arennya the best.', date: '2026-06-23' },
+  { id: 3, outlet: 'Kuningan', name: 'Eka', rating: 3, comment: 'Pesan croffle tapi yang datang agak keras, mungkin kelamaan di jalan.', date: '2026-06-22' },
+  { id: 4, outlet: 'Kelapa Gading', name: 'Fikri', rating: 5, comment: 'Barista notes nya dibaca dengan baik (extra shot espresso). Keren.', date: '2026-06-21' },
+  { id: 5, outlet: 'Senopati', name: 'Gisel', rating: 4, comment: 'Rasa mantap, cuma tadi drivernya sempat kesasar cari lokasi titik map.', date: '2026-06-20' },
+  { id: 6, outlet: 'HQ Sudirman', name: 'Bagas', rating: 5, comment: 'Super recommended, tiap hari selalu repeat order disini.', date: '2026-06-19' }
+];
 
 export default function CustomerIntelligencePage() {
   const { members, vouchers, points, campaigns, referrals, isLoading: isIntelLoading } = useIntelligenceData();
@@ -91,7 +119,7 @@ export default function CustomerIntelligencePage() {
       render: (text: string, record: any) => (
         <Space>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
-            <Users size={14} color="#64748b" />
+            <Users size={14} color="#475569" />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Text strong style={{ color: '#0f172a' }}>{text || 'Unknown'}</Text>
@@ -196,8 +224,20 @@ export default function CustomerIntelligencePage() {
     { title: 'Date', dataIndex: 'post_date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
 
-
-
+  const externalReviewColumns = [
+    { title: 'Outlet', dataIndex: 'outlet', key: 'outlet', render: (t: string) => <Text strong style={{ color: '#1F5EFF' }}>{t}</Text> },
+    { title: 'Customer', dataIndex: 'name', key: 'name', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Rating', dataIndex: 'rating', key: 'rating', render: (v: number) => (
+        <Space size={2}>
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} size={14} fill={i < v ? "#475569" : "transparent"} color={i < v ? "#475569" : "#cbd5e1"} />
+          ))}
+        </Space>
+      ) 
+    },
+    { title: 'Review', dataIndex: 'comment', key: 'comment', render: (t: string) => <Text style={{ fontStyle: 'italic', color: '#475569' }}>"{t}"</Text> },
+    { title: 'Date', dataIndex: 'date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }
+  ];
   return (
     <MainLayout title="Customer Intelligence" subtitle="Analisis perilaku pelanggan, keanggotaan, dan retensi">
       {isLoading ? (
@@ -335,7 +375,7 @@ export default function CustomerIntelligencePage() {
                 value={searchText} 
                 onChange={(e) => setSearchText(e.target.value)} 
                 style={{ width: '100%', maxWidth: 300, borderRadius: 8 }} 
-                prefix={<Search size={14} color="#94a3b8" />} 
+                prefix={<Search size={14} color="#475569" />} 
               />
             </div>
             <Table 
@@ -400,6 +440,35 @@ export default function CustomerIntelligencePage() {
               </SectionContainer>
             </Col>
           </Row>
+
+          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Star size={24} color="#475569" />
+              <Title level={4} style={{ margin: 0 }}>External Platform Reviews</Title>
+            </div>
+            <div style={{ padding: '0 24px 24px 24px' }}>
+              <Tabs
+                defaultActiveKey="1"
+                items={[
+                  {
+                    key: '1',
+                    label: <Space><MapPin size={16} /> Google Maps</Space>,
+                    children: <Table columns={externalReviewColumns} dataSource={MOCK_GOOGLE_REVIEWS} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 800 }} />
+                  },
+                  {
+                    key: '2',
+                    label: <Space><Bike size={16} /> GoFood</Space>,
+                    children: <Table columns={externalReviewColumns} dataSource={MOCK_GOFOOD_REVIEWS} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 800 }} />
+                  },
+                  {
+                    key: '3',
+                    label: <Space><ShoppingBag size={16} /> ShopeeFood</Space>,
+                    children: <Table columns={externalReviewColumns} dataSource={MOCK_SHOPEE_REVIEWS} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 800 }} />
+                  }
+                ]}
+              />
+            </div>
+          </SectionContainer>
         </>
       )}
     </MainLayout>

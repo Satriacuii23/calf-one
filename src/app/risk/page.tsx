@@ -286,7 +286,7 @@ export default function RiskPage() {
                 value={searchText} 
                 onChange={(e) => setSearchText(e.target.value)} 
                 style={{ width: '100%', maxWidth: 300, borderRadius: 8 }} 
-                prefix={<Search size={14} color="#94a3b8" />} 
+                prefix={<Search size={14} color="#475569" />} 
               />
             </div>
             <Table 
