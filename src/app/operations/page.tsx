@@ -24,11 +24,11 @@ export default function OperationsPage() {
 
   const [searchText, setSearchText] = useState("");
   const [cctvStreams, setCctvStreams] = useState<any[]>([
-    { title: "HQ Sudirman - Area Depan", videoId: "1-iS7LArMPA" },
-    { title: "Senopati - Main Entrance", videoId: "HpdO5Kq3o7Y" },
-    { title: "Kelapa Gading - Drive Thru", videoId: "bW0n4ZICVxQ" },
-    { title: "Menteng - Outdoor Seating", videoId: "ViXg9r09KkM" },
-    { title: "Kuningan - Parking Area", videoId: "PgJ0VzE1tAM" }
+    { title: "HQ Sudirman - Area Depan", videoId: "1EiC9bvVGnk" },
+    { title: "Senopati - Main Entrance", videoId: "1EiC9bvVGnk" },
+    { title: "Kelapa Gading - Drive Thru", videoId: "1EiC9bvVGnk" },
+    { title: "Menteng - Outdoor Seating", videoId: "1EiC9bvVGnk" },
+    { title: "Kuningan - Parking Area", videoId: "1EiC9bvVGnk" }
   ]);
   const [activeBranchIndex, setActiveBranchIndex] = useState<number>(0);
 
@@ -260,25 +260,38 @@ export default function OperationsPage() {
                 </div>
                 
                 <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                  {cctvStreams.length > 0 && cctvStreams[activeBranchIndex]?.videoId ? (
-                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-                      <ReactPlayer 
-                        key={cctvStreams[activeBranchIndex].videoId}
-                        {...{
-                          url: `https://www.youtube.com/watch?v=${cctvStreams[activeBranchIndex].videoId}`,
-                          playing: true,
-                          muted: true,
-                          width: '100%',
-                          height: '100%',
-                          controls: false,
-                          config: {
+                  {cctvStreams.length > 0 ? (
+                    cctvStreams.map((stream, idx) => (
+                      <div 
+                        key={stream.title}
+                        style={{ 
+                          position: 'absolute', 
+                          top: 0, 
+                          left: 0, 
+                          width: '100%', 
+                          height: '100%', 
+                          pointerEvents: 'none',
+                          opacity: activeBranchIndex === idx ? 1 : 0,
+                          visibility: activeBranchIndex === idx ? 'visible' : 'hidden',
+                          zIndex: activeBranchIndex === idx ? 1 : 0
+                        }}
+                      >
+                        <ReactPlayer 
+                          src={`https://www.youtube.com/watch?v=${stream.videoId}`}
+                          playing={activeBranchIndex === idx}
+                          muted={true}
+                          width="100%"
+                          height="100%"
+                          controls={false}
+                          onError={(e) => console.warn(`Player Error for branch ${stream.title}:`, e)}
+                          config={{
                             youtube: {
                               playerVars: { showinfo: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1 }
-                            }
-                          }
-                        }}
-                      />
-                    </div>
+                            } as any
+                          }}
+                        />
+                      </div>
+                    ))
                   ) : (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Spin size="large" />

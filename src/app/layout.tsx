@@ -10,11 +10,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "CALF ONE | Executive Command Center",
-  description: "Executive & Operations Command Center for Kopi Calf Coffee & Milkbar Indonesia",
-  icons: {
-    icon: "/images/logo.jpeg",
-  },
+  title: "Calf Command Center",
+  description: "Executive Dashboard for Calf Coffee & Milkbar",
 };
 
 export default function RootLayout({
