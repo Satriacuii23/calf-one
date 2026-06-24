@@ -395,7 +395,7 @@ export default function RevenueIntelligencePage() {
             <Table 
               columns={columns} 
               dataSource={filteredOrders} 
-              pagination={{ pageSize: 10, showSizeChanger: false, showTotal: (t) => `Total ${t} transaksi` }}
+              pagination={{ pageSize: 5, showSizeChanger: false, showTotal: (t) => `Total ${t} transaksi` }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}

@@ -308,7 +308,7 @@ export default function ProductIntelligencePage() {
             <Table 
               columns={columns} 
               dataSource={filteredStats} 
-              pagination={{ pageSize: 15, showSizeChanger: true, showTotal: (t) => `Total ${t} produk` }}
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} produk` }}
               size="middle"
               rowKey="name"
               scroll={{ x: 600 }}

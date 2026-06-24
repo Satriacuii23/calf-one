@@ -292,7 +292,7 @@ export default function RiskPage() {
             <Table 
               columns={columns} 
               dataSource={filteredAlerts} 
-              pagination={{ pageSize: 15, showSizeChanger: true }}
+              pagination={{ pageSize: 5, showSizeChanger: true }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}

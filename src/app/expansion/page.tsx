@@ -314,7 +314,7 @@ export default function ExpansionPage() {
             <Table 
               columns={columns} 
               dataSource={filteredProposals} 
-              pagination={{ pageSize: 15, showSizeChanger: true, showTotal: (t) => `Total ${t} lokasi` }}
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} lokasi` }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}

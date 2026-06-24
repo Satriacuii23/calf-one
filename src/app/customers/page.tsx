@@ -150,9 +150,9 @@ export default function CustomerIntelligencePage() {
   ];
 
   const pointColumns = [
-    { title: 'Member', dataIndex: ['members', 'member_name'], key: 'member', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Member', dataIndex: 'member_code', key: 'member', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Type', dataIndex: 'transaction_type', key: 'type', render: (t: string) => <Text strong style={{ color: t==='Earn'?'#10b981':'#f59e0b'}}>{t}</Text> },
-    { title: 'Points', dataIndex: 'points_earned', key: 'pts', align: 'right' as const, render: (v: number) => <Text strong style={{ color: '#8b5cf6' }}>{v > 0 ? `+${v}` : v}</Text> },
+    { title: 'Points', dataIndex: 'points', key: 'pts', align: 'right' as const, render: (v: number) => <Text strong style={{ color: '#8b5cf6' }}>{v > 0 ? `+${v}` : v}</Text> },
     { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
 
@@ -173,7 +173,7 @@ export default function CustomerIntelligencePage() {
 
   const complaintColumns = [
     { title: 'Customer', dataIndex: ['members', 'member_name'], key: 'member', render: (t: string) => <Text strong>{t || 'Guest'}</Text> },
-    { title: 'Category', dataIndex: 'category', key: 'cat' },
+    { title: 'Category', dataIndex: 'issue_type', key: 'cat' },
     { title: 'Branch', dataIndex: ['branches', 'branch_name'], key: 'branch' },
     { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => {
         const color = t?.toLowerCase() === 'resolved' ? '#10b981' : t?.toLowerCase() === 'in progress' ? '#f59e0b' : '#ef4444';
@@ -186,14 +186,13 @@ export default function CustomerIntelligencePage() {
 
   const sentimentColumns = [
     { title: 'Platform', dataIndex: 'platform', key: 'plat', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Sentiment', dataIndex: 'sentiment_score', key: 'score', render: (v: number) => {
-        const color = v > 0.6 ? '#10b981' : v < 0.4 ? '#ef4444' : '#f59e0b';
-        const bg = v > 0.6 ? '#ecfdf5' : v < 0.4 ? '#fef2f2' : '#fffbeb';
-        const label = v > 0.6 ? 'Positive' : v < 0.4 ? 'Negative' : 'Neutral';
-        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{label}</div>;
+    { title: 'Sentiment', dataIndex: 'sentiment', key: 'score', render: (v: string) => {
+        const color = v === 'positive' ? '#10b981' : v === 'negative' ? '#ef4444' : '#f59e0b';
+        const bg = v === 'positive' ? '#ecfdf5' : v === 'negative' ? '#fef2f2' : '#fffbeb';
+        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{v.charAt(0).toUpperCase() + v.slice(1)}</div>;
       }
     },
-    { title: 'Content', dataIndex: 'post_content', key: 'content', render: (t: string) => <Text type="secondary">{t?.substring(0, 60)}...</Text> },
+    { title: 'Content', dataIndex: 'comment', key: 'content', render: (t: string) => <Text type="secondary">{t?.substring(0, 60)}...</Text> },
     { title: 'Date', dataIndex: 'post_date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
 
@@ -342,7 +341,7 @@ export default function CustomerIntelligencePage() {
             <Table 
               columns={columns} 
               dataSource={filteredMembers} 
-              pagination={{ pageSize: 15, showSizeChanger: true, showTotal: (t) => `Total ${t} members` }}
+              pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} members` }}
               size="middle"
               rowKey="member_code"
               scroll={{ x: 800 }}

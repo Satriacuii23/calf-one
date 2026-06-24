@@ -285,7 +285,7 @@ export default function OutletsPage() {
             <Table 
               columns={columns} 
               dataSource={filteredBranches} 
-              pagination={{ pageSize: 15, showSizeChanger: true }}
+              pagination={{ pageSize: 5, showSizeChanger: true }}
               size="middle"
               rowKey="id"
               scroll={{ x: 800 }}
