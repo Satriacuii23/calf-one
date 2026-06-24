@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider } from 'antd';
+import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider, Tooltip } from 'antd';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -124,24 +124,26 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         />
 
         {!collapsed && (
-          <div style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
-            <div style={{ padding: 12, backgroundColor: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', marginBottom: 16 }}>
-              <Text type="secondary" strong style={{ fontSize: 11, display: 'block', marginBottom: 8 }}>CALF Health Score</Text>
-              <Space align="center" size="middle">
-                <Progress type="circle" percent={healthScore} size={48} strokeColor="#22c55e" format={(percent) => <Text strong style={{ fontSize: 12 }}>{percent}</Text>} />
-                <div>
-                  <Text strong style={{ fontSize: 18, display: 'block', lineHeight: 1 }}>{healthScore}/100</Text>
-                  <Badge color="green" text="Healthy" style={{ marginTop: 4, fontSize: 12 }} />
-                </div>
-              </Space>
-            </div>
+          <div style={{ padding: '20px 16px', borderTop: '1px solid #f1f5f9', background: '#fafafa' }}>
+            <Tooltip title="Indikator kesehatan bisnis Kopi Calf secara menyeluruh" placement="right">
+              <div style={{ padding: 16, backgroundColor: '#ffffff', borderRadius: 12, border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', marginBottom: 16, cursor: 'pointer' }}>
+                <Text type="secondary" strong style={{ fontSize: 11, display: 'block', marginBottom: 12, letterSpacing: 0.5 }}>CALF HEALTH SCORE</Text>
+                <Space align="center" size="middle">
+                  <Progress type="circle" percent={healthScore} size={48} strokeColor="#10b981" format={(percent) => <Text strong style={{ fontSize: 13, color: '#047857' }}>{percent}</Text>} />
+                  <div>
+                    <Text strong style={{ fontSize: 20, display: 'block', lineHeight: 1, marginBottom: 4 }}>{healthScore}<span style={{fontSize: 12, color: '#94a3b8'}}>/100</span></Text>
+                    <Badge color="#10b981" text={<span style={{ color: '#10b981', fontWeight: 600, fontSize: 11 }}>Excellent</span>} />
+                  </div>
+                </Space>
+              </div>
+            </Tooltip>
             
-            <Space align="center" style={{ width: '100%', justifyContent: 'space-between' }}>
+            <Space align="center" style={{ width: '100%', justifyContent: 'space-between', padding: '0 4px' }}>
               <Space>
-                <Avatar style={{ backgroundColor: '#eff6ff', color: '#1F5EFF' }}>F</Avatar>
+                <Avatar size={36} style={{ backgroundColor: '#1F5EFF', color: '#fff', fontWeight: 600 }}>F</Avatar>
                 <div>
-                  <Text strong style={{ display: 'block', fontSize: 14, lineHeight: 1.2 }}>Founder</Text>
-                  <Text type="secondary" style={{ display: 'block', fontSize: 12, lineHeight: 1.2 }}>Administrator</Text>
+                  <Text strong style={{ display: 'block', fontSize: 14, lineHeight: 1.2, color: '#0f172a' }}>Founder</Text>
+                  <Text type="secondary" style={{ display: 'block', fontSize: 12, lineHeight: 1.2 }}>Executive Access</Text>
                 </div>
               </Space>
             </Space>
@@ -166,22 +168,24 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
             )}
           </Space>
 
-          <Space size="large">
+          <Space size="large" align="center">
             <Input 
-              placeholder="Search outlets, reports..." 
-              prefix={<Search size={14} style={{ color: '#bfbfbf' }} />}
-              style={{ borderRadius: 20, backgroundColor: '#f1f5f9', border: 'none', width: 240 }}
+              placeholder="Cari insight, outlet, laporan..." 
+              prefix={<Search size={16} style={{ color: '#94a3b8' }} />}
+              style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 280, padding: '6px 16px' }}
             />
-            <Text type="secondary" style={{ fontSize: 14 }}>24 Juni 2026</Text>
+            <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>24 Juni 2026</Text>
             
-            <Dropdown menu={{ items: [{ key: '1', label: 'Notifikasi 1' }] }} trigger={['click']}>
-              <Badge dot color="red">
-                <Button type="text" shape="circle" icon={<Bell size={18} />} />
-              </Badge>
-            </Dropdown>
+            <Tooltip title="Peringatan & Notifikasi Sistem">
+              <Dropdown menu={{ items: [{ key: '1', label: 'Laporan harian siap diunduh' }, { key: '2', label: '1 Alert Risiko baru terdeteksi' }] }} trigger={['click']}>
+                <Badge dot color="#ef4444" offset={[-4, 4]}>
+                  <Button type="text" shape="circle" icon={<Bell size={18} style={{ color: '#475569' }} />} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+                </Badge>
+              </Dropdown>
+            </Tooltip>
             
-            <Dropdown menu={{ items: [{ key: 'profile', label: 'Profil Saya', icon: <User size={14} /> }, { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }] }} trigger={['click']}>
-              <Avatar style={{ backgroundColor: '#eff6ff', color: '#1F5EFF', cursor: 'pointer' }}>F</Avatar>
+            <Dropdown menu={{ items: [{ key: 'profile', label: 'Pengaturan Akun', icon: <User size={14} /> }, { key: 'logout', label: 'Keluar', icon: <LogOut size={14} />, danger: true }] }} trigger={['click']}>
+              <Avatar size={36} style={{ backgroundColor: '#1F5EFF', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>F</Avatar>
             </Dropdown>
           </Space>
         </Header>

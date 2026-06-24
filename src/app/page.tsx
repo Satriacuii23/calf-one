@@ -13,7 +13,9 @@ import {
   Segmented,
   Space,
   Tag,
+  Tooltip,
 } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
@@ -33,21 +35,20 @@ import {
   MessageSquare,
   ThumbsUp,
   Brain,
-  ChevronRight,
+  ShoppingBag,
 } from 'lucide-react';
 import {
   topOutlets,
-  alertFeed,
   infrastructureStatus,
-  aiRecommendations,
-  healthScoreData,
   areaRevenueData,
+  healthScoreData,
 } from "@/lib/data";
 import { useState, useMemo } from 'react';
+import { useDashboardData } from '@/hooks/useDashboardData';
+import { formatNumber } from '@/lib/utils';
 
 const { Text, Title } = Typography;
 
-// --- Static chart data seeded to avoid hydration mismatch ---
 const allRevenueData = Array.from({ length: 365 }, (_, i) => {
   const date = new Date(2026, 0, 1);
   date.setDate(date.getDate() + i);
@@ -70,6 +71,7 @@ const FILTER_RANGES: Record<string, number> = { '7D': 7, '30D': 30, '90D': 90, '
 
 export default function OverviewPage() {
   const [revenueFilter, setRevenueFilter] = useState('30D');
+  const dashboardData = useDashboardData();
 
   const filteredRevenue = useMemo(() => {
     const days = FILTER_RANGES[revenueFilter];
@@ -81,12 +83,11 @@ export default function OverviewPage() {
   );
 
   const kpiCards = [
-    { label: 'Revenue Today', value: 'Rp 512.000.000', sub: '+12.5% vs kemarin', trend: 'up', icon: Wallet, color: '#1F5EFF', bg: '#eff6ff' },
-    { label: 'Revenue MTD', value: 'Rp 14,8 Miliar', sub: 'Target: Rp 15,0M', trend: 'up', icon: TrendingUp, color: '#0ea5e9', bg: '#f0f9ff' },
-    { label: 'Transaksi Hari Ini', value: '18.642', sub: '+6.2% vs kemarin', trend: 'up', icon: Receipt, color: '#8b5cf6', bg: '#f5f3ff' },
-    { label: 'Customer Aktif', value: '128.521', sub: '+15.3% bulan lalu', trend: 'up', icon: Users, color: '#14b8a6', bg: '#f0fdfa' },
-    { label: 'Outlet Aktif', value: '115 / 115', sub: '100% Online', trend: 'up', icon: Building2, color: '#22c55e', bg: '#f0fdf4' },
-    { label: 'Health Score', value: `${totalScore}/100`, sub: 'Healthy', trend: 'up', icon: ShieldCheck, color: '#f59e0b', bg: '#fffbeb' },
+    { label: 'Total Revenue', tooltip: 'Total pendapatan kotor dari seluruh cabang yang terdata.', value: `Rp ${(dashboardData.totalRevenue / 1000000).toFixed(1)}M`, icon: TrendingUp, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
+    { label: 'Total Orders', tooltip: 'Jumlah keseluruhan pesanan (Dine-in, Takeaway, dan Delivery).', value: formatNumber(dashboardData.totalTransactions), icon: ShoppingBag, color: '#f59e0b', bg: '#fffbeb', trend: '+5.2%' },
+    { label: 'Active Members', tooltip: 'Pelanggan aktif yang terdaftar dalam program loyalitas.', value: formatNumber(dashboardData.totalCustomers), icon: Users, color: '#8b5cf6', bg: '#f5f3ff', trend: '+18.4%' },
+    { label: 'Active Outlets', tooltip: 'Jumlah gerai yang saat ini beroperasi aktif.', value: `${dashboardData.totalOutlets}`, icon: Building2, color: '#22c55e', bg: '#f0fdf4', trend: '0%' },
+    { label: 'Health Score', tooltip: 'Indeks kesehatan operasional berdasarkan skor performa.', value: `${totalScore}/100`, icon: ShieldCheck, color: '#f59e0b', bg: '#fffbeb', trend: '+1.2%' },
   ];
 
   const tableColumns = [
@@ -112,31 +113,31 @@ export default function OverviewPage() {
 
   return (
     <MainLayout title="Executive Command Center" subtitle="Ringkasan performa Kopi Calf secara real-time">
-      {/* ── KPI CARDS ── */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         {kpiCards.map((kpi) => (
-          <Col xs={12} sm={8} lg={4} key={kpi.label}>
-            <Card styles={{ body: { padding: 16 } }} variant="outlined" style={{ borderTop: `3px solid ${kpi.color}`, height: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 13, lineHeight: 1.2, flex: 1 }}>{kpi.label}</Text>
+          <Col xs={24} sm={12} lg={8} xl={4} key={kpi.label}>
+            <Card variant="outlined" style={{ borderTop: `3px solid ${kpi.color}`, height: '100%', borderRadius: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                <Space align="center" size={4}>
+                  <Text type="secondary" style={{ fontSize: 13, fontWeight: 600 }}>{kpi.label}</Text>
+                  <Tooltip title={kpi.tooltip}>
+                    <InfoCircleOutlined style={{ color: '#94a3b8', fontSize: 13, cursor: 'help' }} />
+                  </Tooltip>
+                </Space>
                 <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: kpi.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <kpi.icon size={16} color={kpi.color} />
                 </div>
               </div>
-              <Title level={4} style={{ margin: '4px 0 8px 0', fontSize: 20 }}>{kpi.value}</Title>
-              <Space size={4} align="center">
-                {kpi.trend === 'up' ? <ArrowUpRight size={14} color="#22c55e" /> : <ArrowDownRight size={14} color="#ef4444" />}
-                <Text style={{ fontSize: 12, color: kpi.trend === 'up' ? '#22c55e' : '#ef4444', fontWeight: 500 }}>{kpi.sub}</Text>
-              </Space>
+              <Title level={3} style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>{kpi.value}</Title>
+              <Text style={{ color: '#10b981', fontSize: 13, fontWeight: 500, display: 'inline-block', marginTop: 8 }}>{kpi.trend} <span style={{ color: '#64748b', fontWeight: 400 }}>vs last month</span></Text>
             </Card>
           </Col>
         ))}
       </Row>
 
-      {/* ── ROW 2: Revenue Trend + Area + Risk ── */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} lg={12}>
-          <Card title="Revenue Trend" extra={
+          <Card title={<Space><Text strong>Revenue Trend</Text><Tooltip title="Grafik pergerakan pendapatan kotor harian."><InfoCircleOutlined style={{ color: '#94a3b8' }} /></Tooltip></Space>} extra={
             <Segmented options={['7D', '30D', '90D', '12M']} value={revenueFilter} onChange={setRevenueFilter} />
           } styles={{ body: { padding: 16 } }} style={{ height: '100%' }}>
             <div style={{ height: 260, width: '100%' }}>
@@ -187,16 +188,16 @@ export default function OverviewPage() {
         <Col xs={24} sm={12} lg={6}>
           <Card title="Risk Alert" extra={<Button type="link" size="small" style={{ padding: 0 }}>Lihat Semua</Button>} styles={{ body: { padding: 16 } }} style={{ height: '100%' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {alertFeed.slice(0, 5).map((alert) => {
-                const color = alert.type === 'danger' ? '#ef4444' : alert.type === 'warning' ? '#f59e0b' : '#3b82f6';
+              {dashboardData.riskAlerts.map((alert: any) => {
+                const color = alert.severity === 'high' ? '#ef4444' : alert.severity === 'medium' ? '#f59e0b' : '#3b82f6';
                 return (
                   <div key={alert.id} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: color, marginTop: 6 }} />
                     <div style={{ flex: 1 }}>
-                      <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.3, marginBottom: 2 }}>{alert.message}</Text>
-                      <Text type="secondary" style={{ fontSize: 12 }}>{alert.timestamp}</Text>
+                      <Text strong style={{ fontSize: 13, display: 'block', lineHeight: 1.3, marginBottom: 2 }}>{alert.title}</Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>{new Date(alert.created_at).toLocaleDateString()}</Text>
                     </div>
-                    {!alert.isRead && <Badge dot color="red" />}
+                    {!alert.is_dismissed && <Badge dot color="red" />}
                   </div>
                 )
               })}
@@ -205,21 +206,20 @@ export default function OverviewPage() {
         </Col>
       </Row>
 
-      {/* ── ROW 3: Top 10 Outlets ── */}
-      <Card title="Top Outlet (by Revenue)" extra={<Button type="link">Lihat Semua</Button>} style={{ marginBottom: 24 }}>
+      <Card title={<Space><Text strong>Top Outlet (by Revenue)</Text><Tooltip title="Peringkat cabang dengan performa pendapatan tertinggi."><InfoCircleOutlined style={{ color: '#94a3b8' }} /></Tooltip></Space>} extra={<Button type="link">Lihat Semua</Button>} style={{ marginBottom: 24, borderRadius: 12 }}>
         <Table 
           columns={tableColumns} 
-          dataSource={topOutlets.slice(0, 10)} 
-          pagination={false}
+          dataSource={topOutlets} 
+          pagination={{ pageSize: 5, showSizeChanger: true, showTotal: (t) => `Total ${t} outlet` }}
           size="middle"
           rowKey="id"
+          scroll={{ x: 600 }}
         />
       </Card>
 
-      {/* ── ROW 4: Infrastructure + AI ── */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
-          <Card title="Infrastructure Status" extra={<Tag color="success">LIVE</Tag>} style={{ height: '100%' }}>
+          <Card title={<Space><Text strong>Infrastructure Status</Text><Tooltip title="Pantauan kondisi CCTV dan jaringan di seluruh lokasi cabang."><InfoCircleOutlined style={{ color: '#94a3b8' }} /></Tooltip></Space>} extra={<Tag color="success">LIVE</Tag>} style={{ height: '100%', borderRadius: 12 }}>
             <Row gutter={[16, 16]}>
               {[
                 { icon: Video, label: 'CCTV Online', value: infrastructureStatus.cctv.online, total: infrastructureStatus.cctv.total, color: '#1F5EFF', pct: (infrastructureStatus.cctv.online/infrastructureStatus.cctv.total)*100 },
@@ -228,13 +228,13 @@ export default function OverviewPage() {
                 { icon: MessageSquare, label: 'Open Complaint', value: infrastructureStatus.openComplaint, total: '', color: '#f59e0b', pct: 0 },
                 { icon: ThumbsUp, label: 'Social Sentiment', value: `${infrastructureStatus.socialSentiment}%`, total: 'Positif', color: '#22c55e', pct: infrastructureStatus.socialSentiment },
               ].map(item => (
-                <Col xs={12} sm={8} lg={4} key={item.label}>
+                <Col xs={24} sm={12} lg={12} xl={4} key={item.label}>
                   <div style={{ padding: 12, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8 }}>
                     <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
                       <item.icon size={16} color={item.color} />
                     </div>
-                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>{item.label}</Text>
-                    <Space align="baseline" size={4}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4, minHeight: 18 }}>{item.label}</Text>
+                    <Space align="baseline" size={4} wrap={false} style={{ whiteSpace: 'nowrap', display: 'flex' }}>
                       <Text strong style={{ fontSize: 18, color: item.color }}>{item.value}</Text>
                       {item.total && <Text type="secondary" style={{ fontSize: 12 }}>/{item.total}</Text>}
                     </Space>
@@ -246,7 +246,7 @@ export default function OverviewPage() {
           </Card>
         </Col>
         <Col xs={24} lg={8}>
-          <Card style={{ height: '100%' }}>
+          <Card title={<Space><Text strong>AI Executive Assistant</Text><Tooltip title="Rekomendasi otomatis dari algoritma CALF ONE."><InfoCircleOutlined style={{ color: '#94a3b8' }} /></Tooltip></Space>} style={{ height: '100%', borderRadius: 12 }}>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Brain size={18} color="#1F5EFF" />
@@ -257,11 +257,11 @@ export default function OverviewPage() {
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {aiRecommendations.map(rec => (
+              {dashboardData.aiInsights.map((rec: any) => (
                 <div key={rec.id} style={{ padding: 12, border: '1px solid #e2e8f0', borderLeft: '3px solid #1F5EFF', borderRadius: 8 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <Text strong style={{ fontSize: 13, flex: 1, marginRight: 8 }}>{rec.title}</Text>
-                    <Tag color="blue" style={{ margin: 0 }}>{rec.impact}</Tag>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 6 }}>
+                    <Text strong style={{ fontSize: 13, lineHeight: 1.3 }}>{rec.title}</Text>
+                    <div><Tag color="blue" style={{ margin: 0, whiteSpace: 'normal', height: 'auto' }}>Impact: {rec.expected_impact || 'High'}</Tag></div>
                   </div>
                   <Text type="secondary" style={{ fontSize: 12 }}>{rec.description}</Text>
                 </div>

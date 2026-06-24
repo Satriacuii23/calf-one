@@ -1,16 +1,16 @@
 "use client"
 
 import { MainLayout } from "@/components/layout/main-layout";
-import { Typography, Card, Empty } from 'antd';
+import { Card, Typography, Empty } from 'antd';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
-export default function reportsPage() {
+export default function ReportsPage() {
   return (
-    <MainLayout title="Reports" subtitle="Migrating to Ant Design...">
+    <MainLayout title="Reports" subtitle="Generate dan unduh laporan analitik">
       <Card style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Empty description={
-          <Text type="secondary">Halaman ini sedang dalam proses migrasi ke Ant Design.</Text>
+          <Text type="secondary">Modul Report Builder sedang dalam pengembangan.</Text>
         } />
       </Card>
     </MainLayout>
