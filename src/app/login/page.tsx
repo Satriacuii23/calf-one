@@ -19,7 +19,9 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { Mail, Lock, Sparkles, Coffee } from 'lucide-react';
 import { AppleOutlined, GoogleOutlined } from '@ant-design/icons';
-import { message } from 'antd';
+import { message, Grid } from 'antd';
+
+const { useBreakpoint } = Grid;
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const router = useRouter();
   const supabase = createClient();
 
@@ -66,13 +70,15 @@ export default function LoginPage() {
       minHeight: '100vh', 
       width: '100%',
       backgroundColor: '#f5f5f5',
-      backgroundImage: 'url("/images/login-illustration.png")',
+      backgroundImage: isMobile ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' : 'url("/images/login-illustration.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       display: 'flex',
       alignItems: 'center',
-      paddingLeft: 'max(5%, 40px)', // Card is on the left
+      justifyContent: isMobile ? 'center' : 'flex-start',
+      paddingLeft: isMobile ? '0' : 'max(5%, 40px)',
+      padding: isMobile ? '20px' : undefined,
       paddingBottom: '80px', // Space for the wave footer
       overflow: 'hidden',
     }}>

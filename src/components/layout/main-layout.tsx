@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider, Tooltip, Popover } from 'antd';
+import { Layout, Menu, Typography, Avatar, Badge, Input, Space, Button, Dropdown, Progress, ConfigProvider, Tooltip, Popover, Grid } from 'antd';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -85,6 +85,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -111,6 +113,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         collapsible 
         collapsed={collapsed} 
         onCollapse={(value) => setCollapsed(value)}
+        breakpoint="lg"
+        collapsedWidth={isMobile ? 0 : 80}
         style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, borderRight: '1px solid #f0f0f0', zIndex: 100 }}
       >
         <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', borderBottom: '1px solid #f0f0f0', justifyContent: collapsed ? 'center' : 'flex-start', overflow: 'hidden' }}>
@@ -171,8 +175,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         )}
       </Sider>
 
-      <Layout style={{ marginLeft: collapsed ? 80 : 260, transition: 'all 0.2s', minHeight: '100vh' }}>
-        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64, position: 'sticky', top: 0, zIndex: 50 }}>
+      <Layout style={{ marginLeft: isMobile ? 0 : (collapsed ? 80 : 260), transition: 'all 0.2s', minHeight: '100vh' }}>
+        <Header style={{ padding: isMobile ? '0 16px' : '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64, position: 'sticky', top: 0, zIndex: 50 }}>
           <Space align="center">
             <Button
               type="text"
@@ -188,13 +192,17 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
             )}
           </Space>
 
-          <Space size="large" align="center">
-            <Input 
-              placeholder="Cari insight, outlet, laporan..." 
-              prefix={<Search size={16} style={{ color: '#94a3b8' }} />}
-              style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 280, padding: '6px 16px' }}
-            />
-            <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>24 Juni 2026</Text>
+          <Space size={isMobile ? "small" : "large"} align="center">
+            {!isMobile && (
+              <>
+                <Input 
+                  placeholder="Cari insight, outlet, laporan..." 
+                  prefix={<Search size={16} style={{ color: '#94a3b8' }} />}
+                  style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 280, padding: '6px 16px' }}
+                />
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>24 Juni 2026</Text>
+              </>
+            )}
             
             <Tooltip title="Peringatan & Notifikasi Sistem">
               <Popover 
@@ -252,7 +260,7 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
           </Space>
         </Header>
         
-        <Content style={{ margin: '24px', overflow: 'initial' }}>
+        <Content style={{ margin: isMobile ? '16px' : '24px', overflow: 'initial' }}>
           {children}
         </Content>
       </Layout>

@@ -80,7 +80,7 @@ export default function OverviewPage() {
           <Spin size="large" />
         </div>
       ) : (
-        <>
+        <div style={{ overflowX: 'hidden', width: '100%' }}>
           <div style={{ marginBottom: 32, padding: '8px 0 24px 0', borderBottom: '1px solid #f1f5f9' }}>
             <Row gutter={[24, 24]}>
               {kpiCards.map((kpi) => (
@@ -312,7 +312,7 @@ export default function OverviewPage() {
               </SectionContainer>
             </Col>
           </Row>
-        </>
+          </div>
       )}
     </MainLayout>
   )
