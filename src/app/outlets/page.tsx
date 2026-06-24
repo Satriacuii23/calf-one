@@ -5,7 +5,7 @@ import { Row, Col, Typography, Table, Space, Spin, Empty, Tooltip, Input } from 
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Search, Sparkles, Map, Store, ShieldCheck, MapPin } from 'lucide-react';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { useOperationsData, useSocialData } from '@/hooks/useDashboardModules';
+import { useOperationsData } from '@/hooks/useDashboardModules';
 import { useIntelligenceData } from '@/hooks/useIntelligenceData';
 import { useState, useMemo } from "react";
 
@@ -19,7 +19,6 @@ const SectionContainer = ({ children, style }: { children: React.ReactNode, styl
 
 export default function OutletsPage() {
   const { branches, isLoading: isOpsLoading } = useOperationsData();
-  const { sentiments } = useSocialData();
   const { kitchenTickets, deliveryTracking, isLoading: isIntelLoading } = useIntelligenceData();
   
   const isLoading = isOpsLoading || isIntelLoading;
@@ -122,19 +121,6 @@ export default function OutletsPage() {
         </div>
       )
     }
-  ];
-
-  const sentimentColumns = [
-    { title: 'Platform', dataIndex: 'platform', key: 'plat', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Sentiment', dataIndex: 'sentiment_score', key: 'score', render: (v: number) => {
-        const color = v > 0.6 ? '#10b981' : v < 0.4 ? '#ef4444' : '#f59e0b';
-        const bg = v > 0.6 ? '#ecfdf5' : v < 0.4 ? '#fef2f2' : '#fffbeb';
-        const label = v > 0.6 ? 'Positive' : v < 0.4 ? 'Negative' : 'Neutral';
-        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{label}</div>;
-      }
-    },
-    { title: 'Content', dataIndex: 'post_content', key: 'content', render: (t: string) => <Text type="secondary">{t?.substring(0, 60)}...</Text> },
-    { title: 'Date', dataIndex: 'post_date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
 
   const kitchenColumns = [
@@ -307,12 +293,6 @@ export default function OutletsPage() {
             />
           </SectionContainer>
 
-          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
-              <Title level={4} style={{ margin: 0 }}>Social Media Sentiments & Reviews</Title>
-            </div>
-            <Table columns={sentimentColumns} dataSource={sentiments} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
-          </SectionContainer>
 
           <Row gutter={[24, 24]}>
             <Col xs={24} lg={12}>

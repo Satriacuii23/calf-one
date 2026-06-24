@@ -17,7 +17,7 @@ const SectionContainer = ({ children, style }: { children: React.ReactNode, styl
 );
 
 export default function OperationsPage() {
-  const { infrastructures, inventories, branches, purchaseOrders, shifts, attendances, suppliers, stockAdjustments, isLoading } = useOperationsData();
+  const { infrastructures, branches, shifts, attendances, isLoading } = useOperationsData();
 
   const [searchText, setSearchText] = useState("");
 
@@ -30,7 +30,6 @@ export default function OperationsPage() {
     const totalBranches = branches.length || 0;
     const cctvOnline = infrastructures.filter((i: any) => i.cctv_status === 'online').length;
     const internetOnline = infrastructures.filter((i: any) => i.internet_status === 'online').length;
-    const lowStockItems = inventories.filter((i: any) => Number(i.current_stock) <= Number(i.minimum_stock));
     
     // Status distribution
     const cctvDist = [
@@ -38,30 +37,19 @@ export default function OperationsPage() {
       { name: 'Offline/Warning', value: infrastructures.length - cctvOnline, color: '#ef4444' }
     ];
 
-    const topLowStock = [...lowStockItems]
-      .sort((a: any, b: any) => Number(a.current_stock) - Number(b.current_stock))
-      .slice(0, 5)
-      .map((i: any) => ({
-        name: i.item_name?.substring(0, 15),
-        fullName: i.item_name,
-        stock: Number(i.current_stock),
-        min: Number(i.minimum_stock)
-      }));
-
-    return { totalBranches, cctvOnline, internetOnline, lowStockCount: lowStockItems.length, cctvDist, topLowStock };
-  }, [infrastructures, inventories, branches]);
+    return { totalBranches, cctvOnline, internetOnline, cctvDist };
+  }, [infrastructures, branches]);
 
   const summaryInsight = useMemo(() => {
     if (!infrastructures.length) return "Mengumpulkan data operasional...";
     const infraHealth = infrastructures.length > 0 ? ((opsStats.cctvOnline / infrastructures.length) * 100).toLocaleString('id-ID', { maximumFractionDigits: 0 }) : 0;
-    return `Sistem memantau operasional di ${opsStats.totalBranches} cabang aktif. Saat ini, kesehatan infrastruktur (CCTV) berada di tingkat ${infraHealth}%. Terdapat peringatan untuk ${opsStats.lowStockCount} item inventaris yang stoknya menipis. Rekomendasi: Segera jadwalkan pengiriman stok (*restock*) untuk ${opsStats.lowStockCount} barang tersebut dan kirimkan teknisi pemeliharaan ke cabang dengan gangguan infrastruktur.`;
+    return `Sistem memantau operasional di ${opsStats.totalBranches} cabang aktif. Saat ini, kesehatan infrastruktur (CCTV) berada di tingkat ${infraHealth}%. Rekomendasi: Kirimkan teknisi pemeliharaan ke cabang dengan gangguan infrastruktur dan pastikan absensi kasir terpantau.`;
   }, [infrastructures, opsStats]);
 
   const kpiCards = [
     { label: 'Active Branches', tooltip: 'Jumlah total cabang yang sedang aktif beroperasi saat ini.', value: opsStats.totalBranches, icon: ActivitySquare, trend: 'Stable' },
     { label: 'CCTV Online', tooltip: 'Rasio kamera pengawas yang terhubung dan aktif.', value: `${opsStats.cctvOnline} / ${infrastructures.length}`, icon: Video, trend: 'Monitor' },
-    { label: 'Internet Online', tooltip: 'Rasio koneksi internet yang stabil di setiap cabang.', value: `${opsStats.internetOnline} / ${infrastructures.length}`, icon: Wifi, trend: 'Monitor' },
-    { label: 'Low Stock Alerts', tooltip: 'Jumlah item inventaris yang stoknya berada di bawah ambang batas aman.', value: opsStats.lowStockCount, icon: PackageMinus, trend: 'Action Required' },
+    { label: 'Internet Online', tooltip: 'Rasio koneksi internet yang stabil di setiap cabang.', value: `${opsStats.internetOnline} / ${infrastructures.length}`, icon: Wifi, trend: 'Monitor' }
   ];
 
   const columns = [
@@ -120,20 +108,6 @@ export default function OperationsPage() {
     }
   ];
 
-  const poColumns = [
-    { title: 'PO Number', dataIndex: 'po_number', key: 'po', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Supplier', dataIndex: 'supplier_name', key: 'sup' },
-    { title: 'Branch', dataIndex: ['branches', 'branch_name'], key: 'branch' },
-    { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => {
-        const color = t === 'Received' ? '#10b981' : t === 'Pending' ? '#f59e0b' : '#ef4444';
-        const bg = t === 'Received' ? '#ecfdf5' : t === 'Pending' ? '#fffbeb' : '#fef2f2';
-        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t}</div>;
-      }
-    },
-    { title: 'Total Cost', dataIndex: 'total_cost', key: 'cost', align: 'right' as const, render: (v: number) => `Rp ${v?.toLocaleString('id-ID')}` },
-    { title: 'Est. Delivery', dataIndex: 'expected_delivery', key: 'deliv', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
-  ];
-
   const shiftColumns = [
     { title: 'Cashier Name', dataIndex: 'cashier_name', key: 'cashier', render: (t: string) => <Text strong>{t}</Text> },
     { title: 'Start Time', dataIndex: 'shift_start', key: 'start', render: (d: string) => new Date(d).toLocaleString('id-ID') },
@@ -149,20 +123,6 @@ export default function OperationsPage() {
     { title: 'Status', dataIndex: 'status', key: 'status', render: (t: string) => <div style={{ background: t === 'present' ? '#ecfdf5' : '#fef2f2', color: t === 'present' ? '#10b981' : '#ef4444', padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{t.toUpperCase()}</div> }
   ];
 
-  const supplierColumns = [
-    { title: 'Supplier Name', dataIndex: 'supplier_name', key: 'sup', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Category', dataIndex: 'category', key: 'cat' },
-    { title: 'Avg Lead Time', dataIndex: 'avg_lead_time_days', key: 'lead', render: (v: number) => `${v} Days` },
-    { title: 'Rating', dataIndex: 'rating', key: 'rating', render: (v: number) => <Text strong style={{ color: '#f59e0b' }}>★ {v}</Text> }
-  ];
-
-  const adjustmentColumns = [
-    { title: 'Item', dataIndex: ['inventories', 'item_name'], key: 'item', render: (t: string) => <Text strong>{t}</Text> },
-    { title: 'Adjustment Qty', dataIndex: 'adjustment_qty', key: 'qty', render: (v: number) => <Text type="danger">{v}</Text> },
-    { title: 'Reason', dataIndex: 'reason', key: 'reason', render: (t: string) => <Text style={{ textTransform: 'capitalize' }}>{t?.replace('_', ' ')}</Text> },
-    { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
-  ];
-
   return (
     <MainLayout title="Operations Center" subtitle="Pemantauan kesehatan infrastruktur dan logistik cabang">
       {isLoading ? (
@@ -174,7 +134,7 @@ export default function OperationsPage() {
           <div style={{ marginBottom: 32, padding: '8px 0 24px 0', borderBottom: '1px solid #f1f5f9' }}>
             <Row gutter={[24, 24]}>
               {kpiCards.map((kpi) => (
-                <Col xs={24} sm={12} lg={6} key={kpi.label}>
+                <Col xs={24} sm={12} lg={8} key={kpi.label}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -209,7 +169,7 @@ export default function OperationsPage() {
           </div>
 
           <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
-            <Col xs={24} lg={8}>
+            <Col xs={24} lg={24}>
               <SectionContainer style={{ height: '100%' }}>
                 <div style={{ marginBottom: 20 }}>
                   <Space align="center">
@@ -254,42 +214,7 @@ export default function OperationsPage() {
                 ) : <Empty />}
               </SectionContainer>
             </Col>
-            <Col xs={24} lg={16}>
-              <SectionContainer style={{ height: '100%' }}>
-                <div style={{ marginBottom: 20 }}>
-                  <Space align="center">
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <AlertTriangle size={18} color="#475569" />
-                    </div>
-                    <Title level={4} style={{ margin: 0 }}>Critical Low Stock Items</Title>
-                    <Tooltip title="Klik ikon menu untuk informasi lebih detail tentang metrik ini.">
-                      <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
-                    </Tooltip>
-                  </Space>
-                </div>
-                {opsStats.topLowStock.length > 0 ? (
-                  <div style={{ height: 300, width: '100%', marginTop: 24 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={opsStats.topLowStock} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} layout="vertical">
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                        <XAxis type="number" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis type="category" dataKey="name" stroke="#334155" fontSize={12} tickLine={false} axisLine={false} width={100} />
-                        <RechartsTooltip 
-                          formatter={(val: any, name: any) => [val, name === 'stock' ? 'Current Stock' : 'Min Threshold']}
-                          contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
-                        />
-                        <Bar dataKey="stock" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={16} name="Current Stock" />
-                        <Bar dataKey="min" fill="#cbd5e1" radius={[0, 4, 4, 0]} barSize={16} name="Min Threshold" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Text type="secondary">All stock levels are healthy.</Text>
-                  </div>
-                )}
-              </SectionContainer>
-            </Col>
+
           </Row>
 
           <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
@@ -322,12 +247,6 @@ export default function OperationsPage() {
             />
           </SectionContainer>
 
-          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
-              <Title level={4} style={{ margin: 0 }}>Supply Chain: Purchase Orders</Title>
-            </div>
-            <Table columns={poColumns} dataSource={purchaseOrders} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
-          </SectionContainer>
 
           <Row gutter={[24, 24]}>
             <Col xs={24} lg={12}>
@@ -348,24 +267,7 @@ export default function OperationsPage() {
             </Col>
           </Row>
 
-          <Row gutter={[24, 24]}>
-            <Col xs={24} lg={12}>
-              <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
-                <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
-                  <Title level={4} style={{ margin: 0 }}>Logistics: Supplier Performance</Title>
-                </div>
-                <Table columns={supplierColumns} dataSource={suppliers} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 500 }} style={{ padding: '0 24px 24px 24px' }} />
-              </SectionContainer>
-            </Col>
-            <Col xs={24} lg={12}>
-              <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
-                <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
-                  <Title level={4} style={{ margin: 0 }}>Inventory: Stock Adjustments & Wastage</Title>
-                </div>
-                <Table columns={adjustmentColumns} dataSource={stockAdjustments} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 500 }} style={{ padding: '0 24px 24px 24px' }} />
-              </SectionContainer>
-            </Col>
-          </Row>
+
         </>
       )}
     </MainLayout>

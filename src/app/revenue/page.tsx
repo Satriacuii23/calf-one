@@ -77,30 +77,12 @@ export default function RevenueIntelligencePage() {
     })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [orders]);
 
-  // Top products data
-  const topProductsData = useMemo(() => {
-    const products: Record<string, number> = {};
-    orderItems.forEach(item => {
-      if (!item.menu_name) return;
-      products[item.menu_name] = (products[item.menu_name] || 0) + Number(item.menu_subtotal || 0);
-    });
-    return Object.entries(products).map(([name, value], i) => ({
-      name: name.length > 15 ? name.substring(0, 15) + '...' : name,
-      fullName: name,
-      value,
-      fill: COLORS[i % COLORS.length]
-    })).sort((a, b) => b.value - a.value).slice(0, 5); // Top 5
-  }, [orderItems]);
-
   // Dynamic Summary
   const summaryInsight = useMemo(() => {
     if (!orders.length || !orderItems.length) return "Mengumpulkan data untuk membuat ringkasan...";
     
     // Most popular payment method
     const topPayment = paymentData[0]?.name || '-';
-    
-    // Top product
-    const topProduct = topProductsData[0]?.fullName || '-';
     
     // Highest revenue day
     let highestDay = { date: '-', revenue: 0 };
@@ -110,8 +92,8 @@ export default function RevenueIntelligencePage() {
     
     const bestDay = highestDay.date !== '-' ? new Date(highestDay.date).toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
     
-    return `Berdasarkan data dari ${orders.length} transaksi terakhir, tren transaksi saat ini didominasi oleh pembayaran via ${topPayment}. Sementara itu, produk terlaris dipegang oleh ${topProduct}. Pencapaian omzet tertinggi tercatat pada hari ${bestDay}. Rekomendasi: Fokuskan kampanye promosi pada metode ${topPayment} dan optimalkan persediaan untuk produk ${topProduct} menjelang jam sibuk di hari ${bestDay}.`;
-  }, [orders, orderItems, paymentData, topProductsData, revenueTrendData]);
+    return `Berdasarkan data dari ${orders.length} transaksi terakhir, tren transaksi saat ini didominasi oleh pembayaran via ${topPayment}. Pencapaian omzet tertinggi tercatat pada hari ${bestDay}. Rekomendasi: Fokuskan kampanye promosi pada metode ${topPayment} menjelang jam sibuk di hari ${bestDay}.`;
+  }, [orders, orderItems, paymentData, revenueTrendData]);
 
   const kpiCards = [
     { label: 'Net Revenue', tooltip: 'Total pendapatan bersih setelah diskon.', value: `Rp ${(metrics.net / 1000000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`, icon: Wallet, color: '#1F5EFF', bg: '#eff6ff', trend: '+12.5%' },
@@ -312,7 +294,7 @@ export default function RevenueIntelligencePage() {
           </SectionContainer>
 
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-            <Col xs={24} lg={8}>
+            <Col xs={24} lg={12}>
               <SectionContainer style={{ height: '100%' }}>
                 <div style={{ marginBottom: 20 }}>
                   <Space align="center">
@@ -355,7 +337,7 @@ export default function RevenueIntelligencePage() {
               </SectionContainer>
             </Col>
             
-            <Col xs={24} lg={8}>
+            <Col xs={24} lg={12}>
               <SectionContainer style={{ height: '100%' }}>
                 <div style={{ marginBottom: 20 }}>
                   <Space align="center">
@@ -398,42 +380,7 @@ export default function RevenueIntelligencePage() {
               </SectionContainer>
             </Col>
 
-            <Col xs={24} lg={8}>
-              <SectionContainer style={{ height: '100%' }}>
-                <div style={{ marginBottom: 20 }}>
-                  <Space align="center">
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Package size={18} />
-                    </div>
-                    <Title level={4} style={{ margin: 0 }}>Top Products</Title>
-                    <Tooltip title="Daftar 5 menu atau produk dengan kontribusi pendapatan terbesar.">
-                      <InfoCircleOutlined style={{ fontSize: 14, color: '#94a3b8', cursor: 'help' }} />
-                    </Tooltip>
-                  </Space>
-                </div>
-                <div style={{ height: 280, width: '100%', marginTop: 24 }}>
-                  {topProductsData.length > 0 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingTop: 8 }}>
-                      {topProductsData.map((item, idx) => {
-                        const maxVal = topProductsData[0].value;
-                        const percent = (item.value / maxVal) * 100;
-                        return (
-                          <div key={item.name}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                              <Text strong style={{ color: '#334155', fontSize: 13 }}>{idx + 1}. {item.fullName}</Text>
-                              <Text strong style={{ color: '#0f172a', fontSize: 13 }}>Rp {item.value.toLocaleString('id-ID')}</Text>
-                            </div>
-                            <Progress percent={percent} showInfo={false} strokeColor={item.fill} railColor="#f1f5f9" size="small" />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>Belum ada data penjualan produk</div>
-                  )}
-                </div>
-              </SectionContainer>
-            </Col>
+
           </Row>
 
           <SectionContainer>

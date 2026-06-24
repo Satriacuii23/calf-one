@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } 
 import { Users, Award, Crown, CalendarCheck, Sparkles, Star , Search } from 'lucide-react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIntelligenceData } from '@/hooks/useIntelligenceData';
-import { useCustomerCareData } from '@/hooks/useDashboardModules';
+import { useCustomerCareData, useSocialData } from '@/hooks/useDashboardModules';
 import { useState, useMemo } from "react";
 
 const { Title, Text } = Typography;
@@ -26,8 +26,10 @@ const SectionContainer = ({ children, style }: { children: React.ReactNode, styl
 );
 
 export default function CustomerIntelligencePage() {
-  const { members, vouchers, points, campaigns, referrals, isLoading } = useIntelligenceData();
-  const { complaints } = useCustomerCareData();
+  const { members, vouchers, points, campaigns, referrals, isLoading: isIntelLoading } = useIntelligenceData();
+  const { complaints, isLoading: isCareLoading } = useCustomerCareData();
+  const { sentiments, isLoading: isSocialLoading } = useSocialData();
+  const isLoading = isIntelLoading || isCareLoading || isSocialLoading;
 
   const customerStats = useMemo(() => {
     if (!members.length) return { total: 0, active: 0, avgCLV: 0, avgPoints: 0, tierData: [], topTierPct: 0 };
@@ -181,6 +183,21 @@ export default function CustomerIntelligencePage() {
     },
     { title: 'Date', dataIndex: 'created_at', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
   ];
+
+  const sentimentColumns = [
+    { title: 'Platform', dataIndex: 'platform', key: 'plat', render: (t: string) => <Text strong>{t}</Text> },
+    { title: 'Sentiment', dataIndex: 'sentiment_score', key: 'score', render: (v: number) => {
+        const color = v > 0.6 ? '#10b981' : v < 0.4 ? '#ef4444' : '#f59e0b';
+        const bg = v > 0.6 ? '#ecfdf5' : v < 0.4 ? '#fef2f2' : '#fffbeb';
+        const label = v > 0.6 ? 'Positive' : v < 0.4 ? 'Negative' : 'Neutral';
+        return <div style={{ background: bg, color, padding: '4px 12px', borderRadius: 20, display: 'inline-block', fontSize: 12, fontWeight: 600 }}>{label}</div>;
+      }
+    },
+    { title: 'Content', dataIndex: 'post_content', key: 'content', render: (t: string) => <Text type="secondary">{t?.substring(0, 60)}...</Text> },
+    { title: 'Date', dataIndex: 'post_date', key: 'date', render: (d: string) => new Date(d).toLocaleDateString('id-ID') }
+  ];
+
+
 
   return (
     <MainLayout title="Customer Intelligence" subtitle="Analisis perilaku pelanggan, keanggotaan, dan retensi">
@@ -357,6 +374,13 @@ export default function CustomerIntelligencePage() {
               <Title level={4} style={{ margin: 0 }}>Customer Complaints & Feedback</Title>
             </div>
             <Table columns={complaintColumns} dataSource={complaints} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
+          </SectionContainer>
+
+          <SectionContainer style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '24px 24px 0 24px', marginBottom: 20 }}>
+              <Title level={4} style={{ margin: 0 }}>Social Media Sentiments & Reviews</Title>
+            </div>
+            <Table columns={sentimentColumns} dataSource={sentiments} pagination={{ pageSize: 5 }} size="small" rowKey="id" scroll={{ x: 600 }} style={{ padding: '0 24px 24px 24px' }} />
           </SectionContainer>
 
           <Row gutter={[24, 24]} style={{ marginBottom: 24, marginTop: 24 }}>
