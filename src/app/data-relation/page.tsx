@@ -848,41 +848,43 @@ export default function DataRelationPage() {
 
   const dataColumns = activeTable.columns.map(col => ({
     title: (
-      <div style={{ padding: '2px 0' }}>
+      <div style={{ padding: '4px 0' }}>
         <div style={{ fontWeight: 700, color: '#0F172A', fontFamily: 'monospace', fontSize: '12px' }}>{col.name}</div>
-        <div style={{ fontSize: '10px', color: '#64748B', fontWeight: 500 }}>{col.type} {col.key ? `(${col.key})` : ''}</div>
+        <div style={{ fontSize: '10px', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>
+          {col.type} {col.key ? <span style={{ color: col.key === 'PK' ? '#D97706' : '#2563EB', fontWeight: 700 }}>• {col.key}</span> : ''}
+        </div>
       </div>
     ),
     dataIndex: col.name,
     key: col.name,
     render: (val: any) => {
-      if (val === null || val === undefined) return <Tag style={{ fontSize: '10px', color: '#94A3B8', background: '#F1F5F9', border: 'none' }}>NULL</Tag>;
-      if (typeof val === 'boolean') return <Tag color={val ? 'success' : 'error'} style={{ fontWeight: 600, fontSize: '10px' }}>{val ? 'TRUE' : 'FALSE'}</Tag>;
-      if (typeof val === 'object') return <Tag color="blue" style={{ fontFamily: 'monospace', fontSize: '11px' }}>{JSON.stringify(val).slice(0, 35)}...</Tag>;
-      return <span style={{ color: '#1E293B', fontWeight: 500, fontSize: '12px' }}>{String(val)}</span>;
+      if (val === null || val === undefined) return <span style={{ fontSize: '11px', color: '#CBD5E1', fontStyle: 'italic', fontWeight: 500 }}>null</span>;
+      if (typeof val === 'boolean') return <Tag color={val ? 'success' : 'error'} style={{ fontWeight: 700, fontSize: '10px', borderRadius: '4px', margin: 0 }}>{val ? 'TRUE' : 'FALSE'}</Tag>;
+      if (typeof val === 'object') return <Tag color="blue" style={{ fontFamily: 'monospace', fontSize: '11px', borderRadius: '4px', margin: 0 }}>{JSON.stringify(val).slice(0, 40)}...</Tag>;
+      return <span style={{ color: '#1E293B', fontWeight: 500, fontSize: '13px', fontFamily: typeof val === 'number' ? 'monospace' : 'inherit' }}>{String(val)}</span>;
     }
   }));
 
   const schemaColumns = [
     { 
-      title: 'Column Attribute', 
+      title: 'Column Attribute Name', 
       dataIndex: 'name', 
       key: 'name', 
-      width: 280,
+      width: 300,
       render: (t: any, r: any) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '13px', color: '#0F172A' }}>{t}</span>
           {r.key && (
-            <Tag color={r.key === 'PK' ? 'gold' : 'cyan'} style={{ fontWeight: 700, fontSize: '10px', margin: 0 }}>
+            <Tag color={r.key === 'PK' ? 'gold' : 'cyan'} style={{ fontWeight: 800, fontSize: '10px', margin: 0, borderRadius: '4px' }}>
               {r.key === 'PK' ? 'PRIMARY KEY' : 'FOREIGN KEY'}
             </Tag>
           )}
         </div>
       ) 
     },
-    { title: 'PostgreSQL Type', dataIndex: 'type', key: 'type', width: 180, render: (t: any) => <Tag color="blue" style={{ fontFamily: 'monospace', fontWeight: 600 }}>{t}</Tag> },
-    { title: 'Nullable Constraint', dataIndex: 'nullable', key: 'nullable', width: 160, render: (v: any) => <Tag color={v ? 'default' : 'red'} style={{ fontWeight: 600 }}>{v ? 'NULLABLE' : 'NOT NULL'}</Tag> },
-    { title: 'Business Description & Purpose', dataIndex: 'desc', key: 'desc', render: (d: any) => <span style={{ color: '#475569', fontSize: '13px' }}>{d}</span> }
+    { title: 'Data Type', dataIndex: 'type', key: 'type', width: 180, render: (t: any) => <code style={{ color: '#2563EB', background: '#EFF6FF', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, fontSize: '12px' }}>{t}</code> },
+    { title: 'Nullable', dataIndex: 'nullable', key: 'nullable', width: 140, render: (v: any) => <span style={{ fontSize: '12px', fontWeight: 700, color: v ? '#64748B' : '#E11D48' }}>{v ? 'Nullable' : 'Not Null'}</span> },
+    { title: 'Business Purpose & Specification', dataIndex: 'desc', key: 'desc', render: (d: any) => <span style={{ color: '#334155', fontSize: '13px', lineHeight: 1.5 }}>{d}</span> }
   ];
 
   function exportCSV() {
@@ -901,27 +903,31 @@ export default function DataRelationPage() {
   }
 
   return (
-    <MainLayout title="Calf Data Studio" subtitle="Enterprise Supabase Table Explorer & Relational Network Graph">
+    <MainLayout title="Calf Enterprise Studio" subtitle="Single Source of Truth PostgreSQL Schema Catalog & Live Data Explorer">
       {contextHolder}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '80px', maxWidth: '1600px', margin: '0 auto' }}>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '80px', maxWidth: '1600px', margin: '0 auto', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         
-        {/* TOP CONTROLLER BAR (APPLE STRIPE GLASS STYLE) */}
-        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02)' }}>
+        {/* TOP STATUS & CONTROLLER CARD */}
+        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.04)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ padding: '12px', background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', borderRadius: '14px', color: '#38BDF8', display: 'flex', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)' }}>
-              <Database size={26} />
+            <div style={{ padding: '12px', background: '#0F172A', borderRadius: '12px', color: '#38BDF8', display: 'flex', boxShadow: '0 4px 10px rgba(15,23,42,0.12)' }}>
+              <Database size={24} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Title level={3} style={{ margin: 0, fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>Calf Schema & Data Hub</Title>
-                <Tag color="blue" style={{ fontWeight: 700, borderRadius: '20px', padding: '0 10px', fontSize: '11px' }}>v2.4 Enterprise</Tag>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Title level={3} style={{ margin: 0, fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', fontSize: '20px' }}>Calf Schema & Data Studio</Title>
+                <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '20px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22C55E', display: 'inline-block' }}></span>
+                  Live Connected
+                </span>
               </div>
-              <Text style={{ fontSize: '13px', color: '#64748B' }}>Single Source of Truth PostgreSQL Catalog Dictionary & Relational Ecosystem Explorer</Text>
+              <Text style={{ fontSize: '13px', color: '#64748B', marginTop: '2px', display: 'block' }}>Centralized Database Catalog • 40 Tables • 11 Business Pillars</Text>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Apple Segmented Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {/* Vercel Segmented Control */}
             <div style={{ display: 'flex', background: '#F1F5F9', padding: '4px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
               <button
                 onClick={() => setGlobalView('explorer')}
@@ -931,11 +937,11 @@ export default function DataRelationPage() {
                   background: globalView === 'explorer' ? '#FFFFFF' : 'transparent',
                   color: globalView === 'explorer' ? '#0F172A' : '#64748B',
                   fontWeight: globalView === 'explorer' ? 700 : 500,
-                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s ease',
-                  boxShadow: globalView === 'explorer' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s ease',
+                  boxShadow: globalView === 'explorer' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none'
                 }}
               >
-                <TableIcon size={16} color={globalView === 'explorer' ? '#2563EB' : '#64748B'} />
+                <TableIcon size={15} color={globalView === 'explorer' ? '#2563EB' : '#64748B'} />
                 <span>Catalog Explorer</span>
               </button>
               <button
@@ -946,40 +952,39 @@ export default function DataRelationPage() {
                   background: globalView === 'global_erd' ? '#FFFFFF' : 'transparent',
                   color: globalView === 'global_erd' ? '#0F172A' : '#64748B',
                   fontWeight: globalView === 'global_erd' ? 700 : 500,
-                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s ease',
-                  boxShadow: globalView === 'global_erd' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s ease',
+                  boxShadow: globalView === 'global_erd' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none'
                 }}
               >
-                <Network size={16} color={globalView === 'global_erd' ? '#0284C7' : '#64748B'} />
-                <span>Global ERD Graph</span>
+                <Network size={15} color={globalView === 'global_erd' ? '#0284C7' : '#64748B'} />
+                <span>Ecosystem Topology</span>
               </button>
             </div>
 
             <Button 
               onClick={() => setExportModalVisible(true)} 
               style={{ 
-                background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', 
-                color: '#FFFFFF', border: 'none', borderRadius: '10px', 
-                padding: '0 18px', height: '40px', fontWeight: 600, 
-                display: 'flex', alignItems: 'center', gap: '8px',
-                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)'
+                background: '#0F172A', color: '#FFFFFF', border: 'none', 
+                borderRadius: '10px', padding: '0 18px', height: '38px', 
+                fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             >
-              <Sparkles size={16} />
-              <span>AI Exporter</span>
+              <Sparkles size={15} color="#38BDF8" />
+              <span>AI Coding Blueprint</span>
             </Button>
           </div>
         </div>
 
-        {/* VIEW 1: EXPLORER */}
+        {/* VIEW 1: CATALOG EXPLORER */}
         {globalView === 'explorer' ? (
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '24px', alignItems: 'flex-start' }}>
             
-            {/* LEFT SIDEBAR (STRIPE NAVIGATION PANEL) */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)' }}>
+            {/* LEFT SIDEBAR: MASTER CATALOG */}
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '24px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={{ fontSize: '11px', fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>DATABASE SCHEMAS (40)</Text>
-                <Tag color="cyan" style={{ margin: 0, borderRadius: '10px', fontWeight: 700 }}>SSOT</Tag>
+                <Text style={{ fontSize: '11px', fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>SCHEMA CATALOG (40)</Text>
+                <Tag style={{ margin: 0, borderRadius: '6px', fontWeight: 700, fontSize: '10px', background: '#F1F5F9', border: 'none', color: '#475569' }}>PostgreSQL</Tag>
               </div>
 
               <Input 
@@ -988,19 +993,19 @@ export default function DataRelationPage() {
                 value={tableSearchQuery} 
                 onChange={e => setTableSearchQuery(e.target.value)} 
                 allowClear 
-                style={{ borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0' }}
+                style={{ borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '8px 12px' }}
               />
 
-              {/* DOMAIN FILTER BADGES */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingBottom: '8px', borderBottom: '1px solid #F1F5F9' }}>
+              {/* PILL CATEGORIES */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingBottom: '12px', borderBottom: '1px solid #F1F5F9' }}>
                 {DOMAINS.map(d => (
                   <button 
                     key={d.key} 
                     onClick={() => setSelectedDomain(d.key)} 
                     style={{ 
-                      padding: '4px 10px', borderRadius: '20px', 
-                      border: selectedDomain === d.key ? '1px solid #0F172A' : '1px solid transparent', 
-                      background: selectedDomain === d.key ? '#0F172A' : '#F1F5F9', 
+                      padding: '5px 10px', borderRadius: '20px', 
+                      border: selectedDomain === d.key ? '1px solid #0F172A' : '1px solid #E2E8F0', 
+                      background: selectedDomain === d.key ? '#0F172A' : '#FFFFFF', 
                       color: selectedDomain === d.key ? '#FFFFFF' : '#475569', 
                       fontSize: '11px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease'
                     }}
@@ -1010,17 +1015,17 @@ export default function DataRelationPage() {
                 ))}
               </div>
 
-              {/* TABLE LIST */}
-              <div style={{ overflowY: 'auto', maxHeight: '580px', display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '4px' }}>
+              {/* TABLE NAVIGATOR LIST */}
+              <div style={{ overflowY: 'auto', maxHeight: '580px', display: 'flex', flexDirection: 'column', gap: '18px', paddingRight: '4px' }}>
                 {DOMAINS.filter(d => d.key !== 'all').map(dom => {
                   const dt = filteredCatalog.filter(t => t.domain === dom.key);
                   if (dt.length === 0) return null;
                   return (
                     <div key={dom.key}>
                       <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <dom.icon size={13} color="#2563EB" />
+                        <dom.icon size={14} color="#2563EB" />
                         <span>{dom.label}</span>
-                        <span style={{ color: '#CBD5E1', fontWeight: 500 }}>({dt.length})</span>
+                        <span style={{ color: '#CBD5E1', fontWeight: 600 }}>({dt.length})</span>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {dt.map(tbl => {
@@ -1031,19 +1036,18 @@ export default function DataRelationPage() {
                               onClick={() => { setActiveTable(tbl); setActiveSubTab('data'); }} 
                               style={{ 
                                 padding: '10px 12px', borderRadius: '10px', 
-                                background: isAct ? '#EFF6FF' : 'transparent', 
-                                border: isAct ? '1px solid #BFDBFE' : '1px solid transparent',
-                                borderLeft: isAct ? '4px solid #2563EB' : '4px solid transparent',
-                                color: isAct ? '#1D4ED8' : '#334155', 
+                                background: isAct ? '#F1F5F9' : 'transparent', 
+                                color: isAct ? '#0F172A' : '#475569', 
                                 fontWeight: isAct ? 700 : 500, fontSize: '13px', cursor: 'pointer', 
                                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                transition: 'all 0.15s ease'
+                                position: 'relative', transition: 'all 0.15s ease'
                               }}
                             >
-                              <span style={{ fontFamily: 'monospace', letterSpacing: '-0.01em' }}>{tbl.name}</span>
-                              <Tag color={isAct ? 'blue' : 'default'} style={{ margin: 0, fontSize: '10px', borderRadius: '10px', border: 'none', background: isAct ? '#DBEAFE' : '#F1F5F9' }}>
-                                {tbl.columns.length} col
-                              </Tag>
+                              {isAct && <span style={{ position: 'absolute', left: 0, top: '8px', bottom: '8px', width: '3px', borderRadius: '4px', background: '#2563EB' }}></span>}
+                              <span style={{ fontFamily: 'monospace', letterSpacing: '-0.01em', paddingLeft: isAct ? '6px' : '0' }}>{tbl.name}</span>
+                              <span style={{ fontSize: '11px', color: isAct ? '#2563EB' : '#94A3B8', fontWeight: 700, background: isAct ? '#DBEAFE' : '#F8FAFC', padding: '1px 7px', borderRadius: '10px' }}>
+                                {tbl.columns.length}
+                              </span>
                             </div>
                           );
                         })}
@@ -1054,22 +1058,22 @@ export default function DataRelationPage() {
               </div>
             </div>
 
-            {/* RIGHT WORKSPACE (STRIPE STUDIO CANVAS) */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px', minHeight: '680px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)' }}>
+            {/* RIGHT WORKSPACE: ENTITY STUDIO CANVAS */}
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px', minHeight: '680px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
               
-              {/* TABLE HEADER CARD */}
+              {/* TABLE HEADER BANNER */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', background: '#F8FAFC', padding: '24px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
                 <div style={{ flex: 1, minWidth: '300px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                    <Title level={2} style={{ margin: 0, fontWeight: 800, fontFamily: 'monospace', color: '#0F172A', letterSpacing: '-0.03em' }}>
+                    <Title level={2} style={{ margin: 0, fontWeight: 800, fontFamily: 'monospace', color: '#0F172A', letterSpacing: '-0.03em', fontSize: '24px' }}>
                       public.{activeTable.name}
                     </Title>
                     <Tag color="geekblue" style={{ fontWeight: 700, padding: '2px 10px', borderRadius: '6px', fontSize: '12px', margin: 0 }}>
                       {activeTable.domainLabel}
                     </Tag>
-                    <Tag color="emerald" style={{ fontWeight: 700, padding: '2px 10px', borderRadius: '6px', fontSize: '12px', margin: 0 }}>
-                      {rowCount !== null ? `${rowCount.toLocaleString()} LIVE RECORDS` : `${liveRows.length} ACTIVE ROWS`}
-                    </Tag>
+                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', fontSize: '12px', fontWeight: 700, padding: '2px 10px', borderRadius: '6px', border: '1px solid #BFDBFE' }}>
+                      {rowCount !== null ? `${rowCount.toLocaleString()} Total Rows` : `${liveRows.length} Fetched Rows`}
+                    </span>
                   </div>
                   <Text style={{ color: '#475569', fontSize: '14px', lineHeight: 1.6, display: 'block' }}>
                     {activeTable.purpose}
@@ -1077,90 +1081,90 @@ export default function DataRelationPage() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <Button icon={<RefreshCw size={15} />} onClick={fetchFullData} loading={loadingLive} style={{ borderRadius: '8px', height: '38px', fontWeight: 600 }}>
-                    Sync Supabase
+                  <Button icon={<RefreshCw size={14} />} onClick={fetchFullData} loading={loadingLive} style={{ borderRadius: '8px', height: '38px', fontWeight: 600 }}>
+                    Sync Data
                   </Button>
-                  <Button type="primary" icon={<FileText size={15} />} onClick={exportCSV} style={{ background: '#0F172A', borderRadius: '8px', height: '38px', fontWeight: 600 }}>
+                  <Button icon={<FileText size={14} />} onClick={exportCSV} style={{ background: '#0F172A', color: '#FFFFFF', borderRadius: '8px', height: '38px', fontWeight: 600, border: 'none' }}>
                     Export CSV
                   </Button>
                 </div>
               </div>
 
-              {/* MODERN STRIPE SUBTABS NAVIGATION */}
-              <div style={{ display: 'flex', gap: '12px', borderBottom: '2px solid #F1F5F9' }}>
+              {/* VERCEL TABS BAR */}
+              <div style={{ display: 'flex', gap: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '0' }}>
                 <button
                   onClick={() => setActiveSubTab('data')}
                   style={{
-                    padding: '12px 20px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'data' ? '2px solid #2563EB' : '2px solid transparent',
-                    marginBottom: '-2px', fontWeight: activeSubTab === 'data' ? 700 : 500,
-                    color: activeSubTab === 'data' ? '#2563EB' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease'
+                    padding: '10px 4px', border: 'none', background: 'transparent',
+                    borderBottom: activeSubTab === 'data' ? '2px solid #0F172A' : '2px solid transparent',
+                    marginBottom: '-1px', fontWeight: activeSubTab === 'data' ? 700 : 500,
+                    color: activeSubTab === 'data' ? '#0F172A' : '#64748B', fontSize: '14px',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
                   }}
                 >
-                  <Layers size={16} />
+                  <Layers size={16} color={activeSubTab === 'data' ? '#2563EB' : '#64748B'} />
                   <span>Live Records</span>
-                  <Tag style={{ margin: 0, borderRadius: '10px', background: activeSubTab === 'data' ? '#DBEAFE' : '#F1F5F9', color: activeSubTab === 'data' ? '#1D4ED8' : '#64748B', border: 'none', fontWeight: 700, fontSize: '11px' }}>
+                  <span style={{ borderRadius: '10px', background: activeSubTab === 'data' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'data' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
                     {filteredLiveRows.length}
-                  </Tag>
+                  </span>
                 </button>
 
                 <button
                   onClick={() => setActiveSubTab('schema')}
                   style={{
-                    padding: '12px 20px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'schema' ? '2px solid #2563EB' : '2px solid transparent',
-                    marginBottom: '-2px', fontWeight: activeSubTab === 'schema' ? 700 : 500,
-                    color: activeSubTab === 'schema' ? '#2563EB' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease'
+                    padding: '10px 4px', border: 'none', background: 'transparent',
+                    borderBottom: activeSubTab === 'schema' ? '2px solid #0F172A' : '2px solid transparent',
+                    marginBottom: '-1px', fontWeight: activeSubTab === 'schema' ? 700 : 500,
+                    color: activeSubTab === 'schema' ? '#0F172A' : '#64748B', fontSize: '14px',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
                   }}
                 >
-                  <Code2 size={16} />
-                  <span>Schema Dictionary</span>
-                  <Tag style={{ margin: 0, borderRadius: '10px', background: activeSubTab === 'schema' ? '#DBEAFE' : '#F1F5F9', color: activeSubTab === 'schema' ? '#1D4ED8' : '#64748B', border: 'none', fontWeight: 700, fontSize: '11px' }}>
+                  <Code2 size={16} color={activeSubTab === 'schema' ? '#2563EB' : '#64748B'} />
+                  <span>Schema Specifications</span>
+                  <span style={{ borderRadius: '10px', background: activeSubTab === 'schema' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'schema' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
                     {activeTable.columns.length}
-                  </Tag>
+                  </span>
                 </button>
 
                 <button
                   onClick={() => setActiveSubTab('relations')}
                   style={{
-                    padding: '12px 20px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'relations' ? '2px solid #2563EB' : '2px solid transparent',
-                    marginBottom: '-2px', fontWeight: activeSubTab === 'relations' ? 700 : 500,
-                    color: activeSubTab === 'relations' ? '#2563EB' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease'
+                    padding: '10px 4px', border: 'none', background: 'transparent',
+                    borderBottom: activeSubTab === 'relations' ? '2px solid #0F172A' : '2px solid transparent',
+                    marginBottom: '-1px', fontWeight: activeSubTab === 'relations' ? 700 : 500,
+                    color: activeSubTab === 'relations' ? '#0F172A' : '#64748B', fontSize: '14px',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
                   }}
                 >
-                  <GitFork size={16} />
-                  <span>Relational Dependencies</span>
-                  <Tag style={{ margin: 0, borderRadius: '10px', background: activeSubTab === 'relations' ? '#DBEAFE' : '#F1F5F9', color: activeSubTab === 'relations' ? '#1D4ED8' : '#64748B', border: 'none', fontWeight: 700, fontSize: '11px' }}>
+                  <GitFork size={16} color={activeSubTab === 'relations' ? '#2563EB' : '#64748B'} />
+                  <span>Relational Network</span>
+                  <span style={{ borderRadius: '10px', background: activeSubTab === 'relations' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'relations' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
                     {incomingRelations.length + activeTable.relations.length}
-                  </Tag>
+                  </span>
                 </button>
               </div>
 
-              {/* SUB TAB 1: DATA */}
+              {/* SUB TAB 1: DATA RECORDS */}
               {activeSubTab === 'data' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                     <Input 
-                      prefix={<Search size={15} color="#94A3B8" />} 
+                      prefix={<Search size={14} color="#94A3B8" />} 
                       placeholder="Filter kata kunci di dalam baris data aktif..." 
                       value={dataSearchQuery} 
                       onChange={e => setDataSearchQuery(e.target.value)} 
                       allowClear 
-                      style={{ maxWidth: '360px', borderRadius: '8px' }} 
+                      style={{ maxWidth: '360px', borderRadius: '8px', padding: '6px 12px' }} 
                     />
-                    <Text style={{ fontSize: '12px', color: '#64748B', fontStyle: 'italic' }}>💡 Klik baris mana saja untuk menginspeksi Raw JSON</Text>
+                    <Text style={{ fontSize: '12px', color: '#64748B' }}>💡 Klik baris mana saja untuk menginspeksi struktur Raw JSON</Text>
                   </div>
 
                   {supabaseError ? (
-                    <div style={{ padding: '20px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '10px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <span style={{ fontSize: '20px' }}>⚠️</span>
+                    <div style={{ padding: '20px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '12px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span style={{ fontSize: '24px' }}>⚠️</span>
                       <div>
-                        <div style={{ fontWeight: 700 }}>Supabase Client Notice</div>
-                        <div style={{ fontSize: '13px' }}>{supabaseError}</div>
+                        <div style={{ fontWeight: 700, fontSize: '14px' }}>Supabase Query Error</div>
+                        <div style={{ fontSize: '13px', marginTop: '2px' }}>{supabaseError}</div>
                       </div>
                     </div>
                   ) : (
@@ -1180,33 +1184,44 @@ export default function DataRelationPage() {
                       })} 
                       scroll={{ x: 'max-content' }} 
                       size="middle" 
-                      bordered 
+                      bordered={false}
+                      style={{ border: '1px solid #F1F5F9', borderRadius: '10px', overflow: 'hidden' }}
                     />
                   )}
                 </div>
               ) : null}
 
-              {/* SUB TAB 2: SCHEMA */}
+              {/* SUB TAB 2: SCHEMA SPECIFICATIONS */}
               {activeSubTab === 'schema' ? (
-                <AntTable dataSource={activeTable.columns} columns={schemaColumns} rowKey="name" pagination={false} size="middle" bordered />
+                <AntTable 
+                  dataSource={activeTable.columns} 
+                  columns={schemaColumns} 
+                  rowKey="name" 
+                  pagination={false} 
+                  size="middle" 
+                  bordered={false}
+                  style={{ border: '1px solid #F1F5F9', borderRadius: '10px', overflow: 'hidden' }} 
+                />
               ) : null}
 
               {/* SUB TAB 3: RELATIONS MAP */}
               {activeSubTab === 'relations' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
                   
                   {/* INCOMING DEPENDENTS */}
-                  <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                      <div style={{ padding: '6px', background: '#EFF6FF', borderRadius: '6px', color: '#2563EB' }}><ArrowLeft size={16} /></div>
+                  <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                      <div style={{ padding: '8px', background: '#EFF6FF', borderRadius: '8px', color: '#2563EB' }}><ArrowLeft size={16} /></div>
                       <div>
                         <Title level={5} style={{ margin: 0, fontWeight: 800, color: '#0F172A' }}>Downstream Dependents</Title>
-                        <Text style={{ fontSize: '12px', color: '#64748B' }}>Tabel lain yang merujuk FK ke tabel ini</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748B' }}>Tabel lain yang merujuk Foreign Key ke tabel ini</Text>
                       </div>
                     </div>
 
                     {incomingRelations.length === 0 ? (
-                      <Empty description={<Text style={{ color: '#94A3B8', fontSize: '13px' }}>Leaf entity (tidak ada rujukan masuk)</Text>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                      <div style={{ padding: '24px', textAlign: 'center', background: '#FFFFFF', borderRadius: '10px', border: '1px dashed #E2E8F0' }}>
+                        <Text style={{ color: '#94A3B8', fontSize: '13px' }}>Leaf Entity (Tidak ada rujukan masuk dari tabel lain)</Text>
+                      </div>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {incomingRelations.map(inc => (
@@ -1215,12 +1230,12 @@ export default function DataRelationPage() {
                             onClick={() => setActiveTable(inc)} 
                             style={{ 
                               padding: '12px 16px', background: '#FFFFFF', border: '1px solid #BFDBFE', 
-                              borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', 
+                              borderRadius: '10px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', 
                               alignItems: 'center', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', transition: 'all 0.15s ease' 
                             }}
                           >
-                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1E3A8A' }}>public.{inc.name}</span>
-                            <Tag color="blue" style={{ margin: 0, fontSize: '11px' }}>Jump ↗</Tag>
+                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1E3A8A', fontSize: '13px' }}>public.{inc.name}</span>
+                            <Tag color="blue" style={{ margin: 0, fontSize: '11px', fontWeight: 700, borderRadius: '6px' }}>Inspect ↗</Tag>
                           </div>
                         ))}
                       </div>
@@ -1228,9 +1243,9 @@ export default function DataRelationPage() {
                   </div>
 
                   {/* OUTGOING FOREIGN KEYS */}
-                  <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                      <div style={{ padding: '6px', background: '#ECFDF5', borderRadius: '6px', color: '#059669' }}><ArrowRight size={16} /></div>
+                  <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                      <div style={{ padding: '8px', background: '#ECFDF5', borderRadius: '8px', color: '#059669' }}><ArrowRight size={16} /></div>
                       <div>
                         <Title level={5} style={{ margin: 0, fontWeight: 800, color: '#0F172A' }}>Outgoing Foreign Keys</Title>
                         <Text style={{ fontSize: '12px', color: '#64748B' }}>Tabel master yang dirujuk oleh tabel ini</Text>
@@ -1238,7 +1253,9 @@ export default function DataRelationPage() {
                     </div>
 
                     {activeTable.relations.length === 0 ? (
-                      <Empty description={<Text style={{ color: '#94A3B8', fontSize: '13px' }}>Base master entity (tidak merujuk keluar)</Text>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                      <div style={{ padding: '24px', textAlign: 'center', background: '#FFFFFF', borderRadius: '10px', border: '1px dashed #E2E8F0' }}>
+                        <Text style={{ color: '#94A3B8', fontSize: '13px' }}>Base Master Entity (Tidak merujuk ke tabel lain)</Text>
+                      </div>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {activeTable.relations.map((rel, i) => {
@@ -1250,13 +1267,13 @@ export default function DataRelationPage() {
                               onClick={() => tg && setActiveTable(tg)} 
                               style={{ 
                                 padding: '12px 16px', background: '#FFFFFF', border: '1px solid #A7F3D0', 
-                                borderRadius: '8px', cursor: tg ? 'pointer' : 'default', display: 'flex', 
+                                borderRadius: '10px', cursor: tg ? 'pointer' : 'default', display: 'flex', 
                                 justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
                                 transition: 'all 0.15s ease'
                               }}
                             >
-                              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#065F46' }}>{rel}</span>
-                              {tg && <Tag color="emerald" style={{ margin: 0, fontSize: '11px' }}>Inspect Master ↗</Tag>}
+                              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#065F46', fontSize: '13px' }}>{rel}</span>
+                              {tg && <Tag color="emerald" style={{ margin: 0, fontSize: '11px', fontWeight: 700, borderRadius: '6px' }}>Jump Master ↗</Tag>}
                             </div>
                           );
                         })}
@@ -1272,52 +1289,53 @@ export default function DataRelationPage() {
           </div>
         ) : null}
 
-        {/* VIEW 2: GLOBAL ERD */}
+        {/* VIEW 2: GLOBAL ERD TOPOLOGY */}
         {globalView === 'global_erd' ? (
-          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', display: 'flex', flexDirection: 'column', gap: '28px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
             
-            <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', color: '#FFFFFF', padding: '28px', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.2)' }}>
+            <div style={{ background: '#0F172A', color: '#FFFFFF', padding: '32px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px', boxShadow: '0 10px 30px -5px rgba(15, 23, 42, 0.25)' }}>
               <div>
-                <div style={{ fontSize: '11px', color: '#38BDF8', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '4px' }}>ENTERPRISE RELATIONAL ARCHITECTURE</div>
-                <Title level={2} style={{ color: '#FFFFFF', margin: 0, fontWeight: 800, letterSpacing: '-0.02em' }}>Calf Master Relational Ecosystem Topology</Title>
+                <div style={{ fontSize: '11px', color: '#38BDF8', fontWeight: 800, letterSpacing: '0.12em', marginBottom: '6px' }}>CENTRALIZED SCHEMA TOPOLOGY</div>
+                <Title level={2} style={{ color: '#FFFFFF', margin: 0, fontWeight: 800, letterSpacing: '-0.02em' }}>Calf Master Relational Network Ecosystem</Title>
+                <Text style={{ color: '#94A3B8', fontSize: '14px', marginTop: '4px', display: 'block' }}>Visualisasi 40 entitas bisnis PostgreSQL yang saling terhubung dalam 11 pilar ekosistem.</Text>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '10px 16px', borderRadius: '10px', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <Text style={{ color: '#E2E8F0', fontSize: '13px', fontWeight: 500 }}>💡 Klik kotak tabel mana saja untuk langsung menginspeksi data</Text>
+              <div style={{ background: 'rgba(255,255,255,0.08)', padding: '12px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <Text style={{ color: '#38BDF8', fontSize: '13px', fontWeight: 700 }}>💡 Interaktif: Klik kotak tabel untuk lompat inspeksi data</Text>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '24px' }}>
               {DOMAINS.filter(d => d.key !== 'all').map(dom => {
                 const pt = SCHEMA_CATALOG.filter(t => t.domain === dom.key);
                 if (pt.length === 0) return null;
                 return (
-                  <div key={dom.key} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid #E2E8F0', paddingBottom: '12px' }}>
-                      <div style={{ padding: '8px', background: '#FFFFFF', borderRadius: '8px', border: '1px solid #E2E8F0', display: 'flex' }}>
-                        <dom.icon size={18} color="#2563EB" />
+                  <div key={dom.key} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #E2E8F0', paddingBottom: '14px' }}>
+                      <div style={{ padding: '10px', background: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', display: 'flex', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+                        <dom.icon size={20} color="#2563EB" />
                       </div>
                       <div>
-                        <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '14px' }}>{dom.label}</div>
-                        <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>{pt.length} Registered Entities</div>
+                        <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '15px' }}>{dom.label}</div>
+                        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>{pt.length} Registered Tables</div>
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {pt.map(tbl => (
                         <div 
                           key={tbl.name} 
                           onClick={() => { setActiveTable(tbl); setGlobalView('explorer'); setActiveSubTab('data'); }} 
                           style={{ 
-                            background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px 14px', 
-                            borderRadius: '10px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '6px',
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.01)', transition: 'all 0.15s ease'
+                            background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '14px 16px', 
+                            borderRadius: '12px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '6px',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.02)', transition: 'all 0.15s ease'
                           }}
                         >
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>public.{tbl.name}</span>
-                            <Tag color="cyan" style={{ margin: 0, fontSize: '10px', borderRadius: '10px', fontWeight: 700 }}>{tbl.columns.length} cols</Tag>
+                            <Tag color="blue" style={{ margin: 0, fontSize: '10px', borderRadius: '6px', fontWeight: 700 }}>{tbl.columns.length} cols</Tag>
                           </div>
-                          <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.4 }}>{tbl.purpose}</div>
+                          <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.5 }}>{tbl.purpose}</div>
                         </div>
                       ))}
                     </div>
@@ -1335,8 +1353,8 @@ export default function DataRelationPage() {
       <Modal title={`Row Record Inspector (${activeTable.name})`} open={selectedRowDetail !== null} onCancel={() => setSelectedRowDetail(null)} footer={[<Button key="c" onClick={() => setSelectedRowDetail(null)}>Tutup</Button>]} width={750}>
         {selectedRowDetail ? (
           <Tabs defaultActiveKey="table" items={[
-            { key: 'table', label: 'Attributes Table', children: <AntTable dataSource={Object.entries(selectedRowDetail).map(([k, v]) => ({ key: k, value: v }))} columns={[{ title: 'Key Attribute', dataIndex: 'key', key: 'key', width: 220, render: (t: any) => <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0F172A' }}>{t}</span> }, { title: 'Record Value', dataIndex: 'value', key: 'value', render: (v: any) => typeof v === 'object' ? <pre style={{ fontSize: '11px', margin: 0, background: '#F8FAFC', padding: '8px', borderRadius: '4px' }}>{JSON.stringify(v, null, 2)}</pre> : <span style={{ fontWeight: 500 }}>{String(v ?? 'NULL')}</span> }]} pagination={false} size="small" bordered /> },
-            { key: 'json', label: 'Raw JSON payload', children: <pre style={{ background: '#0F172A', color: '#38BDF8', padding: '16px', borderRadius: '8px', maxHeight: '450px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace' }}>{JSON.stringify(selectedRowDetail, null, 2)}</pre> }
+            { key: 'table', label: '📋 Attributes Table', children: <AntTable dataSource={Object.entries(selectedRowDetail).map(([k, v]) => ({ key: k, value: v }))} columns={[{ title: 'Key Attribute', dataIndex: 'key', key: 'key', width: 220, render: (t: any) => <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0F172A' }}>{t}</span> }, { title: 'Record Value', dataIndex: 'value', key: 'value', render: (v: any) => typeof v === 'object' ? <pre style={{ fontSize: '11px', margin: 0, background: '#F8FAFC', padding: '8px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>{JSON.stringify(v, null, 2)}</pre> : <span style={{ fontWeight: 500, color: '#334155' }}>{String(v ?? 'NULL')}</span> }]} pagination={false} size="small" bordered /> },
+            { key: 'json', label: '💻 Raw JSON Payload', children: <pre style={{ background: '#0F172A', color: '#38BDF8', padding: '18px', borderRadius: '10px', maxHeight: '450px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace' }}>{JSON.stringify(selectedRowDetail, null, 2)}</pre> }
           ]} />
         ) : null}
       </Modal>
