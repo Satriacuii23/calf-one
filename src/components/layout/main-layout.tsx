@@ -13,6 +13,7 @@ import {
   BarChart3,
   Zap,
   Brain,
+  Database,
   FileText,
   Bell,
   Search,
@@ -66,6 +67,7 @@ const navGroups = [
     group: "System & Administration",
     items: [
       { name: "AI Insights", href: "/insights", icon: Brain },
+      { name: "Data Relation", href: "/data-relation", icon: Database },
       { name: "Reports", href: "/reports", icon: FileText },
       { name: "Settings", href: "/settings", icon: Settings },
     ]
