@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import { ConfigProvider } from 'antd';
 import type { Metadata } from "next";
 import './globals.css';
@@ -17,9 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <ColorSchemeScript />
-      </head>
+      <head />
       <body style={{ margin: 0, padding: 0, backgroundColor: '#f0f2f5' }}>
         <MantineProvider>
           <AntdRegistry>
