@@ -779,13 +779,26 @@ When constructing SQL queries or Supabase client calls for this entity:
 3. If writing Supabase RLS policies, ensure tenant or branch isolation logic aligns with \`${table.domain}\` domain rules.`;
 }
 
+// Swiss Enterprise Consulting Section Container (Matching Why CALF ONE)
+const SectionBox = ({ title, chapter, rightExtra, children, style }: any) => (
+  <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', ...style }}>
+    <div style={{ padding: '16px 24px', borderBottom: '1px solid #F1F5F9', background: '#F8FAFC', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+      <Text style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', letterSpacing: '0.01em' }}>{title}</Text>
+      {rightExtra || (chapter && <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>{chapter}</span>)}
+    </div>
+    <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {children}
+    </div>
+  </div>
+);
+
 export default function DataRelationPage() {
   const [globalView, setGlobalView] = useState<'explorer' | 'global_erd'>('explorer');
   const [selectedDomain, setSelectedDomain] = useState('all');
   const [tableSearchQuery, setTableSearchQuery] = useState('');
   const [dataSearchQuery, setDataSearchQuery] = useState('');
   const [activeTable, setActiveTable] = useState<TableSchema>(SCHEMA_CATALOG[0]);
-  const [activeSubTab, setActiveSubTab] = useState<'data' | 'schema' | 'relations'>('data');
+  const [activeSubTab, setActiveSubTab] = useState('data');
   const [liveRows, setLiveRows] = useState<any[]>([]);
   const [loadingLive, setLoadingLive] = useState(false);
   const [supabaseError, setSupabaseError] = useState<string | null>(null);
@@ -848,43 +861,43 @@ export default function DataRelationPage() {
 
   const dataColumns = activeTable.columns.map(col => ({
     title: (
-      <div style={{ padding: '4px 0' }}>
-        <div style={{ fontWeight: 700, color: '#0F172A', fontFamily: 'monospace', fontSize: '12px' }}>{col.name}</div>
-        <div style={{ fontSize: '10px', color: '#64748B', fontWeight: 500, marginTop: '2px' }}>
-          {col.type} {col.key ? <span style={{ color: col.key === 'PK' ? '#D97706' : '#2563EB', fontWeight: 700 }}>• {col.key}</span> : ''}
+      <div>
+        <div style={{ fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>{col.name}</div>
+        <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
+          {col.type} {col.key ? `(${col.key})` : ''}
         </div>
       </div>
     ),
     dataIndex: col.name,
     key: col.name,
     render: (val: any) => {
-      if (val === null || val === undefined) return <span style={{ fontSize: '11px', color: '#CBD5E1', fontStyle: 'italic', fontWeight: 500 }}>null</span>;
-      if (typeof val === 'boolean') return <Tag color={val ? 'success' : 'error'} style={{ fontWeight: 700, fontSize: '10px', borderRadius: '4px', margin: 0 }}>{val ? 'TRUE' : 'FALSE'}</Tag>;
-      if (typeof val === 'object') return <Tag color="blue" style={{ fontFamily: 'monospace', fontSize: '11px', borderRadius: '4px', margin: 0 }}>{JSON.stringify(val).slice(0, 40)}...</Tag>;
-      return <span style={{ color: '#1E293B', fontWeight: 500, fontSize: '13px', fontFamily: typeof val === 'number' ? 'monospace' : 'inherit' }}>{String(val)}</span>;
+      if (val === null || val === undefined) return <Text style={{ fontSize: '11px', color: '#94A3B8', fontStyle: 'italic' }}>null</Text>;
+      if (typeof val === 'boolean') return <Tag color={val ? 'success' : 'error'}>{val ? 'TRUE' : 'FALSE'}</Tag>;
+      if (typeof val === 'object') return <Tag color="default" style={{ fontFamily: 'monospace', fontSize: '11px' }}>{JSON.stringify(val).slice(0, 35)}...</Tag>;
+      return <Text style={{ color: '#1E293B', fontWeight: 500 }}>{String(val)}</Text>;
     }
   }));
 
   const schemaColumns = [
     { 
-      title: 'Column Attribute Name', 
+      title: 'Column Attribute', 
       dataIndex: 'name', 
       key: 'name', 
-      width: 300,
+      width: 280,
       render: (t: any, r: any) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '13px', color: '#0F172A' }}>{t}</span>
+          <Text style={{ fontWeight: 700, fontSize: '13px', color: '#0F172A' }}>{t}</Text>
           {r.key && (
-            <Tag color={r.key === 'PK' ? 'gold' : 'cyan'} style={{ fontWeight: 800, fontSize: '10px', margin: 0, borderRadius: '4px' }}>
-              {r.key === 'PK' ? 'PRIMARY KEY' : 'FOREIGN KEY'}
+            <Tag color={r.key === 'PK' ? 'gold' : 'blue'} style={{ fontWeight: 600, fontSize: '11px', margin: 0 }}>
+              {r.key}
             </Tag>
           )}
         </div>
       ) 
     },
-    { title: 'Data Type', dataIndex: 'type', key: 'type', width: 180, render: (t: any) => <code style={{ color: '#2563EB', background: '#EFF6FF', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, fontSize: '12px' }}>{t}</code> },
-    { title: 'Nullable', dataIndex: 'nullable', key: 'nullable', width: 140, render: (v: any) => <span style={{ fontSize: '12px', fontWeight: 700, color: v ? '#64748B' : '#E11D48' }}>{v ? 'Nullable' : 'Not Null'}</span> },
-    { title: 'Business Purpose & Specification', dataIndex: 'desc', key: 'desc', render: (d: any) => <span style={{ color: '#334155', fontSize: '13px', lineHeight: 1.5 }}>{d}</span> }
+    { title: 'Data Type', dataIndex: 'type', key: 'type', width: 180, render: (t: any) => <Text style={{ fontWeight: 600, color: '#475569' }}>{t}</Text> },
+    { title: 'Nullable', dataIndex: 'nullable', key: 'nullable', width: 140, render: (v: any) => <Text style={{ color: v ? '#64748B' : '#DC2626', fontWeight: 600 }}>{v ? 'Yes' : 'No'}</Text> },
+    { title: 'Description', dataIndex: 'desc', key: 'desc', render: (d: any) => <Text style={{ color: '#334155', fontSize: '13px' }}>{d}</Text> }
   ];
 
   function exportCSV() {
@@ -903,634 +916,348 @@ export default function DataRelationPage() {
   }
 
   return (
-    <MainLayout title="Calf Enterprise Studio" subtitle="Single Source of Truth PostgreSQL Schema Catalog & Live Data Explorer">
+    <MainLayout title="Data Relation" subtitle="PostgreSQL Catalog & Relational Diagram">
       {contextHolder}
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '80px', maxWidth: '1600px', margin: '0 auto', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px' }}>
         
-        {/* TOP STATUS & CONTROLLER CARD */}
-        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.04)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ padding: '12px', background: '#0F172A', borderRadius: '12px', color: '#38BDF8', display: 'flex', boxShadow: '0 4px 10px rgba(15,23,42,0.12)' }}>
-              <Database size={24} />
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Title level={3} style={{ margin: 0, fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', fontSize: '20px' }}>Calf Schema & Data Studio</Title>
-                <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '20px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22C55E', display: 'inline-block' }}></span>
-                  Live Connected
-                </span>
+        {/* EDITORIAL HERO HEADER (MATCHING WHY CALF ONE) */}
+        <div style={{ 
+          background: '#FFFFFF', 
+          border: '1px solid #E2E8F0', 
+          borderRadius: '8px', 
+          padding: '36px 40px', 
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.02)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+            <div style={{ maxWidth: '850px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', background: '#F1F5F9', padding: '4px 10px', borderRadius: '4px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>CALF ONE</span>
+                <span style={{ color: '#CBD5E1' }}>/</span>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748B' }}>Executive Board</span>
               </div>
-              <Text style={{ fontSize: '13px', color: '#64748B', marginTop: '2px', display: 'block' }}>Centralized Database Catalog • 40 Tables • 11 Business Pillars</Text>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            {/* Vercel Segmented Control */}
-            <div style={{ display: 'flex', background: '#F1F5F9', padding: '4px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
-              <button
-                onClick={() => setGlobalView('explorer')}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: '8px 16px', borderRadius: '8px', border: 'none',
-                  background: globalView === 'explorer' ? '#FFFFFF' : 'transparent',
-                  color: globalView === 'explorer' ? '#0F172A' : '#64748B',
-                  fontWeight: globalView === 'explorer' ? 700 : 500,
-                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s ease',
-                  boxShadow: globalView === 'explorer' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                <TableIcon size={15} color={globalView === 'explorer' ? '#2563EB' : '#64748B'} />
-                <span>Catalog Explorer</span>
-              </button>
-              <button
-                onClick={() => setGlobalView('global_erd')}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: '8px 16px', borderRadius: '8px', border: 'none',
-                  background: globalView === 'global_erd' ? '#FFFFFF' : 'transparent',
-                  color: globalView === 'global_erd' ? '#0F172A' : '#64748B',
-                  fontWeight: globalView === 'global_erd' ? 700 : 500,
-                  fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s ease',
-                  boxShadow: globalView === 'global_erd' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                <Network size={15} color={globalView === 'global_erd' ? '#0284C7' : '#64748B'} />
-                <span>Ecosystem Topology</span>
-              </button>
+              <Title level={1} style={{ fontSize: '30px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 12px 0' }}>
+                Enterprise Schema & Data Relations
+              </Title>
+              <Text style={{ fontSize: '15px', color: '#475569', lineHeight: 1.6, display: 'block', marginBottom: '24px' }}>
+                Katalog data terpusat (Single Source of Truth) yang memetakan seluruh relasi dari 40 entitas bisnis di dalam 11 pilar operasional Kopi Calf. Struktur ini menjadi acuan utama sebelum pengembangan aplikasi di lapis atasnya.
+              </Text>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '8px 16px', borderRadius: '6px' }}>
+                <Text style={{ color: '#0F172A', fontWeight: 700, fontSize: '13px' }}>Status Koneksi: Supabase PostgreSQL Active.</Text>
+              </div>
             </div>
 
-            <Button 
-              onClick={() => setExportModalVisible(true)} 
-              style={{ 
-                background: '#0F172A', color: '#FFFFFF', border: 'none', 
-                borderRadius: '10px', padding: '0 18px', height: '38px', 
-                fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}
-            >
-              <Sparkles size={15} color="#38BDF8" />
-              <span>AI Coding Blueprint</span>
-            </Button>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingTop: '10px' }}>
+              <Button size="large" onClick={() => setGlobalView('explorer')} type={globalView === 'explorer' ? 'primary' : 'default'} style={{ fontWeight: 600, borderRadius: '6px', background: globalView === 'explorer' ? '#0F172A' : '#FFFFFF', borderColor: globalView === 'explorer' ? '#0F172A' : '#CBD5E1' }}>
+                Table Explorer
+              </Button>
+              <Button size="large" onClick={() => setGlobalView('global_erd')} type={globalView === 'global_erd' ? 'primary' : 'default'} style={{ fontWeight: 600, borderRadius: '6px', background: globalView === 'global_erd' ? '#0F172A' : '#FFFFFF', borderColor: globalView === 'global_erd' ? '#0F172A' : '#CBD5E1' }}>
+                Relational Diagram
+              </Button>
+              <Button size="large" onClick={() => setExportModalVisible(true)} icon={<Sparkles size={16} />} style={{ fontWeight: 600, borderRadius: '6px', color: '#2563EB', borderColor: '#BFDBFE', background: '#EFF6FF' }}>
+                AI Blueprint
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* VIEW 1: CATALOG EXPLORER */}
+        {/* VIEW 1: TABLE EXPLORER (SWISS CONSULTING LAYOUT) */}
         {globalView === 'explorer' ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '24px', alignItems: 'flex-start' }}>
+          <Row gutter={[24, 24]}>
             
-            {/* LEFT SIDEBAR: MASTER CATALOG */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '24px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={{ fontSize: '11px', fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>SCHEMA CATALOG (40)</Text>
-                <Tag style={{ margin: 0, borderRadius: '6px', fontWeight: 700, fontSize: '10px', background: '#F1F5F9', border: 'none', color: '#475569' }}>PostgreSQL</Tag>
-              </div>
-
-              <Input 
-                prefix={<Search size={15} color="#94A3B8" />} 
-                placeholder="Cari tabel atau deskripsi..." 
-                value={tableSearchQuery} 
-                onChange={e => setTableSearchQuery(e.target.value)} 
-                allowClear 
-                style={{ borderRadius: '10px', background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '8px 12px' }}
-              />
-
-              {/* PILL CATEGORIES */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingBottom: '12px', borderBottom: '1px solid #F1F5F9' }}>
-                {DOMAINS.map(d => (
-                  <button 
-                    key={d.key} 
-                    onClick={() => setSelectedDomain(d.key)} 
-                    style={{ 
-                      padding: '5px 10px', borderRadius: '20px', 
-                      border: selectedDomain === d.key ? '1px solid #0F172A' : '1px solid #E2E8F0', 
-                      background: selectedDomain === d.key ? '#0F172A' : '#FFFFFF', 
-                      color: selectedDomain === d.key ? '#FFFFFF' : '#475569', 
-                      fontSize: '11px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease'
-                    }}
-                  >
-                    {d.key === 'all' ? '🌟 All Pillars' : d.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* TABLE NAVIGATOR LIST */}
-              <div style={{ overflowY: 'auto', maxHeight: '580px', display: 'flex', flexDirection: 'column', gap: '18px', paddingRight: '4px' }}>
-                {DOMAINS.filter(d => d.key !== 'all').map(dom => {
-                  const dt = filteredCatalog.filter(t => t.domain === dom.key);
-                  if (dt.length === 0) return null;
-                  return (
-                    <div key={dom.key}>
-                      <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <dom.icon size={14} color="#2563EB" />
-                        <span>{dom.label}</span>
-                        <span style={{ color: '#CBD5E1', fontWeight: 600 }}>({dt.length})</span>
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {dt.map(tbl => {
-                          const isAct = activeTable.name === tbl.name;
-                          return (
-                            <div 
-                              key={tbl.name} 
-                              onClick={() => { setActiveTable(tbl); setActiveSubTab('data'); }} 
-                              style={{ 
-                                padding: '10px 12px', borderRadius: '10px', 
-                                background: isAct ? '#F1F5F9' : 'transparent', 
-                                color: isAct ? '#0F172A' : '#475569', 
-                                fontWeight: isAct ? 700 : 500, fontSize: '13px', cursor: 'pointer', 
-                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                position: 'relative', transition: 'all 0.15s ease'
-                              }}
-                            >
-                              {isAct && <span style={{ position: 'absolute', left: 0, top: '8px', bottom: '8px', width: '3px', borderRadius: '4px', background: '#2563EB' }}></span>}
-                              <span style={{ fontFamily: 'monospace', letterSpacing: '-0.01em', paddingLeft: isAct ? '6px' : '0' }}>{tbl.name}</span>
-                              <span style={{ fontSize: '11px', color: isAct ? '#2563EB' : '#94A3B8', fontWeight: 700, background: isAct ? '#DBEAFE' : '#F8FAFC', padding: '1px 7px', borderRadius: '10px' }}>
-                                {tbl.columns.length}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* RIGHT WORKSPACE: ENTITY STUDIO CANVAS */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px', minHeight: '680px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
-              
-              {/* TABLE HEADER BANNER */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', background: '#F8FAFC', padding: '24px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                <div style={{ flex: 1, minWidth: '300px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                    <Title level={2} style={{ margin: 0, fontWeight: 800, fontFamily: 'monospace', color: '#0F172A', letterSpacing: '-0.03em', fontSize: '24px' }}>
-                      public.{activeTable.name}
-                    </Title>
-                    <Tag color="geekblue" style={{ fontWeight: 700, padding: '2px 10px', borderRadius: '6px', fontSize: '12px', margin: 0 }}>
-                      {activeTable.domainLabel}
-                    </Tag>
-                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', fontSize: '12px', fontWeight: 700, padding: '2px 10px', borderRadius: '6px', border: '1px solid #BFDBFE' }}>
-                      {rowCount !== null ? `${rowCount.toLocaleString()} Total Rows` : `${liveRows.length} Fetched Rows`}
-                    </span>
-                  </div>
-                  <Text style={{ color: '#475569', fontSize: '14px', lineHeight: 1.6, display: 'block' }}>
-                    {activeTable.purpose}
-                  </Text>
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <Button icon={<RefreshCw size={14} />} onClick={fetchFullData} loading={loadingLive} style={{ borderRadius: '8px', height: '38px', fontWeight: 600 }}>
-                    Sync Data
-                  </Button>
-                  <Button icon={<FileText size={14} />} onClick={exportCSV} style={{ background: '#0F172A', color: '#FFFFFF', borderRadius: '8px', height: '38px', fontWeight: 600, border: 'none' }}>
-                    Export CSV
-                  </Button>
-                </div>
-              </div>
-
-              {/* VERCEL TABS BAR */}
-              <div style={{ display: 'flex', gap: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '0' }}>
-                <button
-                  onClick={() => setActiveSubTab('data')}
-                  style={{
-                    padding: '10px 4px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'data' ? '2px solid #0F172A' : '2px solid transparent',
-                    marginBottom: '-1px', fontWeight: activeSubTab === 'data' ? 700 : 500,
-                    color: activeSubTab === 'data' ? '#0F172A' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
-                  }}
-                >
-                  <Layers size={16} color={activeSubTab === 'data' ? '#2563EB' : '#64748B'} />
-                  <span>Live Records</span>
-                  <span style={{ borderRadius: '10px', background: activeSubTab === 'data' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'data' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
-                    {filteredLiveRows.length}
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => setActiveSubTab('schema')}
-                  style={{
-                    padding: '10px 4px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'schema' ? '2px solid #0F172A' : '2px solid transparent',
-                    marginBottom: '-1px', fontWeight: activeSubTab === 'schema' ? 700 : 500,
-                    color: activeSubTab === 'schema' ? '#0F172A' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
-                  }}
-                >
-                  <Code2 size={16} color={activeSubTab === 'schema' ? '#2563EB' : '#64748B'} />
-                  <span>Schema Specifications</span>
-                  <span style={{ borderRadius: '10px', background: activeSubTab === 'schema' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'schema' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
-                    {activeTable.columns.length}
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => setActiveSubTab('relations')}
-                  style={{
-                    padding: '10px 4px', border: 'none', background: 'transparent',
-                    borderBottom: activeSubTab === 'relations' ? '2px solid #0F172A' : '2px solid transparent',
-                    marginBottom: '-1px', fontWeight: activeSubTab === 'relations' ? 700 : 500,
-                    color: activeSubTab === 'relations' ? '#0F172A' : '#64748B', fontSize: '14px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease'
-                  }}
-                >
-                  <GitFork size={16} color={activeSubTab === 'relations' ? '#2563EB' : '#64748B'} />
-                  <span>Relational Network</span>
-                  <span style={{ borderRadius: '10px', background: activeSubTab === 'relations' ? '#0F172A' : '#F1F5F9', color: activeSubTab === 'relations' ? '#FFFFFF' : '#64748B', padding: '1px 8px', fontWeight: 700, fontSize: '11px' }}>
-                    {incomingRelations.length + activeTable.relations.length}
-                  </span>
-                </button>
-              </div>
-
-              {/* SUB TAB 1: DATA RECORDS */}
-              {activeSubTab === 'data' ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                    <Input 
-                      prefix={<Search size={14} color="#94A3B8" />} 
-                      placeholder="Filter kata kunci di dalam baris data aktif..." 
-                      value={dataSearchQuery} 
-                      onChange={e => setDataSearchQuery(e.target.value)} 
-                      allowClear 
-                      style={{ maxWidth: '360px', borderRadius: '8px', padding: '6px 12px' }} 
-                    />
-                    <Text style={{ fontSize: '12px', color: '#64748B' }}>💡 Klik baris mana saja untuk menginspeksi struktur Raw JSON</Text>
-                  </div>
-
-                  {supabaseError ? (
-                    <div style={{ padding: '20px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '12px', color: '#B91C1C', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <span style={{ fontSize: '24px' }}>⚠️</span>
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: '14px' }}>Supabase Query Error</div>
-                        <div style={{ fontSize: '13px', marginTop: '2px' }}>{supabaseError}</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <AntTable 
-                      dataSource={filteredLiveRows} 
-                      columns={dataColumns} 
-                      rowKey={r => r.id || r.order_id || r.customer_id || r.cctv_id || JSON.stringify(r)} 
-                      loading={loadingLive} 
-                      pagination={{ 
-                        pageSize, showSizeChanger: true, pageSizeOptions: ['10', '25', '50', '100'], 
-                        onShowSizeChange: (_, s) => setPageSize(Number(s)),
-                        style: { padding: '16px 0' }
-                      }} 
-                      onRow={record => ({ 
-                        onClick: () => setSelectedRowDetail(record),
-                        style: { cursor: 'pointer' } 
-                      })} 
-                      scroll={{ x: 'max-content' }} 
-                      size="middle" 
-                      bordered={false}
-                      style={{ border: '1px solid #F1F5F9', borderRadius: '10px', overflow: 'hidden' }}
-                    />
-                  )}
-                </div>
-              ) : null}
-
-              {/* SUB TAB 2: SCHEMA SPECIFICATIONS */}
-              {activeSubTab === 'schema' ? (
-                <AntTable 
-                  dataSource={activeTable.columns} 
-                  columns={schemaColumns} 
-                  rowKey="name" 
-                  pagination={false} 
-                  size="middle" 
-                  bordered={false}
-                  style={{ border: '1px solid #F1F5F9', borderRadius: '10px', overflow: 'hidden' }} 
+            {/* LEFT COLUMN: TABLE CATALOG */}
+            <Col xs={24} lg={8} xl={7}>
+              <SectionBox title="Table Catalog" chapter="40 Tables">
+                <Input 
+                  prefix={<Search size={15} color="#94A3B8" />} 
+                  placeholder="Cari tabel bisnis..." 
+                  value={tableSearchQuery} 
+                  onChange={e => setTableSearchQuery(e.target.value)} 
+                  allowClear 
+                  style={{ borderRadius: '6px' }}
                 />
-              ) : null}
 
-              {/* SUB TAB 3: RELATIONS MAP */}
-              {activeSubTab === 'relations' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-                  
-                  {/* INCOMING DEPENDENTS */}
-                  <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                      <div style={{ padding: '8px', background: '#EFF6FF', borderRadius: '8px', color: '#2563EB' }}><ArrowLeft size={16} /></div>
-                      <div>
-                        <Title level={5} style={{ margin: 0, fontWeight: 800, color: '#0F172A' }}>Downstream Dependents</Title>
-                        <Text style={{ fontSize: '12px', color: '#64748B' }}>Tabel lain yang merujuk Foreign Key ke tabel ini</Text>
-                      </div>
-                    </div>
-
-                    {incomingRelations.length === 0 ? (
-                      <div style={{ padding: '24px', textAlign: 'center', background: '#FFFFFF', borderRadius: '10px', border: '1px dashed #E2E8F0' }}>
-                        <Text style={{ color: '#94A3B8', fontSize: '13px' }}>Leaf Entity (Tidak ada rujukan masuk dari tabel lain)</Text>
-                      </div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {incomingRelations.map(inc => (
-                          <div 
-                            key={inc.name} 
-                            onClick={() => setActiveTable(inc)} 
-                            style={{ 
-                              padding: '12px 16px', background: '#FFFFFF', border: '1px solid #BFDBFE', 
-                              borderRadius: '10px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', 
-                              alignItems: 'center', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', transition: 'all 0.15s ease' 
-                            }}
-                          >
-                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1E3A8A', fontSize: '13px' }}>public.{inc.name}</span>
-                            <Tag color="blue" style={{ margin: 0, fontSize: '11px', fontWeight: 700, borderRadius: '6px' }}>Inspect ↗</Tag>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* OUTGOING FOREIGN KEYS */}
-                  <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                      <div style={{ padding: '8px', background: '#ECFDF5', borderRadius: '8px', color: '#059669' }}><ArrowRight size={16} /></div>
-                      <div>
-                        <Title level={5} style={{ margin: 0, fontWeight: 800, color: '#0F172A' }}>Outgoing Foreign Keys</Title>
-                        <Text style={{ fontSize: '12px', color: '#64748B' }}>Tabel master yang dirujuk oleh tabel ini</Text>
-                      </div>
-                    </div>
-
-                    {activeTable.relations.length === 0 ? (
-                      <div style={{ padding: '24px', textAlign: 'center', background: '#FFFFFF', borderRadius: '10px', border: '1px dashed #E2E8F0' }}>
-                        <Text style={{ color: '#94A3B8', fontSize: '13px' }}>Base Master Entity (Tidak merujuk ke tabel lain)</Text>
-                      </div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {activeTable.relations.map((rel, i) => {
-                          const tgName = rel.split('.')[0];
-                          const tg = SCHEMA_CATALOG.find(t => t.name === tgName);
-                          return (
-                            <div 
-                              key={i} 
-                              onClick={() => tg && setActiveTable(tg)} 
-                              style={{ 
-                                padding: '12px 16px', background: '#FFFFFF', border: '1px solid #A7F3D0', 
-                                borderRadius: '10px', cursor: tg ? 'pointer' : 'default', display: 'flex', 
-                                justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
-                                transition: 'all 0.15s ease'
-                              }}
-                            >
-                              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#065F46', fontSize: '13px' }}>{rel}</span>
-                              {tg && <Tag color="emerald" style={{ margin: 0, fontSize: '11px', fontWeight: 700, borderRadius: '6px' }}>Jump Master ↗</Tag>}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-
+                {/* DOMAIN FILTER PILLS */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingBottom: '8px', borderBottom: '1px solid #F1F5F9' }}>
+                  {DOMAINS.map(d => (
+                    <button 
+                      key={d.key} 
+                      onClick={() => setSelectedDomain(d.key)} 
+                      style={{ 
+                        padding: '4px 10px', borderRadius: '4px', 
+                        border: selectedDomain === d.key ? '1px solid #0F172A' : '1px solid #E2E8F0', 
+                        background: selectedDomain === d.key ? '#0F172A' : '#F8FAFC', 
+                        color: selectedDomain === d.key ? '#FFFFFF' : '#475569', 
+                        fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {d.key === 'all' ? 'All Pillars' : d.label}
+                    </button>
+                  ))}
                 </div>
-              ) : null}
 
-            </div>
+                {/* CATALOG LIST */}
+                <div style={{ overflowY: 'auto', maxHeight: '600px', display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '4px' }}>
+                  {DOMAINS.filter(d => d.key !== 'all').map(dom => {
+                    const dt = filteredCatalog.filter(t => t.domain === dom.key);
+                    if (dt.length === 0) return null;
+                    return (
+                      <div key={dom.key}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+                          {dom.label} ({dt.length})
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {dt.map(tbl => {
+                            const isAct = activeTable.name === tbl.name;
+                            return (
+                              <div 
+                                key={tbl.name} 
+                                onClick={() => { setActiveTable(tbl); setActiveSubTab('data'); }} 
+                                style={{ 
+                                  padding: '10px 12px', borderRadius: '6px', 
+                                  background: isAct ? '#F8FAFC' : '#FFFFFF', 
+                                  border: '1px solid #E2E8F0',
+                                  borderLeft: isAct ? '4px solid #0F172A' : '1px solid #E2E8F0',
+                                  color: '#0F172A', fontWeight: isAct ? 700 : 500, fontSize: '13px', cursor: 'pointer', 
+                                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                <span>{tbl.name}</span>
+                                <Tag style={{ margin: 0, fontSize: '11px', borderRadius: '4px' }}>{tbl.columns.length} cols</Tag>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </SectionBox>
+            </Col>
 
-          </div>
+            {/* RIGHT COLUMN: ENTITY SPECIFICATION */}
+            <Col xs={24} lg={16} xl={17}>
+              <SectionBox 
+                title={`Entity: ${activeTable.name}`} 
+                rightExtra={
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Tag color="blue" style={{ fontWeight: 600, margin: 0 }}>{activeTable.domainLabel}</Tag>
+                    <Button size="small" icon={<RefreshCw size={13} />} onClick={fetchFullData} loading={loadingLive}>Sync</Button>
+                    <Button size="small" onClick={exportCSV} type="primary" style={{ background: '#0F172A' }}>Export CSV</Button>
+                  </div>
+                }
+              >
+                <div style={{ padding: '12px 16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px' }}>
+                  <Text style={{ color: '#334155', fontSize: '14px', lineHeight: 1.6 }}>{activeTable.purpose}</Text>
+                </div>
+
+                <Tabs
+                  activeKey={activeSubTab}
+                  onChange={setActiveSubTab}
+                  size="large"
+                  tabBarStyle={{ borderBottom: '1px solid #E2E8F0', marginBottom: '16px' }}
+                  items={[
+                    {
+                      key: 'data',
+                      label: <span style={{ fontWeight: 600, fontSize: '14px' }}>Live Records ({filteredLiveRows.length})</span>,
+                      children: (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                          <Input 
+                            prefix={<Search size={14} color="#94A3B8" />} 
+                            placeholder="Cari baris data..." 
+                            value={dataSearchQuery} 
+                            onChange={e => setDataSearchQuery(e.target.value)} 
+                            allowClear 
+                            style={{ maxWidth: '300px', borderRadius: '6px' }} 
+                          />
+                          {supabaseError ? (
+                            <div style={{ padding: '16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '6px', color: '#B91C1C' }}>
+                              ⚠️ Supabase Notice: {supabaseError}
+                            </div>
+                          ) : (
+                            <AntTable 
+                              dataSource={filteredLiveRows} 
+                              columns={dataColumns} 
+                              rowKey={r => r.id || r.order_id || r.customer_id || r.cctv_id || JSON.stringify(r)} 
+                              loading={loadingLive} 
+                              pagination={{ pageSize, showSizeChanger: true, pageSizeOptions: ['10', '25', '50', '100'], onShowSizeChange: (_, s) => setPageSize(Number(s)) }} 
+                              onRow={record => ({ onClick: () => setSelectedRowDetail(record), style: { cursor: 'pointer' } })} 
+                              scroll={{ x: 'max-content' }} 
+                              size="middle" 
+                              bordered 
+                            />
+                          )}
+                        </div>
+                      )
+                    },
+                    {
+                      key: 'schema',
+                      label: <span style={{ fontWeight: 600, fontSize: '14px' }}>Schema Dictionary ({activeTable.columns.length})</span>,
+                      children: (
+                        <AntTable dataSource={activeTable.columns} columns={schemaColumns} rowKey="name" pagination={false} size="middle" bordered />
+                      )
+                    },
+                    {
+                      key: 'relations',
+                      label: <span style={{ fontWeight: 600, fontSize: '14px' }}>Relations Diagram</span>,
+                      children: (
+                        <Row gutter={[16, 16]}>
+                          <Col xs={24} md={12}>
+                            <div style={{ padding: '16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', height: '100%' }}>
+                              <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '12px', fontSize: '14px' }}>Incoming Dependents (Reverse FK)</Text>
+                              {incomingRelations.length === 0 ? <Empty description="Tidak ada rujukan masuk" image={Empty.PRESENTED_IMAGE_SIMPLE} /> : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  {incomingRelations.map(inc => (
+                                    <div key={inc.name} onClick={() => setActiveTable(inc)} style={{ padding: '10px 14px', background: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}>
+                                      <span>{inc.name}</span>
+                                      <Tag color="blue" style={{ margin: 0 }}>Jump</Tag>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </Col>
+                          <Col xs={24} md={12}>
+                            <div style={{ padding: '16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', height: '100%' }}>
+                              <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '12px', fontSize: '14px' }}>Outgoing Foreign Keys</Text>
+                              {activeTable.relations.length === 0 ? <Empty description="Standalone Entity" image={Empty.PRESENTED_IMAGE_SIMPLE} /> : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  {activeTable.relations.map((rel, i) => {
+                                    const tg = SCHEMA_CATALOG.find(t => t.name === rel.split('.')[0]);
+                                    return (
+                                      <div key={i} onClick={() => tg && setActiveTable(tg)} style={{ padding: '10px 14px', background: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: '6px', cursor: tg ? 'pointer' : 'default', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}>
+                                        <span>{rel}</span>
+                                        {tg && <Tag color="green" style={{ margin: 0 }}>Master</Tag>}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </Col>
+                        </Row>
+                      )
+                    }
+                  ]}
+                />
+              </SectionBox>
+            </Col>
+
+          </Row>
         ) : null}
 
-        {/* VIEW 2: GLOBAL ERD TOPOLOGY (ULTRA-CLEAN SAAS ARCHITECTURE STUDIO) */}
+        {/* VIEW 2: GLOBAL RELATIONAL DIAGRAM (SWISS CONSULTING REPORT) */}
         {globalView === 'global_erd' ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-            
-            {/* HERO ARCHITECTURE BANNER */}
-            <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)', color: '#FFFFFF', padding: '36px', borderRadius: '20px', border: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.3)' }}>
-              <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 800, letterSpacing: '0.1em' }}>
-                    ENTERPRISE SSOT TOPOLOGY
-                  </span>
-                  <span style={{ background: 'rgba(34, 197, 94, 0.15)', color: '#4ADE80', border: '1px solid rgba(34, 197, 94, 0.3)', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                    100% Normalized
-                  </span>
-                </div>
-                <Title level={1} style={{ color: '#FFFFFF', margin: '0 0 10px', fontWeight: 800, letterSpacing: '-0.03em', fontSize: '32px' }}>
-                  Calf Master Relational Ecosystem
-                </Title>
-                <Text style={{ color: '#94A3B8', fontSize: '15px', lineHeight: 1.6, display: 'block' }}>
-                  Peta arsitektur tersentralisasi yang menghubungkan 40 entitas bisnis PostgreSQL di dalam 11 pilar domain operasional Calf One. Klik node tabel mana saja untuk langsung melompat menginspeksi data aktifnya.
-                </Text>
-              </div>
-
-              <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(255, 255, 255, 0.05)', padding: '18px 22px', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', minWidth: '250px' }}>
-                <div style={{ fontSize: '11px', fontWeight: 800, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Ecosystem Metrics</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
-                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>Registered Pillars</span>
-                  <span style={{ fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace', fontSize: '16px' }}>11</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
-                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>SSOT Schema Tables</span>
-                  <span style={{ fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace', fontSize: '16px' }}>40</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>Engine Status</span>
-                  <span style={{ color: '#4ADE80', fontWeight: 700, fontSize: '13px' }}>🟢 Supabase Live</span>
-                </div>
-              </div>
+          <SectionBox title="Master Relational Architecture" chapter="11 Business Pillars • 40 Tables">
+            <div style={{ padding: '16px 20px', background: '#F8FAFC', border: '1px solid #CBD5E1', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              <Text style={{ fontSize: '14px', color: '#334155' }}>Peta diagram relasi seluruh 40 entitas basis data Kopi Calf. Klik kotak tabel mana saja untuk beralih menginspeksi rincian data aktualnya.</Text>
+              <Tag color="green" style={{ fontWeight: 700, padding: '4px 12px', fontSize: '13px' }}>100% Normalized Architecture</Tag>
             </div>
 
-            {/* DOMAIN PILLARS GRID */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '24px' }}>
+            <Row gutter={[20, 20]}>
               {DOMAINS.filter(d => d.key !== 'all').map(dom => {
                 const pt = SCHEMA_CATALOG.filter(t => t.domain === dom.key);
                 if (pt.length === 0) return null;
                 return (
-                  <div key={dom.key} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -2px rgba(0,0,0,0.02)' }}>
-                    
-                    {/* PILLAR HEADER */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F1F5F9', paddingBottom: '16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ padding: '10px', background: '#EFF6FF', borderRadius: '12px', color: '#2563EB', display: 'flex' }}>
-                          <dom.icon size={20} />
-                        </div>
+                  <Col xs={24} md={12} lg={8} key={dom.key}>
+                    <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '18px', height: '100%', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid #F1F5F9', paddingBottom: '12px' }}>
+                        <dom.icon size={18} color="#0F172A" />
                         <div>
-                          <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '16px', letterSpacing: '-0.01em' }}>{dom.label}</div>
-                          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>Domain Isolation Layer</div>
+                          <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '14px' }}>{dom.label}</Text>
+                          <Text style={{ fontSize: '12px', color: '#64748B' }}>{pt.length} Registered Tables</Text>
                         </div>
                       </div>
-                      <Tag color="blue" style={{ margin: 0, borderRadius: '20px', padding: '2px 10px', fontWeight: 800, fontSize: '11px', background: '#DBEAFE', color: '#1E40AF', border: 'none' }}>
-                        {pt.length} Tables
-                      </Tag>
-                    </div>
 
-                    {/* TABLE NODES CARDS */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {pt.map(tbl => (
-                        <div 
-                          key={tbl.name} 
-                          onClick={() => { setActiveTable(tbl); setGlobalView('explorer'); setActiveSubTab('data'); }} 
-                          style={{ 
-                            background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '14px 16px', 
-                            borderRadius: '14px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '8px',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>
-                              public.{tbl.name}
-                            </span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <Tag color="cyan" style={{ margin: 0, fontSize: '10px', borderRadius: '6px', fontWeight: 700, background: '#E0F2FE', color: '#0369A1', border: 'none' }}>
-                                {tbl.columns.length} col
-                              </Tag>
-                              <span style={{ color: '#2563EB', fontWeight: 700, fontSize: '13px' }}>↗</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {pt.map(tbl => (
+                          <div 
+                            key={tbl.name} 
+                            onClick={() => { setActiveTable(tbl); setGlobalView('explorer'); setActiveSubTab('data'); }} 
+                            style={{ 
+                              background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '12px', 
+                              borderRadius: '6px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '4px',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Text style={{ fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>{tbl.name}</Text>
+                              <Tag style={{ margin: 0, fontSize: '11px' }}>{tbl.columns.length} cols</Tag>
                             </div>
+                            <Text style={{ fontSize: '12px', color: '#475569', lineHeight: 1.4 }}>{tbl.purpose}</Text>
                           </div>
-
-                          <Text style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, display: 'block' }}>
-                            {tbl.purpose}
-                          </Text>
-
-                          {tbl.relations.length > 0 && (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
-                              {tbl.relations.slice(0, 2).map((rel, rIdx) => (
-                                <span key={rIdx} style={{ fontSize: '10px', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#334155', padding: '1px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 600 }}>
-                                  🔗 {rel}
-                                </span>
-                              ))}
-                              {tbl.relations.length > 2 && (
-                                <span style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 600 }}>+{tbl.relations.length - 2} more</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-
-                  </div>
+                  </Col>
                 );
               })}
-            </div>
-
-          </div>
+            </Row>
+          </SectionBox>
         ) : null}
 
       </div>
 
       {/* ROW DETAIL MODAL */}
-      <Modal title={`Row Record Inspector (${activeTable.name})`} open={selectedRowDetail !== null} onCancel={() => setSelectedRowDetail(null)} footer={[<Button key="c" onClick={() => setSelectedRowDetail(null)}>Tutup</Button>]} width={750}>
+      <Modal title={`Record Details: ${activeTable.name}`} open={selectedRowDetail !== null} onCancel={() => setSelectedRowDetail(null)} footer={[<Button key="c" onClick={() => setSelectedRowDetail(null)}>Tutup</Button>]} width={700}>
         {selectedRowDetail ? (
-          <Tabs defaultActiveKey="table" items={[
-            { key: 'table', label: '📋 Attributes Table', children: <AntTable dataSource={Object.entries(selectedRowDetail).map(([k, v]) => ({ key: k, value: v }))} columns={[{ title: 'Key Attribute', dataIndex: 'key', key: 'key', width: 220, render: (t: any) => <span style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0F172A' }}>{t}</span> }, { title: 'Record Value', dataIndex: 'value', key: 'value', render: (v: any) => typeof v === 'object' ? <pre style={{ fontSize: '11px', margin: 0, background: '#F8FAFC', padding: '8px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>{JSON.stringify(v, null, 2)}</pre> : <span style={{ fontWeight: 500, color: '#334155' }}>{String(v ?? 'NULL')}</span> }]} pagination={false} size="small" bordered /> },
-            { key: 'json', label: '💻 Raw JSON Payload', children: <pre style={{ background: '#0F172A', color: '#38BDF8', padding: '18px', borderRadius: '10px', maxHeight: '450px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace' }}>{JSON.stringify(selectedRowDetail, null, 2)}</pre> }
+          <Tabs defaultActiveKey="table" size="large" items={[
+            { key: 'table', label: 'Formatted Table', children: <AntTable dataSource={Object.entries(selectedRowDetail).map(([k, v]) => ({ key: k, value: v }))} columns={[{ title: 'Attribute', dataIndex: 'key', key: 'key', width: 220, render: (t: any) => <Text style={{ fontWeight: 700 }}>{t}</Text> }, { title: 'Value', dataIndex: 'value', key: 'value', render: (v: any) => typeof v === 'object' ? <pre style={{ fontSize: '12px', margin: 0, background: '#F8FAFC', padding: '8px', borderRadius: '4px', border: '1px solid #E2E8F0' }}>{JSON.stringify(v, null, 2)}</pre> : <Text>{String(v ?? 'null')}</Text> }]} pagination={false} size="small" bordered /> },
+            { key: 'json', label: 'Raw JSON', children: <pre style={{ background: '#F8FAFC', color: '#0F172A', padding: '16px', borderRadius: '6px', border: '1px solid #E2E8F0', maxHeight: '400px', overflow: 'auto', fontSize: '12px' }}>{JSON.stringify(selectedRowDetail, null, 2)}</pre> }
           ]} />
         ) : null}
       </Modal>
 
-      {/* AI EXPORTER MODAL (CURSOR / OPENAI STUDIO STYLE) */}
-      <Modal 
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '4px' }}>
-            <div style={{ padding: '8px', background: 'linear-gradient(135deg, #2563EB 0%, #8B5CF6 100%)', borderRadius: '10px', color: '#FFFFFF', display: 'flex' }}>
-              <Bot size={20} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '18px', color: '#0F172A', letterSpacing: '-0.02em' }}>AI Prompt Engineering Blueprint</div>
-              <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>SSOT Context Exporter for ChatGPT, Claude 3.5 Sonnet & Cursor IDE</div>
-            </div>
-          </div>
-        }
-        open={exportModalVisible} 
-        onCancel={() => setExportModalVisible(false)} 
-        footer={[
-          <Button key="close" onClick={() => setExportModalVisible(false)} style={{ borderRadius: '8px', fontWeight: 600, padding: '0 20px', height: '38px' }}>
-            Tutup Studio Exporter
-          </Button>
-        ]} 
-        width={850}
-      >
-        <div style={{ marginTop: '16px' }}>
-          <Tabs defaultActiveKey="ai" items={[
-            { 
-              key: 'ai', 
-              label: <span style={{ fontWeight: 700 }}>🤖 AI Agent System Prompt</span>, 
-              children: (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
-                    <div>
-                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Target Entity Blueprint: <code style={{ color: '#2563EB' }}>public.{activeTable.name}</code></Text>
-                      <Text style={{ fontSize: '12px', color: '#64748B' }}>Salin blueprint ini sebagai *System Prompt* saat meminta AI menulis kode SQL/Supabase.</Text>
-                    </div>
-                    <Button 
-                      type="primary" 
-                      icon={copiedFormat === 'ai' ? <Check size={16} /> : <Copy size={16} />} 
-                      onClick={() => { 
-                        navigator.clipboard.writeText(generateAIPromptContext(activeTable)); 
-                        setCopiedFormat('ai');
-                        messageApi.success('AI Blueprint copied to clipboard!'); 
-                        setTimeout(() => setCopiedFormat(null), 2500);
-                      }}
-                      style={{ background: copiedFormat === 'ai' ? '#16A34A' : '#0F172A', fontWeight: 700, borderRadius: '8px', height: '38px', border: 'none', transition: 'all 0.2s ease' }}
-                    >
-                      {copiedFormat === 'ai' ? 'Copied Blueprint!' : 'Copy AI Blueprint'}
-                    </Button>
-                  </div>
-                  <pre style={{ background: '#0F172A', color: '#38BDF8', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                    {generateAIPromptContext(activeTable)}
-                  </pre>
+      {/* AI EXPORTER MODAL (SWISS CONSULTING STYLE) */}
+      <Modal title="AI Coding Blueprint Exporter" open={exportModalVisible} onCancel={() => setExportModalVisible(false)} footer={[<Button key="c" onClick={() => setExportModalVisible(false)}>Tutup</Button>]} width={750}>
+        <Tabs defaultActiveKey="ai" size="large" items={[
+          { 
+            key: 'ai', 
+            label: 'AI Context Prompt', 
+            children: (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', background: '#F8FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                  <Text style={{ fontSize: '13px', color: '#334155' }}>Salin blueprint ini saat meminta AI menulis kode untuk tabel <strong style={{ color: '#0F172A' }}>{activeTable.name}</strong>:</Text>
+                  <Button type="primary" icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateAIPromptContext(activeTable)); messageApi.success('Copied Blueprint!'); }} style={{ background: '#0F172A' }}>Copy Prompt</Button>
                 </div>
-              ) 
-            },
-            { 
-              key: 'ts', 
-              label: <span style={{ fontWeight: 700 }}>📐 TypeScript Interface</span>, 
-              children: (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
-                    <div>
-                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Production TypeScript Type Definition</Text>
-                      <Text style={{ fontSize: '12px', color: '#64748B' }}>Gunakan interface ini di aplikasi Next.js Frontend atau Supabase Edge Functions.</Text>
-                    </div>
-                    <Button 
-                      icon={copiedFormat === 'ts' ? <Check size={16} color="#16A34A" /> : <Copy size={16} />} 
-                      onClick={() => { 
-                        navigator.clipboard.writeText(generateInterface(activeTable)); 
-                        setCopiedFormat('ts');
-                        messageApi.success('TypeScript Interface copied!'); 
-                        setTimeout(() => setCopiedFormat(null), 2500);
-                      }}
-                      style={{ fontWeight: 700, borderRadius: '8px', height: '38px', borderColor: copiedFormat === 'ts' ? '#22C55E' : '#CBD5E1', color: copiedFormat === 'ts' ? '#16A34A' : '#0F172A' }}
-                    >
-                      {copiedFormat === 'ts' ? 'Copied TS!' : 'Copy Interface'}
-                    </Button>
-                  </div>
-                  <pre style={{ background: '#0F172A', color: '#E2E8F0', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6 }}>
-                    {generateInterface(activeTable)}
-                  </pre>
+                <pre style={{ background: '#F8FAFC', color: '#0F172A', padding: '16px', borderRadius: '6px', border: '1px solid #E2E8F0', maxHeight: '380px', overflow: 'auto', fontSize: '12px', whiteSpace: 'pre-wrap' }}>
+                  {generateAIPromptContext(activeTable)}
+                </pre>
+              </div>
+            ) 
+          },
+          { 
+            key: 'ts', 
+            label: 'TypeScript Interface', 
+            children: (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', background: '#F8FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                  <Text style={{ fontSize: '13px', color: '#334155' }}>Model interface produksi untuk Next.js Frontend:</Text>
+                  <Button icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateInterface(activeTable)); messageApi.success('Copied TS!'); }}>Copy Interface</Button>
                 </div>
-              ) 
-            },
-            { 
-              key: 'sql', 
-              label: <span style={{ fontWeight: 700 }}>📜 SQL DDL & RLS</span>, 
-              children: (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
-                    <div>
-                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>PostgreSQL Migration Schema</Text>
-                      <Text style={{ fontSize: '12px', color: '#64748B' }}>DDL table penciptaan dan kebijakan Row Level Security (RLS) Supabase.</Text>
-                    </div>
-                    <Button 
-                      icon={copiedFormat === 'sql' ? <Check size={16} color="#16A34A" /> : <Copy size={16} />} 
-                      onClick={() => { 
-                        navigator.clipboard.writeText(generateDDL(activeTable)); 
-                        setCopiedFormat('sql');
-                        messageApi.success('SQL DDL copied!'); 
-                        setTimeout(() => setCopiedFormat(null), 2500);
-                      }}
-                      style={{ fontWeight: 700, borderRadius: '8px', height: '38px', borderColor: copiedFormat === 'sql' ? '#22C55E' : '#CBD5E1', color: copiedFormat === 'sql' ? '#16A34A' : '#0F172A' }}
-                    >
-                      {copiedFormat === 'sql' ? 'Copied SQL!' : 'Copy SQL DDL'}
-                    </Button>
-                  </div>
-                  <pre style={{ background: '#0F172A', color: '#A7F3D0', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6 }}>
-                    {generateDDL(activeTable)}
-                  </pre>
+                <pre style={{ background: '#F8FAFC', color: '#0F172A', padding: '16px', borderRadius: '6px', border: '1px solid #E2E8F0', maxHeight: '380px', overflow: 'auto', fontSize: '12px' }}>
+                  {generateInterface(activeTable)}
+                </pre>
+              </div>
+            ) 
+          },
+          { 
+            key: 'sql', 
+            label: 'SQL DDL Definition', 
+            children: (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', background: '#F8FAFC', padding: '12px 16px', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+                  <Text style={{ fontSize: '13px', color: '#334155' }}>Definisi tabel DDL & RLS Supabase:</Text>
+                  <Button icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateDDL(activeTable)); messageApi.success('Copied SQL!'); }}>Copy SQL</Button>
                 </div>
-              ) 
-            }
-          ]} />
-        </div>
+                <pre style={{ background: '#F8FAFC', color: '#0F172A', padding: '16px', borderRadius: '6px', border: '1px solid #E2E8F0', maxHeight: '380px', overflow: 'auto', fontSize: '12px' }}>
+                  {generateDDL(activeTable)}
+                </pre>
+              </div>
+            ) 
+          }
+        ]} />
       </Modal>
     </MainLayout>
   );
