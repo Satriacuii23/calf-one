@@ -13,7 +13,7 @@ import { createClient } from '@/lib/supabase/client';
 
 const { Title, Text } = Typography;
 
-interface ColumnDef {
+export interface ColumnDef {
   name: string;
   type: string;
   key?: string; // 'PK' | 'FK' | ''
@@ -21,7 +21,7 @@ interface ColumnDef {
   desc: string;
 }
 
-interface TableSchema {
+export interface TableSchema {
   id: string;
   name: string;
   domain: string;
@@ -31,7 +31,7 @@ interface TableSchema {
   columns: ColumnDef[];
 }
 
-const SCHEMA_CATALOG: TableSchema[] = [
+export const SCHEMA_CATALOG: TableSchema[] = [
   // 1. SALES DOMAIN
   {
     id: 'orders',
@@ -954,7 +954,7 @@ export default function DataRelationPage() {
               <Button size="large" onClick={() => setGlobalView('global_erd')} type={globalView === 'global_erd' ? 'primary' : 'default'} style={{ fontWeight: 600, borderRadius: '6px', background: globalView === 'global_erd' ? '#0F172A' : '#FFFFFF', borderColor: globalView === 'global_erd' ? '#0F172A' : '#CBD5E1' }}>
                 Relational Diagram
               </Button>
-              <Button size="large" onClick={() => setExportModalVisible(true)} icon={<Sparkles size={16} />} style={{ fontWeight: 600, borderRadius: '6px', color: '#2563EB', borderColor: '#BFDBFE', background: '#EFF6FF' }}>
+              <Button size="large" onClick={() => setExportModalVisible(true)} icon={<Sparkles size={16} />} style={{ fontWeight: 600, borderRadius: '6px', color: '#0F172A', borderColor: '#CBD5E1', background: '#FFFFFF' }}>
                 AI Blueprint
               </Button>
             </div>
@@ -1042,7 +1042,7 @@ export default function DataRelationPage() {
                 title={`Entity: ${activeTable.name}`} 
                 rightExtra={
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <Tag color="blue" style={{ fontWeight: 600, margin: 0 }}>{activeTable.domainLabel}</Tag>
+                    <Tag style={{ fontWeight: 600, margin: 0, background: '#F8FAFC', border: '1px solid #CBD5E1' }}>{activeTable.domainLabel}</Tag>
                     <Button size="small" icon={<RefreshCw size={13} />} onClick={fetchFullData} loading={loadingLive}>Sync</Button>
                     <Button size="small" onClick={exportCSV} type="primary" style={{ background: '#0F172A' }}>Export CSV</Button>
                   </div>
@@ -1111,7 +1111,7 @@ export default function DataRelationPage() {
                                   {incomingRelations.map(inc => (
                                     <div key={inc.name} onClick={() => setActiveTable(inc)} style={{ padding: '10px 14px', background: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}>
                                       <span>{inc.name}</span>
-                                      <Tag color="blue" style={{ margin: 0 }}>Jump</Tag>
+                                      <Tag style={{ margin: 0, fontWeight: 600 }}>Jump</Tag>
                                     </div>
                                   ))}
                                 </div>
@@ -1128,7 +1128,7 @@ export default function DataRelationPage() {
                                     return (
                                       <div key={i} onClick={() => tg && setActiveTable(tg)} style={{ padding: '10px 14px', background: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: '6px', cursor: tg ? 'pointer' : 'default', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}>
                                         <span>{rel}</span>
-                                        {tg && <Tag color="green" style={{ margin: 0 }}>Master</Tag>}
+                                        {tg && <Tag style={{ margin: 0, fontWeight: 600 }}>Master</Tag>}
                                       </div>
                                     );
                                   })}
@@ -1152,7 +1152,7 @@ export default function DataRelationPage() {
           <SectionBox title="Master Relational Architecture" chapter="11 Business Pillars • 40 Tables">
             <div style={{ padding: '16px 20px', background: '#F8FAFC', border: '1px solid #CBD5E1', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <Text style={{ fontSize: '14px', color: '#334155' }}>Peta diagram relasi seluruh 40 entitas basis data Kopi Calf. Klik kotak tabel mana saja untuk beralih menginspeksi rincian data aktualnya.</Text>
-              <Tag color="green" style={{ fontWeight: 700, padding: '4px 12px', fontSize: '13px' }}>100% Normalized Architecture</Tag>
+              <Tag style={{ fontWeight: 700, padding: '4px 12px', fontSize: '13px', background: '#F8FAFC', border: '1px solid #CBD5E1' }}>100% Normalized Architecture</Tag>
             </div>
 
             <Row gutter={[20, 20]}>

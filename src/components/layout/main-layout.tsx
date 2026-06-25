@@ -22,6 +22,7 @@ import {
   ActivitySquare,
   MessageSquare,
   HeadphonesIcon,
+  HardDrive,
 } from 'lucide-react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Link from 'next/link';
@@ -38,7 +39,15 @@ const navGroups = [
       { name: "Overview", href: "/", icon: LayoutDashboard },
       { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
       { name: "Data Relation", href: "/data-relation", icon: Database },
-      { name: "Expansions", href: "/expansion", icon: Zap },
+      { 
+        name: "Data HUB", 
+        href: "/data-hub", 
+        icon: HardDrive,
+        subItems: [
+          { name: "Insert", href: "/data-hub/insert" },
+          { name: "View", href: "/data-hub/view" },
+        ]
+      },
     ]
   },
   {
@@ -54,6 +63,7 @@ const navGroups = [
     items: [
       { name: "Operations Center", href: "/operations", icon: ActivitySquare },
       { name: "Outlet Intelligence", href: "/outlets", icon: Building2 },
+      { name: "Expansions", href: "/expansion", icon: Zap },
       { name: "Risk Center", href: "/risk", icon: AlertTriangle },
     ]
   },
@@ -100,11 +110,24 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
     key: `group-${index}`,
     type: 'group' as const,
     label: <Text type="secondary" style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>{group.group.toUpperCase()}</Text>,
-    children: group.items.map(item => ({
-      key: item.href,
-      icon: <item.icon size={16} />,
-      label: <Link href={item.href}>{item.name}</Link>,
-    })),
+    children: group.items.map((item: any) => {
+      if (item.subItems) {
+        return {
+          key: item.name,
+          icon: <item.icon size={16} />,
+          label: item.name,
+          children: item.subItems.map((sub: any) => ({
+            key: sub.href,
+            label: <Link href={sub.href}>{sub.name}</Link>,
+          })),
+        };
+      }
+      return {
+        key: item.href,
+        icon: <item.icon size={16} />,
+        label: <Link href={item.href}>{item.name}</Link>,
+      };
+    }),
   }));
 
   return (
@@ -145,6 +168,7 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         <Menu
           mode="inline"
           selectedKeys={[pathname]}
+          defaultOpenKeys={['Data HUB']}
           items={menuItems}
           style={{ borderRight: 0, padding: '12px 0' }}
         />
