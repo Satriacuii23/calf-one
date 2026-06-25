@@ -3,13 +3,7 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { ConfigProvider } from 'antd';
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import './globals.css';
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Calf Command Center",
@@ -26,7 +20,7 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={jakarta.className} style={{ margin: 0, padding: 0, backgroundColor: '#f0f2f5' }}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#f0f2f5' }}>
         <MantineProvider>
           <AntdRegistry>
             <ConfigProvider
