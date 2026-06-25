@@ -72,7 +72,7 @@ export default function LoginPage() {
   );
 
   return (
-    <div style={{ 
+    <div className="login-container" style={{ 
       minHeight: '100vh', 
       width: '100vw',
       backgroundColor: '#000000', // Pure black background
@@ -87,15 +87,60 @@ export default function LoginPage() {
     }}>
       {contextHolder}
 
+      <style>{`
+        .login-grid {
+          display: grid;
+          grid-template-columns: minmax(280px, 320px) minmax(400px, 560px) minmax(280px, 320px);
+          gap: 30px;
+          max-width: 1400px;
+          width: 100%;
+          align-items: stretch;
+        }
+        .side-panel {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+        }
+        .header-decor {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          width: 250px;
+        }
+        @media (max-width: 1100px) {
+          .login-grid {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+          }
+          .side-panel {
+            display: none !important;
+          }
+          .header-decor {
+            display: none !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .logo-text {
+            font-size: 3.5rem !important;
+          }
+          .login-container {
+            padding: 20px 15px !important;
+          }
+          .form-panel {
+            padding: 30px 20px !important;
+          }
+        }
+      `}</style>
+
       {/* TOP NEON HEADER */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '40px', marginBottom: '60px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '250px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '40px', marginBottom: '40px' }}>
+        <div className="header-decor">
           <div style={{ height: '8px', backgroundColor: '#ef4444', boxShadow: '0 0 15px #ef4444', borderRadius: '4px' }} />
           <div style={{ height: '8px', backgroundColor: '#ef4444', boxShadow: '0 0 15px #ef4444', borderRadius: '4px' }} />
         </div>
         
         <div style={{ textAlign: 'center' }}>
-          <h1 style={{ 
+          <h1 className="logo-text" style={{ 
             fontFamily: 'cursive, Georgia, serif', 
             fontSize: '5rem', 
             fontWeight: 800, 
@@ -111,24 +156,17 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '250px' }}>
+        <div className="header-decor">
           <div style={{ height: '8px', backgroundColor: '#ef4444', boxShadow: '0 0 15px #ef4444', borderRadius: '4px' }} />
           <div style={{ height: '8px', backgroundColor: '#ef4444', boxShadow: '0 0 15px #ef4444', borderRadius: '4px' }} />
         </div>
       </div>
 
       {/* 3-COLUMN GRID */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'minmax(280px, 320px) minmax(400px, 560px) minmax(280px, 320px)', 
-        gap: '30px',
-        maxWidth: '1400px',
-        width: '100%',
-        alignItems: 'stretch'
-      }}>
+      <div className="login-grid">
         
         {/* LEFT PANELS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+        <div className="side-panel">
           <div style={panelStyle}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
               <div style={{ textAlign: 'left' }}>
@@ -155,8 +193,8 @@ export default function LoginPage() {
         </div>
 
         {/* CENTER LOGIN FORM */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-          <div style={{ 
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
+          <div className="form-panel" style={{ 
             ...panelStyle, 
             padding: '50px 40px', 
             borderRadius: '24px', 
@@ -291,7 +329,7 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT PANELS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+        <div className="side-panel">
           <div style={{ ...panelStyle, flex: 1, position: 'relative', overflow: 'hidden' }}>
             <div style={{ fontSize: '12px', color: '#e2e8f0', letterSpacing: '2px', marginBottom: '20px' }}>
               STORE NETWORK
