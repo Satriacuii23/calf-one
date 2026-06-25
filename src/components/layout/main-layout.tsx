@@ -37,6 +37,7 @@ const navGroups = [
     items: [
       { name: "Overview", href: "/", icon: LayoutDashboard },
       { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
+      { name: "Data Relation", href: "/data-relation", icon: Database },
       { name: "Expansions", href: "/expansion", icon: Zap },
     ]
   },
@@ -67,7 +68,6 @@ const navGroups = [
     group: "System & Administration",
     items: [
       { name: "AI Insights", href: "/insights", icon: Brain },
-      { name: "Data Relation", href: "/data-relation", icon: Database },
       { name: "Reports", href: "/reports", icon: FileText },
       { name: "Settings", href: "/settings", icon: Settings },
     ]
