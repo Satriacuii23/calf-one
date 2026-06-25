@@ -318,7 +318,7 @@ export default function WhyCalfOnePage() {
                 <Text style={{ fontWeight: 700, fontSize: '14px', color: secondary }}>1 Person</Text>
               </div>
               <Text style={{ fontSize: '13px', color: textLight, display: 'block', lineHeight: 1.6 }}>
-                Digital Transformation Lead (Yaitu Anda). Fokus pada assessment & vendor management.
+                Digital Transformation Lead. Fokus pada assessment & vendor management.
               </Text>
             </div>
 
