@@ -74,7 +74,7 @@ export default function WhyCalfOnePage() {
   ];
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', backgroundColor: bg, color: textDark, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: bg, color: textDark, minHeight: '100vh', overflowX: 'hidden' }}>
       
       {/* HEADER NAVBAR */}
       <div style={{ padding: '24px 40px', borderBottom: `1px solid ${borderLight}`, backgroundColor: bg, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
@@ -103,7 +103,7 @@ export default function WhyCalfOnePage() {
           </div>
         }
         rightContent={
-          <div style={{ height: '450px', width: '100%', backgroundColor: bg, border: `1px solid ${borderLight}`, borderRadius: '24px', padding: '20px' }}>
+          <div style={{ height: '450px', width: '100%', backgroundColor: bg, padding: '20px 0' }}>
             {mounted && (
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={maturityData}>
@@ -127,7 +127,7 @@ export default function WhyCalfOnePage() {
         title="Management Visibility"
         subtitle="How much of the business operations can we actually see today?"
         leftContent={
-          <div style={{ padding: '40px', border: `1px solid ${borderLight}`, borderRadius: '16px', backgroundColor: bg, display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={{ padding: '40px 0', backgroundColor: bg, display: 'flex', flexDirection: 'column', gap: '32px' }}>
             <div>
               <Text style={{ fontSize: '14px', color: textLight, fontWeight: 700, letterSpacing: '1px' }}>CURRENT VISIBILITY AVERAGE</Text>
               <Title level={2} style={{ color: '#EF4444', margin: '8px 0 0 0', fontSize: '56px', letterSpacing: '-2px' }}>26%</Title>
@@ -140,7 +140,7 @@ export default function WhyCalfOnePage() {
           </div>
         }
         rightContent={
-          <div style={{ height: '450px', width: '100%', backgroundColor: bg, border: `1px solid ${borderLight}`, borderRadius: '24px', padding: '20px' }}>
+          <div style={{ height: '450px', width: '100%', backgroundColor: bg, padding: '20px 0' }}>
             {mounted && (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={visibilityData} layout="vertical" margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
@@ -189,7 +189,7 @@ export default function WhyCalfOnePage() {
               { q: "Who are our most valuable customers?", a: "Data currently unavailable." },
               { q: "What are customers saying online?", a: "No centralized brand monitoring." },
             ].map((qa, i) => (
-              <div key={i} style={{ padding: '24px 32px', border: `1px solid ${borderLight}`, borderRadius: '16px', backgroundColor: '#FAFAFA' }}>
+              <div key={i} style={{ padding: '24px 0', borderBottom: `1px solid ${borderLight}`, backgroundColor: bg }}>
                 <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
                   <Text style={{ fontWeight: 800, color: textDark, fontSize: '16px' }}>Q:</Text>
                   <Text style={{ fontWeight: 700, color: textDark, fontSize: '16px' }}>{qa.q}</Text>
@@ -226,16 +226,16 @@ export default function WhyCalfOnePage() {
         rightContent={
           <div style={{ padding: '40px', backgroundColor: bg, border: `1px solid ${borderLight}`, borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-              <div style={{ flex: 1, padding: '24px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '12px', textAlign: 'center' }}>
+              <div style={{ flex: 1, padding: '24px', backgroundColor: bg, border: `1px solid ${borderLight}`, borderRadius: '8px', textAlign: 'center' }}>
                 <Text style={{ fontWeight: 700, color: textDark }}>Legacy Sources</Text>
               </div>
               <ArrowRight size={20} color="#CBD5E1" />
-              <div style={{ flex: 1.5, padding: '32px 24px', backgroundColor: bg, border: `2px solid ${secondary}`, borderRadius: '16px', textAlign: 'center', boxShadow: '0 10px 30px rgba(31, 94, 255, 0.08)' }}>
+              <div style={{ flex: 1.5, padding: '32px 24px', backgroundColor: bg, border: `2px solid ${secondary}`, borderRadius: '8px', textAlign: 'center' }}>
                 <Server size={32} color={secondary} style={{ margin: '0 auto 12px auto' }} />
                 <Text style={{ fontWeight: 800, color: primary, fontSize: '18px' }}>CALF ONE</Text>
               </div>
               <ArrowRight size={20} color="#CBD5E1" />
-              <div style={{ flex: 1, padding: '24px', backgroundColor: primary, borderRadius: '12px', textAlign: 'center' }}>
+              <div style={{ flex: 1, padding: '24px', backgroundColor: primary, borderRadius: '8px', textAlign: 'center' }}>
                 <Text style={{ fontWeight: 800, color: '#FFFFFF' }}>End Users</Text>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function WhyCalfOnePage() {
           </div>
         }
         rightContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '40px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '40px', backgroundColor: bg, border: `1px solid ${borderLight}`, borderRadius: '8px' }}>
             {[
               { p: 0, t: 'ASSESSMENT', w: '10%', c: textLight, y: 'Jun 26' },
               { p: 1, t: 'DATA HUB', w: '20%', c: '#EF4444', y: 'Jul 26' },
@@ -312,7 +312,7 @@ export default function WhyCalfOnePage() {
         subtitle="Scaling capabilities alongside technological complexity"
         leftContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ padding: '20px', border: `1px solid ${borderLight}`, borderRadius: '12px', backgroundColor: bg }}>
+            <div style={{ padding: '20px 0', borderBottom: `1px solid ${borderLight}`, backgroundColor: bg }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Text style={{ fontWeight: 700, fontSize: '15px', color: textDark }}>Juni 2026</Text>
                 <Text style={{ fontWeight: 700, fontSize: '14px', color: secondary }}>1 Person</Text>
@@ -322,7 +322,7 @@ export default function WhyCalfOnePage() {
               </Text>
             </div>
 
-            <div style={{ padding: '20px', border: `1px solid ${borderLight}`, borderRadius: '12px', backgroundColor: bg }}>
+            <div style={{ padding: '20px 0', borderBottom: `1px solid ${borderLight}`, backgroundColor: bg }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Text style={{ fontWeight: 700, fontSize: '15px', color: textDark }}>Tahun 2027</Text>
                 <Text style={{ fontWeight: 700, fontSize: '14px', color: secondary }}>2-3 Person</Text>
@@ -332,7 +332,7 @@ export default function WhyCalfOnePage() {
               </Text>
             </div>
 
-            <div style={{ padding: '20px', border: `1px solid ${borderLight}`, borderRadius: '12px', backgroundColor: bg }}>
+            <div style={{ padding: '20px 0', borderBottom: `1px solid ${borderLight}`, backgroundColor: bg }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Text style={{ fontWeight: 700, fontSize: '15px', color: textDark }}>Tahun 2028</Text>
                 <Text style={{ fontWeight: 700, fontSize: '14px', color: secondary }}>5-6 Person</Text>
@@ -342,7 +342,7 @@ export default function WhyCalfOnePage() {
               </Text>
             </div>
 
-            <div style={{ padding: '20px', border: `2px solid ${secondary}`, borderRadius: '12px', backgroundColor: '#EFF6FF' }}>
+            <div style={{ padding: '20px 0', borderBottom: `2px solid ${secondary}`, backgroundColor: bg }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Text style={{ fontWeight: 800, fontSize: '15px', color: primary }}>Tahun 2029</Text>
                 <Text style={{ fontWeight: 800, fontSize: '14px', color: primary }}>7-8 Person</Text>
@@ -354,7 +354,7 @@ export default function WhyCalfOnePage() {
           </div>
         }
         rightContent={
-          <div style={{ height: '450px', width: '100%', padding: '20px', border: `1px solid ${borderLight}`, borderRadius: '24px', backgroundColor: bg }}>
+          <div style={{ height: '450px', width: '100%', padding: '20px 0', backgroundColor: bg }}>
             {mounted && (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={teamData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
@@ -383,19 +383,19 @@ export default function WhyCalfOnePage() {
         leftContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <div style={{ padding: '32px 24px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ padding: '32px 24px', backgroundColor: bg, borderLeft: `4px solid ${borderLight}`, textAlign: 'center' }}>
                 <Title level={2} style={{ color: primary, margin: '0 0 8px 0', fontSize: '36px' }}>+70%</Title>
                 <Text style={{ color: textLight, fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>DECISION SPEED</Text>
               </div>
-              <div style={{ padding: '32px 24px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ padding: '32px 24px', backgroundColor: bg, borderLeft: `4px solid ${borderLight}`, textAlign: 'center' }}>
                 <Title level={2} style={{ color: primary, margin: '0 0 8px 0', fontSize: '36px' }}>5 Mins</Title>
                 <Text style={{ color: textLight, fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>REPORTING TIME</Text>
               </div>
-              <div style={{ padding: '32px 24px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ padding: '32px 24px', backgroundColor: bg, borderLeft: `4px solid ${borderLight}`, textAlign: 'center' }}>
                 <Title level={2} style={{ color: primary, margin: '0 0 8px 0', fontSize: '36px' }}>100%</Title>
                 <Text style={{ color: textLight, fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>OUTLET VISIBILITY</Text>
               </div>
-              <div style={{ padding: '32px 24px', backgroundColor: '#FAFAFA', border: `1px solid ${borderLight}`, borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ padding: '32px 24px', backgroundColor: bg, borderLeft: `4px solid ${borderLight}`, textAlign: 'center' }}>
                 <Title level={2} style={{ color: primary, margin: '0 0 8px 0', fontSize: '36px' }}>100%</Title>
                 <Text style={{ color: textLight, fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>CCTV VISIBILITY</Text>
               </div>
@@ -403,7 +403,7 @@ export default function WhyCalfOnePage() {
           </div>
         }
         rightContent={
-          <div style={{ padding: '40px', backgroundColor: primary, borderRadius: '24px', textAlign: 'center', boxShadow: '0 20px 40px rgba(15, 45, 107, 0.15)', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '400px' }}>
+          <div style={{ padding: '40px', backgroundColor: primary, borderRadius: '8px', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '400px' }}>
             <Title level={1} style={{ color: '#FFFFFF', fontSize: '48px', fontWeight: 800, margin: '0 0 24px 0', letterSpacing: '-1px', lineHeight: 1.2 }}>
               From Fragmented Operations<br/>
               <span style={{ color: '#93C5FD' }}>To Data-Driven Decisions.</span>
