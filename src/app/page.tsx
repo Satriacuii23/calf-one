@@ -54,7 +54,7 @@ const paymentMethodsData = [
 const Card = ({ children, title, action, style }: any) => (
   <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)', ...style }}>
     {(title || action) && (
-      <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC' }}>
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', flexWrap: 'wrap', gap: '12px' }}>
         {typeof title === 'string' ? <Text style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', letterSpacing: '0.02em', textTransform: 'uppercase' }}>{title}</Text> : title}
         {action}
       </div>
@@ -150,28 +150,30 @@ export default function OverviewPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '48px' }}>
           
           {/* 1. VARIED CROSS-MODULE KPI GRID */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', overflow: 'hidden' }}>
+          <Row gutter={[16, 16]}>
             {kpiCards.map((kpi, idx) => (
-              <div key={idx} style={{ padding: '20px 18px', borderRight: idx !== 5 ? '1px solid #E2E8F0' : 'none' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                  <Text style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{kpi.label}</Text>
-                  <span style={{ fontSize: '9px', background: '#F1F5F9', color: '#475569', padding: '2px 5px', borderRadius: '3px', fontWeight: 600 }}>{kpi.source}</span>
+              <Col xs={24} sm={12} md={8} lg={4} key={idx}>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '20px 18px', height: '100%', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
+                    <Text style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{kpi.label}</Text>
+                    <span style={{ fontSize: '9px', background: '#F1F5F9', color: '#475569', padding: '2px 5px', borderRadius: '3px', fontWeight: 600 }}>{kpi.source}</span>
+                  </div>
+                  <Text style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.2 }}>{kpi.value}</Text>
+                  <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ 
+                      fontSize: '11px', fontWeight: 700, 
+                      color: kpi.status === 'success' ? '#059669' : kpi.status === 'warning' ? '#D97706' : '#475569', 
+                      backgroundColor: kpi.status === 'success' ? '#D1FAE5' : kpi.status === 'warning' ? '#FEF3C7' : '#F1F5F9',
+                      padding: '2px 6px', borderRadius: '4px'
+                    }}>
+                      {kpi.trend}
+                    </span>
+                    <Text style={{ fontSize: '11px', color: '#94A3B8' }}>live sync</Text>
+                  </div>
                 </div>
-                <Text style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.2 }}>{kpi.value}</Text>
-                <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ 
-                    fontSize: '11px', fontWeight: 700, 
-                    color: kpi.status === 'success' ? '#059669' : kpi.status === 'warning' ? '#D97706' : '#475569', 
-                    backgroundColor: kpi.status === 'success' ? '#D1FAE5' : kpi.status === 'warning' ? '#FEF3C7' : '#F1F5F9',
-                    padding: '2px 6px', borderRadius: '4px'
-                  }}>
-                    {kpi.trend}
-                  </span>
-                  <Text style={{ fontSize: '11px', color: '#94A3B8' }}>live sync</Text>
-                </div>
-              </div>
+              </Col>
             ))}
-          </div>
+          </Row>
 
           {/* 2. ADVANCED VARIED CHARTS: COMPOSED REVENUE VELOCITY & PAYMENT MIX */}
           <Row gutter={[24, 24]}>
@@ -233,7 +235,7 @@ export default function OverviewPage() {
               <Card 
                 title="Geospatial Branch Surveillance Map" 
                 action={
-                  <Space size="middle">
+                  <Space size="middle" wrap>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Badge status="success" /><Text style={{ fontSize: 12, fontWeight: 600 }}>112 Online</Text></span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Badge status="error" /><Text style={{ fontSize: 12, fontWeight: 600 }}>3 Warning</Text></span>
                   </Space>
@@ -365,7 +367,7 @@ export default function OverviewPage() {
                           { title: 'Severity', dataIndex: 'severity', key: 'sev', render: (s:string) => <Tag color={s==='High'?'red':'orange'}>{s || 'Medium'}</Tag> },
                           { title: 'Ticket Status', dataIndex: 'status', key: 'st', render: (s:string) => <Tag color={s==='resolved'?'green':'blue'}>{(s||'in_progress').toUpperCase()}</Tag> }
                         ]} 
-                        pagination={false} rowKey="id" size="small" 
+                        pagination={false} rowKey="id" size="small" scroll={{ x: 600 }}
                       />
                     </div>
                   )
@@ -383,7 +385,7 @@ export default function OverviewPage() {
                           { title: 'Est. Budget', dataIndex: ['est_budget'], key: 'eb', render: (v:number, r:any) => <Text>Rp {((v || r.budget)/1000000).toFixed(0)}M</Text> },
                           { title: 'Stage Status', dataIndex: 'status', key: 'st', render: (s:string) => <Tag color="purple">{s.toUpperCase()}</Tag> }
                         ]} 
-                        pagination={false} rowKey="id" size="small" 
+                        pagination={false} rowKey="id" size="small" scroll={{ x: 600 }}
                       />
                     </div>
                   )
