@@ -1289,56 +1289,114 @@ export default function DataRelationPage() {
           </div>
         ) : null}
 
-        {/* VIEW 2: GLOBAL ERD TOPOLOGY */}
+        {/* VIEW 2: GLOBAL ERD TOPOLOGY (ULTRA-CLEAN SAAS ARCHITECTURE STUDIO) */}
         {globalView === 'global_erd' ? (
-          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', display: 'flex', flexDirection: 'column', gap: '28px', boxShadow: '0 1px 3px 0 rgba(0,0,0,0.03)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
             
-            <div style={{ background: '#0F172A', color: '#FFFFFF', padding: '32px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px', boxShadow: '0 10px 30px -5px rgba(15, 23, 42, 0.25)' }}>
-              <div>
-                <div style={{ fontSize: '11px', color: '#38BDF8', fontWeight: 800, letterSpacing: '0.12em', marginBottom: '6px' }}>CENTRALIZED SCHEMA TOPOLOGY</div>
-                <Title level={2} style={{ color: '#FFFFFF', margin: 0, fontWeight: 800, letterSpacing: '-0.02em' }}>Calf Master Relational Network Ecosystem</Title>
-                <Text style={{ color: '#94A3B8', fontSize: '14px', marginTop: '4px', display: 'block' }}>Visualisasi 40 entitas bisnis PostgreSQL yang saling terhubung dalam 11 pilar ekosistem.</Text>
+            {/* HERO ARCHITECTURE BANNER */}
+            <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)', color: '#FFFFFF', padding: '36px', borderRadius: '20px', border: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.3)' }}>
+              <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 800, letterSpacing: '0.1em' }}>
+                    ENTERPRISE SSOT TOPOLOGY
+                  </span>
+                  <span style={{ background: 'rgba(34, 197, 94, 0.15)', color: '#4ADE80', border: '1px solid rgba(34, 197, 94, 0.3)', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
+                    100% Normalized
+                  </span>
+                </div>
+                <Title level={1} style={{ color: '#FFFFFF', margin: '0 0 10px', fontWeight: 800, letterSpacing: '-0.03em', fontSize: '32px' }}>
+                  Calf Master Relational Ecosystem
+                </Title>
+                <Text style={{ color: '#94A3B8', fontSize: '15px', lineHeight: 1.6, display: 'block' }}>
+                  Peta arsitektur tersentralisasi yang menghubungkan 40 entitas bisnis PostgreSQL di dalam 11 pilar domain operasional Calf One. Klik node tabel mana saja untuk langsung melompat menginspeksi data aktifnya.
+                </Text>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.08)', padding: '12px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <Text style={{ color: '#38BDF8', fontSize: '13px', fontWeight: 700 }}>💡 Interaktif: Klik kotak tabel untuk lompat inspeksi data</Text>
+
+              <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(255, 255, 255, 0.05)', padding: '18px 22px', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', minWidth: '250px' }}>
+                <div style={{ fontSize: '11px', fontWeight: 800, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Ecosystem Metrics</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
+                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>Registered Pillars</span>
+                  <span style={{ fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace', fontSize: '16px' }}>11</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
+                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>SSOT Schema Tables</span>
+                  <span style={{ fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace', fontSize: '16px' }}>40</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: '#CBD5E1', fontSize: '13px' }}>Engine Status</span>
+                  <span style={{ color: '#4ADE80', fontWeight: 700, fontSize: '13px' }}>🟢 Supabase Live</span>
+                </div>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '24px' }}>
+            {/* DOMAIN PILLARS GRID */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '24px' }}>
               {DOMAINS.filter(d => d.key !== 'all').map(dom => {
                 const pt = SCHEMA_CATALOG.filter(t => t.domain === dom.key);
                 if (pt.length === 0) return null;
                 return (
-                  <div key={dom.key} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #E2E8F0', paddingBottom: '14px' }}>
-                      <div style={{ padding: '10px', background: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', display: 'flex', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
-                        <dom.icon size={20} color="#2563EB" />
+                  <div key={dom.key} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -2px rgba(0,0,0,0.02)' }}>
+                    
+                    {/* PILLAR HEADER */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F1F5F9', paddingBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ padding: '10px', background: '#EFF6FF', borderRadius: '12px', color: '#2563EB', display: 'flex' }}>
+                          <dom.icon size={20} />
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '16px', letterSpacing: '-0.01em' }}>{dom.label}</div>
+                          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>Domain Isolation Layer</div>
+                        </div>
                       </div>
-                      <div>
-                        <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '15px' }}>{dom.label}</div>
-                        <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>{pt.length} Registered Tables</div>
-                      </div>
+                      <Tag color="blue" style={{ margin: 0, borderRadius: '20px', padding: '2px 10px', fontWeight: 800, fontSize: '11px', background: '#DBEAFE', color: '#1E40AF', border: 'none' }}>
+                        {pt.length} Tables
+                      </Tag>
                     </div>
 
+                    {/* TABLE NODES CARDS */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {pt.map(tbl => (
                         <div 
                           key={tbl.name} 
                           onClick={() => { setActiveTable(tbl); setGlobalView('explorer'); setActiveSubTab('data'); }} 
                           style={{ 
-                            background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '14px 16px', 
-                            borderRadius: '12px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '6px',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.02)', transition: 'all 0.15s ease'
+                            background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '14px 16px', 
+                            borderRadius: '14px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '8px',
+                            transition: 'all 0.15s ease'
                           }}
                         >
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>public.{tbl.name}</span>
-                            <Tag color="blue" style={{ margin: 0, fontSize: '10px', borderRadius: '6px', fontWeight: 700 }}>{tbl.columns.length} cols</Tag>
+                            <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>
+                              public.{tbl.name}
+                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Tag color="cyan" style={{ margin: 0, fontSize: '10px', borderRadius: '6px', fontWeight: 700, background: '#E0F2FE', color: '#0369A1', border: 'none' }}>
+                                {tbl.columns.length} col
+                              </Tag>
+                              <span style={{ color: '#2563EB', fontWeight: 700, fontSize: '13px' }}>↗</span>
+                            </div>
                           </div>
-                          <div style={{ fontSize: '12px', color: '#64748B', lineHeight: 1.5 }}>{tbl.purpose}</div>
+
+                          <Text style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, display: 'block' }}>
+                            {tbl.purpose}
+                          </Text>
+
+                          {tbl.relations.length > 0 && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
+                              {tbl.relations.slice(0, 2).map((rel, rIdx) => (
+                                <span key={rIdx} style={{ fontSize: '10px', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#334155', padding: '1px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 600 }}>
+                                  🔗 {rel}
+                                </span>
+                              ))}
+                              {tbl.relations.length > 2 && (
+                                <span style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 600 }}>+{tbl.relations.length - 2} more</span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
+
                   </div>
                 );
               })}
@@ -1359,13 +1417,120 @@ export default function DataRelationPage() {
         ) : null}
       </Modal>
 
-      {/* AI EXPORTER MODAL */}
-      <Modal title={`AI Blueprint & Enterprise Schema Exporter (${activeTable.name})`} open={exportModalVisible} onCancel={() => setExportModalVisible(false)} footer={[<Button key="c" onClick={() => setExportModalVisible(false)}>Tutup</Button>]} width={750}>
-        <Tabs defaultActiveKey="ai" items={[
-          { key: 'ai', label: '🤖 AI Blueprint Prompt', children: <div><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}><Text style={{ fontSize: '12px', color: '#64748B' }}>Konteks prompt untuk ChatGPT / Claude / Cursor:</Text><Button type="primary" icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateAIPromptContext(activeTable)); messageApi.success('Copied Blueprint!'); }}>Copy AI Prompt</Button></div><pre style={{ background: '#0F172A', color: '#38BDF8', padding: '16px', borderRadius: '8px', maxHeight: '400px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>{generateAIPromptContext(activeTable)}</pre></div> },
-          { key: 'ts', label: '📐 TypeScript Interface', children: <div><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}><Text style={{ fontSize: '12px', color: '#64748B' }}>Interface model untuk frontend / backend:</Text><Button icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateInterface(activeTable)); messageApi.success('Copied TS!'); }}>Copy Interface</Button></div><pre style={{ background: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #E2E8F0', maxHeight: '400px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace' }}>{generateInterface(activeTable)}</pre></div> },
-          { key: 'sql', label: '📜 SQL DDL Definition', children: <div><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}><Text style={{ fontSize: '12px', color: '#64748B' }}>DDL PostgreSQL & kebijakan RLS:</Text><Button icon={<Copy size={14} />} onClick={() => { navigator.clipboard.writeText(generateDDL(activeTable)); messageApi.success('Copied SQL!'); }}>Copy SQL DDL</Button></div><pre style={{ background: '#F8FAFC', padding: '16px', borderRadius: '8px', border: '1px solid #E2E8F0', maxHeight: '400px', overflow: 'auto', fontSize: '12px', fontFamily: 'monospace' }}>{generateDDL(activeTable)}</pre></div> }
-        ]} />
+      {/* AI EXPORTER MODAL (CURSOR / OPENAI STUDIO STYLE) */}
+      <Modal 
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '4px' }}>
+            <div style={{ padding: '8px', background: 'linear-gradient(135deg, #2563EB 0%, #8B5CF6 100%)', borderRadius: '10px', color: '#FFFFFF', display: 'flex' }}>
+              <Bot size={20} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '18px', color: '#0F172A', letterSpacing: '-0.02em' }}>AI Prompt Engineering Blueprint</div>
+              <div style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>SSOT Context Exporter for ChatGPT, Claude 3.5 Sonnet & Cursor IDE</div>
+            </div>
+          </div>
+        }
+        open={exportModalVisible} 
+        onCancel={() => setExportModalVisible(false)} 
+        footer={[
+          <Button key="close" onClick={() => setExportModalVisible(false)} style={{ borderRadius: '8px', fontWeight: 600, padding: '0 20px', height: '38px' }}>
+            Tutup Studio Exporter
+          </Button>
+        ]} 
+        width={850}
+      >
+        <div style={{ marginTop: '16px' }}>
+          <Tabs defaultActiveKey="ai" items={[
+            { 
+              key: 'ai', 
+              label: <span style={{ fontWeight: 700 }}>🤖 AI Agent System Prompt</span>, 
+              children: (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
+                    <div>
+                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Target Entity Blueprint: <code style={{ color: '#2563EB' }}>public.{activeTable.name}</code></Text>
+                      <Text style={{ fontSize: '12px', color: '#64748B' }}>Salin blueprint ini sebagai *System Prompt* saat meminta AI menulis kode SQL/Supabase.</Text>
+                    </div>
+                    <Button 
+                      type="primary" 
+                      icon={copiedFormat === 'ai' ? <Check size={16} /> : <Copy size={16} />} 
+                      onClick={() => { 
+                        navigator.clipboard.writeText(generateAIPromptContext(activeTable)); 
+                        setCopiedFormat('ai');
+                        messageApi.success('AI Blueprint copied to clipboard!'); 
+                        setTimeout(() => setCopiedFormat(null), 2500);
+                      }}
+                      style={{ background: copiedFormat === 'ai' ? '#16A34A' : '#0F172A', fontWeight: 700, borderRadius: '8px', height: '38px', border: 'none', transition: 'all 0.2s ease' }}
+                    >
+                      {copiedFormat === 'ai' ? 'Copied Blueprint!' : 'Copy AI Blueprint'}
+                    </Button>
+                  </div>
+                  <pre style={{ background: '#0F172A', color: '#38BDF8', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                    {generateAIPromptContext(activeTable)}
+                  </pre>
+                </div>
+              ) 
+            },
+            { 
+              key: 'ts', 
+              label: <span style={{ fontWeight: 700 }}>📐 TypeScript Interface</span>, 
+              children: (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
+                    <div>
+                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Production TypeScript Type Definition</Text>
+                      <Text style={{ fontSize: '12px', color: '#64748B' }}>Gunakan interface ini di aplikasi Next.js Frontend atau Supabase Edge Functions.</Text>
+                    </div>
+                    <Button 
+                      icon={copiedFormat === 'ts' ? <Check size={16} color="#16A34A" /> : <Copy size={16} />} 
+                      onClick={() => { 
+                        navigator.clipboard.writeText(generateInterface(activeTable)); 
+                        setCopiedFormat('ts');
+                        messageApi.success('TypeScript Interface copied!'); 
+                        setTimeout(() => setCopiedFormat(null), 2500);
+                      }}
+                      style={{ fontWeight: 700, borderRadius: '8px', height: '38px', borderColor: copiedFormat === 'ts' ? '#22C55E' : '#CBD5E1', color: copiedFormat === 'ts' ? '#16A34A' : '#0F172A' }}
+                    >
+                      {copiedFormat === 'ts' ? 'Copied TS!' : 'Copy Interface'}
+                    </Button>
+                  </div>
+                  <pre style={{ background: '#0F172A', color: '#E2E8F0', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6 }}>
+                    {generateInterface(activeTable)}
+                  </pre>
+                </div>
+              ) 
+            },
+            { 
+              key: 'sql', 
+              label: <span style={{ fontWeight: 700 }}>📜 SQL DDL & RLS</span>, 
+              children: (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '14px' }}>
+                    <div>
+                      <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>PostgreSQL Migration Schema</Text>
+                      <Text style={{ fontSize: '12px', color: '#64748B' }}>DDL table penciptaan dan kebijakan Row Level Security (RLS) Supabase.</Text>
+                    </div>
+                    <Button 
+                      icon={copiedFormat === 'sql' ? <Check size={16} color="#16A34A" /> : <Copy size={16} />} 
+                      onClick={() => { 
+                        navigator.clipboard.writeText(generateDDL(activeTable)); 
+                        setCopiedFormat('sql');
+                        messageApi.success('SQL DDL copied!'); 
+                        setTimeout(() => setCopiedFormat(null), 2500);
+                      }}
+                      style={{ fontWeight: 700, borderRadius: '8px', height: '38px', borderColor: copiedFormat === 'sql' ? '#22C55E' : '#CBD5E1', color: copiedFormat === 'sql' ? '#16A34A' : '#0F172A' }}
+                    >
+                      {copiedFormat === 'sql' ? 'Copied SQL!' : 'Copy SQL DDL'}
+                    </Button>
+                  </div>
+                  <pre style={{ background: '#0F172A', color: '#A7F3D0', padding: '20px', borderRadius: '14px', border: '1px solid #334155', maxHeight: '420px', overflow: 'auto', fontSize: '12.5px', fontFamily: 'monospace', lineHeight: 1.6 }}>
+                    {generateDDL(activeTable)}
+                  </pre>
+                </div>
+              ) 
+            }
+          ]} />
+        </div>
       </Modal>
     </MainLayout>
   );
