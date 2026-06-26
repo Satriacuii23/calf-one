@@ -674,13 +674,19 @@ export const BILINGUAL_FIELD_SYNONYMS: Record<string, string[]> = {
   description: ['description', 'desc', 'deskripsi', 'keterangan', 'detail', 'catatan'],
 
   // Orders / Transactions
-  order_id: ['order_id', 'transaction_id', 'invoice_no', 'no_faktur', 'nomor_order', 'id_pesanan', 'no_struk', 'pesanan_id'],
+  order_id: ['order_id', 'transaction_id', 'invoice_no', 'no_faktur', 'nomor_order', 'id_pesanan', 'no_struk', 'pesanan_id', 'no'],
   transaction_date: ['transaction_date', 'date', 'order_time', 'tanggal', 'waktu', 'tanggal_transaksi', 'waktu_order', 'tgl'],
-  subtotal: ['subtotal', 'gross_amount', 'jumlah_kotor', 'total_harga'],
+  subtotal: ['subtotal', 'gross_amount', 'jumlah_kotor', 'total_harga', 'penjualan'],
   total_discount: ['total_discount', 'discount', 'potongan', 'diskon', 'promo', 'subsidi'],
-  total_payment: ['total_payment', 'net_amount', 'total_bayar', 'jumlah_bayar', 'tagihan', 'netto'],
-  payment_method: ['payment_method', 'method', 'metode_pembayaran', 'cara_bayar', 'pembayaran', 'tipe_bayar'],
+  total_payment: ['total_payment', 'net_amount', 'total_bayar', 'jumlah_bayar', 'tagihan', 'netto', 'total_transaksi', 'grand_total'],
+  payment_method: ['payment_method', 'method', 'metode_pembayaran', 'cara_bayar', 'pembayaran', 'tipe_bayar', 'kartu', 'qris', 'cash'],
   payment_status: ['payment_status', 'status_pembayaran', 'status_bayar', 'lunas'],
+  shift: ['shift', 'shift_code', 'waktu_shift', 'jam_kerja'],
+
+  // Staff / HR
+  cashier_name: ['cashier_name', 'cashier', 'kasir', 'nama_kasir'],
+  barista_name: ['barista_name', 'barista', 'nama_barista'],
+  manager_name: ['manager_name', 'manager', 'manajer', 'spv', 'supervisor'],
 
   // Customers
   customer_name: ['customer_name', 'client_name', 'nama_pelanggan', 'nama_pembeli', 'pembeli', 'pemesan', 'konsumen', 'pelanggan'],
@@ -691,9 +697,11 @@ export const BILINGUAL_FIELD_SYNONYMS: Record<string, string[]> = {
   branch_name: ['branch_name', 'outlet_name', 'store_name', 'nama_cabang', 'nama_toko', 'cabang', 'outlet'],
   address: ['address', 'location', 'alamat', 'lokasi', 'tempat'],
 
-  // Inventory
+  // Inventory & Operations
   current_stock: ['current_stock', 'stock', 'qty', 'stok_saat_ini', 'sisa_stok', 'jumlah_stok', 'persediaan', 'stok'],
-  minimum_stock: ['minimum_stock', 'min_stock', 'stok_minimum', 'batas_minimum']
+  minimum_stock: ['minimum_stock', 'min_stock', 'stok_minimum', 'batas_minimum'],
+  used_qty: ['used_qty', 'terpakai', 'pemakaian', 'habis', 'keluar'],
+  waste_qty: ['waste_qty', 'waste', 'rusak', 'buang', 'spoilage', 'susut']
 };
 
 export function canonicalizeKey(rawKey: string): string {

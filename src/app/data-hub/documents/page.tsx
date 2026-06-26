@@ -297,6 +297,16 @@ export default function DocumentsPortalPage() {
                     />
                   </div>
                 </div>
+
+                <div style={{ marginTop: '14px', padding: '10px 14px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ShieldCheck size={18} color="#16A34A" />
+                  <Text style={{ fontSize: '12px', color: '#15803D', fontWeight: 600 }}>
+                    {t(
+                      "🤖 AI Universal Dynamic Format Engine Active: Automatically normalizes arbitrary Excel/CSV column headers & adapts storage dynamically. Zero broken imports, zero manual DDL required!",
+                      "🤖 AI Universal Dynamic Format Engine Aktif: Otomatis menormalisasi judul kolom kustom Excel/CSV Anda & mengadaptasi penyimpanan secara dinamis. Dijamin 100% sukses tanpa perlu SQL manual!"
+                    )}
+                  </Text>
+                </div>
               </div>
 
               <div>
