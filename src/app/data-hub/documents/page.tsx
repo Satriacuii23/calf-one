@@ -7,31 +7,34 @@ import { SCHEMA_CATALOG, canonicalizeKey, TableSchema } from '@/lib/schema-catal
 import { UploadCloud, CheckCircle2, Sparkles, RefreshCw, FileSpreadsheet, ShieldCheck } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useLanguage } from '@/lib/i18n';
+import * as XLSX from 'xlsx';
 
 const { Title, Text } = Typography;
 
 function SectionBox({ title, chapter, rightExtra, children }: any) {
   return (
     <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid #F1F5F9', background: '#F8FAFC', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-        <Text style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A', letterSpacing: '0.01em' }}>{title}</Text>
-        {rightExtra || (chapter ? <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>{chapter}</span> : null)}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {chapter && <Tag style={{ margin: 0, fontWeight: 700, background: '#F1F5F9', border: 'none', color: '#0F172A' }}>{chapter}</Tag>}
+          <Text style={{ fontWeight: 700, fontSize: '14px', color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.03em' }}>{title}</Text>
+        </div>
+        {rightExtra}
       </div>
-      <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {children}
-      </div>
+      <div style={{ padding: '24px' }}>{children}</div>
     </div>
   );
 }
 
 export default function DocumentsPortalPage() {
-  const [selectedTable, setSelectedTable] = useState<string>('products');
-  const [confidenceScore, setConfidenceScore] = useState<number>(96);
-  const [parsedRows, setParsedRows] = useState<any[]>([]);
-  const [columns, setColumns] = useState<any[]>([]);
   const [uploadedFilename, setUploadedFilename] = useState<string>('');
-  const [uploading, setUploading] = useState(false);
-  const [committing, setCommitting] = useState(false);
+  const [parsedRows, setParsedRows] = useState<any[]>([]);
+  const [selectedTable, setSelectedTable] = useState<string>('products');
+  const [confidenceScore, setConfidenceScore] = useState<number>(98.5);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [committing, setCommitting] = useState<boolean>(false);
+  const [columns, setColumns] = useState<any[]>([]);
+
   const [messageApi, contextHolder] = message.useMessage();
   const { t } = useLanguage();
 
@@ -42,6 +45,27 @@ export default function DocumentsPortalPage() {
   function handleFileSelect(file: File) {
     setUploading(true);
     setUploadedFilename(file.name);
+
+    if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target?.result as ArrayBuffer);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet);
+          processRawRows(json, file.name);
+        } catch (err: any) {
+          messageApi.error(`Excel Read Failure: ${err?.message}`);
+        } finally {
+          setUploading(false);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      return false;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
