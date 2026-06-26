@@ -78,7 +78,7 @@ const AGGREGATOR_DUMPS: Record<string, { name: string; target: string; desc: str
     mappedCols: 11,
     unmatchedCols: ['gofood_commission_fee', 'driver_pickup_pin'],
     payload: `[\n  {\n    "source_connector": "GOFOOD_API_V3",\n    "gofood_order_id": "GF-88219-DAGO",\n    "branch_id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",\n    "order_type_name": "GoFood Delivery",\n    "subtotal": 58000,\n    "gofood_commission_fee": 11600,\n    "driver_pickup_pin": "4412",\n    "total_payment": 46400,\n    "payment_method": "GoPay",\n    "payment_status": "Settled",\n    "status": "Completed",\n    "transaction_date": "2026-06-26T11:05:00Z"\n  }\n]`,
-    sqlDDL: `-- Suggested Supabase Migration for GoFood Unmatched Attributes\nALTER TABLE public.orders \n  ADD COLUMN IF NOT EXISTS gofood_commission_fee numeric(15,2) DEFAULT 0,\n  ADD COLUMN IF NOT EXISTS driver_pickup_pin varchar(10);`
+    sqlDDL: `-- 1. Create Base Orders Table (SSOT)\nCREATE TABLE IF NOT EXISTS public.orders (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  order_id varchar(50) UNIQUE DEFAULT 'ORD-' || substr(md5(random()::text), 1, 6),\n  branch_id uuid,\n  member_code varchar(50),\n  order_type_name varchar(50),\n  subtotal numeric(15,2) DEFAULT 0,\n  total_discount numeric(15,2) DEFAULT 0,\n  total_payment numeric(15,2) DEFAULT 0,\n  payment_method varchar(50),\n  payment_status varchar(30),\n  status varchar(30),\n  transaction_date timestamptz DEFAULT now()\n);\n\n-- 2. Add GoFood Unmatched Attributes\nALTER TABLE public.orders \n  ADD COLUMN IF NOT EXISTS gofood_commission_fee numeric(15,2) DEFAULT 0,\n  ADD COLUMN IF NOT EXISTS driver_pickup_pin varchar(10);`
   },
   grabfood: {
     name: 'GrabFood Merchant Settlement Dump',
@@ -87,7 +87,7 @@ const AGGREGATOR_DUMPS: Record<string, { name: string; target: string; desc: str
     mappedCols: 10,
     unmatchedCols: ['grab_promo_subsidy', 'grab_mex_tier'],
     payload: `[\n  {\n    "source_connector": "GRABFOOD_MEX_API",\n    "grab_short_order_no": "GF-991",\n    "branch_id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",\n    "order_type_name": "GrabFood Delivery",\n    "subtotal": 72000,\n    "grab_promo_subsidy": 15000,\n    "grab_mex_tier": "SuperMerchant",\n    "total_payment": 57000,\n    "payment_method": "OVO",\n    "payment_status": "Paid",\n    "status": "Completed",\n    "transaction_date": "2026-06-26T11:10:00Z"\n  }\n]`,
-    sqlDDL: `-- Suggested Supabase Migration for GrabFood Unmatched Attributes\nALTER TABLE public.orders \n  ADD COLUMN IF NOT EXISTS grab_promo_subsidy numeric(15,2) DEFAULT 0,\n  ADD COLUMN IF NOT EXISTS grab_mex_tier varchar(50);`
+    sqlDDL: `-- 1. Create Base Orders Table (SSOT)\nCREATE TABLE IF NOT EXISTS public.orders (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  order_id varchar(50) UNIQUE DEFAULT 'ORD-' || substr(md5(random()::text), 1, 6),\n  branch_id uuid,\n  member_code varchar(50),\n  order_type_name varchar(50),\n  subtotal numeric(15,2) DEFAULT 0,\n  total_discount numeric(15,2) DEFAULT 0,\n  total_payment numeric(15,2) DEFAULT 0,\n  payment_method varchar(50),\n  payment_status varchar(30),\n  status varchar(30),\n  transaction_date timestamptz DEFAULT now()\n);\n\n-- 2. Add GrabFood Unmatched Attributes\nALTER TABLE public.orders \n  ADD COLUMN IF NOT EXISTS grab_promo_subsidy numeric(15,2) DEFAULT 0,\n  ADD COLUMN IF NOT EXISTS grab_mex_tier varchar(50);`
   },
   shopeefood: {
     name: 'ShopeeFood Financial Settlement',
@@ -96,7 +96,7 @@ const AGGREGATOR_DUMPS: Record<string, { name: string; target: string; desc: str
     mappedCols: 8,
     unmatchedCols: ['shopee_coin_cashback', 'settlement_batch_id'],
     payload: `[\n  {\n    "source_connector": "SHOPEEFOOD_FIN_API",\n    "settlement_batch_id": "SPF-BATCH-1092",\n    "branch_id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",\n    "gross_amount": 120000,\n    "shopee_coin_cashback": 12000,\n    "net_payout": 108000,\n    "payment_method": "ShopeePay",\n    "settled_at": "2026-06-26T11:00:00Z"\n  }\n]`,
-    sqlDDL: `-- Create Dedicated Settlement Table for ShopeeFood\nCREATE TABLE IF NOT EXISTS public.shopeefood_settlement_batches (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  settlement_batch_id varchar(50) UNIQUE NOT NULL,\n  branch_id uuid REFERENCES public.branches(id),\n  gross_amount numeric(15,2) NOT NULL,\n  shopee_coin_cashback numeric(15,2) DEFAULT 0,\n  net_payout numeric(15,2) NOT NULL,\n  created_at timestamptz DEFAULT now()\n);`
+    sqlDDL: `-- Create Dedicated Settlement Table for ShopeeFood\nCREATE TABLE IF NOT EXISTS public.shopeefood_settlement_batches (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  settlement_batch_id varchar(50) UNIQUE NOT NULL,\n  branch_id uuid,\n  gross_amount numeric(15,2) NOT NULL,\n  shopee_coin_cashback numeric(15,2) DEFAULT 0,\n  net_payout numeric(15,2) NOT NULL,\n  created_at timestamptz DEFAULT now()\n);`
   },
   spreadsheet: {
     name: 'Google Sheets / Drive Spreadsheet Sync',
@@ -105,7 +105,7 @@ const AGGREGATOR_DUMPS: Record<string, { name: string; target: string; desc: str
     mappedCols: 6,
     unmatchedCols: ['spreadsheet_public_url', 'custom_notes_column'],
     payload: `[\n  {\n    "source_connector": "GOOGLE_SHEETS_CSV",\n    "spreadsheet_public_url": "https://docs.google.com/spreadsheets/d/1BxiMvs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/export?format=csv",\n    "product_code": "CLF-MILK-01",\n    "product_name": "Signature Calf Milkster",\n    "category_name": "Milk Series",\n    "unit_price": 28000,\n    "is_active": true,\n    "custom_notes_column": "Best seller F&B item"\n  }\n]`,
-    sqlDDL: `-- Add Custom Notes Column to Products SSOT\nALTER TABLE public.products \n  ADD COLUMN IF NOT EXISTS custom_notes_column text;`
+    sqlDDL: `-- 1. Create Base Products Table (SSOT)\nCREATE TABLE IF NOT EXISTS public.products (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  product_code varchar(50) UNIQUE NOT NULL,\n  product_name varchar(100) NOT NULL,\n  category_name varchar(50),\n  unit_price numeric(15,2) DEFAULT 0,\n  is_active boolean DEFAULT true,\n  created_at timestamptz DEFAULT now()\n);\n\n-- 2. Add Custom Notes Column\nALTER TABLE public.products \n  ADD COLUMN IF NOT EXISTS custom_notes_column text;`
   }
 };
 
