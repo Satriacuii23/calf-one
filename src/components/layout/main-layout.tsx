@@ -23,66 +23,16 @@ import {
   MessageSquare,
   HeadphonesIcon,
   HardDrive,
+  FileSpreadsheet
 } from 'lucide-react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useLanguage } from '@/lib/i18n';
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
-
-const navGroups = [
-  {
-    group: "Executive Board",
-    items: [
-      { name: "Overview", href: "/", icon: LayoutDashboard },
-      { name: "Why CALF ONE", href: "/why-calf-one", icon: BarChart3 },
-      { name: "Data Relation", href: "/data-relation", icon: Database },
-      { 
-        name: "Data HUB", 
-        href: "/data-hub", 
-        icon: HardDrive,
-        subItems: [
-          { name: "Insert", href: "/data-hub/insert" },
-          { name: "View", href: "/data-hub/view" },
-        ]
-      },
-    ]
-  },
-  {
-    group: "Business Intelligence",
-    items: [
-      { name: "Revenue Intelligence", href: "/revenue", icon: TrendingUp },
-      { name: "Product Intelligence", href: "/products", icon: Package },
-      { name: "Customer Intelligence", href: "/customers", icon: Users },
-    ]
-  },
-  {
-    group: "Operations & Risk",
-    items: [
-      { name: "Operations Center", href: "/operations", icon: ActivitySquare },
-      { name: "Outlet Intelligence", href: "/outlets", icon: Building2 },
-      { name: "Expansions", href: "/expansion", icon: Zap },
-      { name: "Risk Center", href: "/risk", icon: AlertTriangle },
-    ]
-  },
-  {
-    group: "Brand & Engagement",
-    items: [
-      { name: "Social Intelligence", href: "/social", icon: MessageSquare },
-      { name: "Customer Care", href: "/care", icon: HeadphonesIcon },
-    ]
-  },
-  {
-    group: "System & Administration",
-    items: [
-      { name: "AI Insights", href: "/insights", icon: Brain },
-      { name: "Reports", href: "/reports", icon: FileText },
-      { name: "Settings", href: "/settings", icon: Settings },
-    ]
-  }
-];
 
 const healthScore = 89;
 
@@ -92,13 +42,67 @@ interface MainLayoutProps {
   subtitle?: string
 }
 
-export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
+function MainLayoutInner({ children, title, subtitle }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
   const screens = Grid.useBreakpoint();
   const isMobile = !screens.md;
+  const { lang, setLang, t } = useLanguage();
+
+  const navGroups = [
+    {
+      group: t("Executive Board", "Dewan Eksekutif"),
+      items: [
+        { 
+          name: "Data HUB", 
+          href: "/data-hub", 
+          icon: HardDrive,
+          subItems: [
+            { name: t("Documents", "Dokumen Impor"), href: "/data-hub/documents" },
+            { name: t("Classification", "Klasifikasi Engine"), href: "/data-hub/classification" },
+            { name: t("KPI & Standardization", "KPI & Standarisasi"), href: "/data-hub/kpi-standardization" },
+            { name: t("Preview Data", "Pratinjau Data"), href: "/data-hub/view" },
+          ]
+        },
+        { name: t("Data Driven", "Data Driven"), href: "/about", icon: BarChart3 },
+        { name: t("Overview", "Ringkasan Utama"), href: "/", icon: LayoutDashboard },
+      ]
+    },
+    {
+      group: t("Business Intelligence", "Intelijen Bisnis"),
+      items: [
+        { name: t("Revenue Intelligence", "Intelijen Pendapatan"), href: "/revenue", icon: TrendingUp },
+        { name: t("Product Intelligence", "Intelijen Produk"), href: "/products", icon: Package },
+        { name: t("Customer Intelligence", "Intelijen Pelanggan"), href: "/customers", icon: Users },
+      ]
+    },
+    {
+      group: t("Operations & Risk", "Operasional & Risiko"),
+      items: [
+        { name: t("Operations Center", "Pusat Operasional"), href: "/operations", icon: ActivitySquare },
+        { name: t("Outlet Intelligence", "Intelijen Cabang"), href: "/outlets", icon: Building2 },
+        { name: t("Expansions", "Ekspansi Jaringan"), href: "/expansion", icon: Zap },
+        { name: t("Risk Center", "Pusat Mitigasi Risiko"), href: "/risk", icon: AlertTriangle },
+      ]
+    },
+    {
+      group: t("Brand & Engagement", "Brand & Engagement"),
+      items: [
+        { name: t("Social Intelligence", "Intelijen Medsos"), href: "/social", icon: MessageSquare },
+        { name: t("Customer Care", "Layanan Konsumen"), href: "/care", icon: HeadphonesIcon },
+      ]
+    },
+    {
+      group: t("System & Administration", "Administrasi Sistem"),
+      items: [
+        { name: t("AI Insights", "Wawasan AI"), href: "/insights", icon: Brain },
+        { name: t("Reports", "Laporan Bisnis"), href: "/reports", icon: FileText },
+        { name: t("Settings", "Pengaturan"), href: "/settings", icon: Settings },
+      ]
+    }
+  ];
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -154,13 +158,13 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
                   <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
                   <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
                 </div>
-                <div style={{ fontSize: 32, fontWeight: 400, color: '#134cd8', fontFamily: 'Pacifico, cursive', lineHeight: 1, marginTop: -4 }}>Calf</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#0F172A', fontFamily: 'cursive, Georgia, serif', lineHeight: 1, marginTop: -4 }}>Calf</div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
                   <div style={{ width: '100%', height: 4, backgroundColor: '#FF0000' }}></div>
                 </div>
               </div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2.5, color: '#134cd8', marginTop: 4 }}>COFFEE & MILKBAR</div>
+              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 3, color: '#0F172A', marginTop: 4 }}>DATA HUB</div>
             </div>
           )}
         </div>
@@ -168,21 +172,20 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
         <Menu
           mode="inline"
           selectedKeys={[pathname]}
-          defaultOpenKeys={['Data HUB']}
           items={menuItems}
           style={{ borderRight: 0, padding: '12px 0' }}
         />
 
         {!collapsed && (
           <div style={{ padding: '20px 16px', borderTop: '1px solid #f1f5f9', background: '#fafafa' }}>
-            <Tooltip title="Overall Calf Coffee business health indicator" placement="right">
+            <Tooltip title={t("Overall Calf Coffee business health indicator", "Indikator kesehatan bisnis Calf Coffee aktual")} placement="right">
               <div style={{ padding: 16, backgroundColor: '#ffffff', borderRadius: 12, border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', marginBottom: 16, cursor: 'pointer' }}>
                 <Text type="secondary" strong style={{ fontSize: 11, display: 'block', marginBottom: 12, letterSpacing: 0.5 }}>CALF HEALTH SCORE</Text>
                 <Space align="center" size="middle">
                   <Progress type="circle" percent={healthScore} size={48} strokeColor="#10b981" format={(percent) => <Text strong style={{ fontSize: 13, color: '#047857' }}>{percent}</Text>} />
                   <div>
                     <Text strong style={{ fontSize: 20, display: 'block', lineHeight: 1, marginBottom: 4 }}>{healthScore}<span style={{fontSize: 12, color: '#94a3b8'}}>/100</span></Text>
-                    <Badge color="#10b981" text={<span style={{ color: '#10b981', fontWeight: 600, fontSize: 11 }}>Excellent</span>} />
+                    <Badge color="#10b981" text={<span style={{ color: '#10b981', fontWeight: 600, fontSize: 11 }}>{t("Excellent", "Sangat Baik")}</span>} />
                   </div>
                 </Space>
               </div>
@@ -210,25 +213,89 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
               onClick={() => setCollapsed(!collapsed)}
               style={{ fontSize: '16px', width: 32, height: 32 }}
             />
-            {title && (
-              <div style={{ marginLeft: 16 }}>
-                <Text strong style={{ fontSize: 18, display: 'block', lineHeight: 1.2 }}>{title}</Text>
-                {subtitle && <Text type="secondary" style={{ fontSize: 13, display: 'block', lineHeight: 1.2 }}>{subtitle}</Text>}
-              </div>
-            )}
+            {(() => {
+              const headerMap: Record<string, string> = {
+                "Executive Board": "Dewan Eksekutif",
+                "Data HUB": "Pusat Data (HUB)",
+                "Data HUB / Documents Portal": "Data HUB / Portal Dokumen",
+                "Data HUB / Preview Data": "Data HUB / Pratinjau Data",
+                "Data HUB / Classification Studio": "Data HUB / Studio Klasifikasi",
+                "Centralized Enterprise Analytics & Command Center": "Pusat Analisis & Komando Enterprise Terpusat",
+                "Centralized Enterprise Data Engine": "Pusat Mesin Data Perusahaan",
+                "Zero-Touch Enterprise Document & Spreadsheet Ingestion": "Gerbang Impor Dokumen Mandiri Tanpa Pilih Kategori",
+                "Live Enterprise Data Warehouse Explorer": "Eksplorasi Repositori Live Data Warehouse",
+                "Universal Document Sanitization & Column Classifier": "Diagnosis Dokumen Universal & Studio Klasifikasi",
+                "Revenue Intelligence": "Intelijen Pendapatan",
+                "Revenue analysis, payment methods, and transaction history": "Analisis pendapatan, metode pembayaran, dan riwayat transaksi",
+                "Product Intelligence": "Intelijen Produk",
+                "Product performance, category breakdown, and item analytics": "Performa produk, rincian kategori, dan analitik menu",
+                "Customer Intelligence": "Intelijen Pelanggan",
+                "Customer segments, retention analytics, and behavior": "Segmentasi konsumen, analitik retensi, dan perilaku",
+                "Operations Center": "Pusat Operasional",
+                "Shift discipline, infrastructure health, and inventory accuracy": "Kedisiplinan shift, kesehatan infrastruktur, dan akurasi stok",
+                "Outlet Intelligence": "Intelijen Cabang",
+                "Geospatial surveillance, regional performance, and branch health": "Pemantauan geospasial, performa wilayah, dan kesehatan cabang",
+                "Expansions": "Ekspansi Jaringan",
+                "Expansion Center": "Pusat Ekspansi",
+                "New branch proposal pipeline, site survey status, and budgeting": "Pipeline proposal cabang baru, status survei, dan anggaran",
+                "Risk Center": "Pusat Mitigasi Risiko",
+                "Fraud detection, operational anomalies, and system alerts": "Deteksi kecurangan, anomali operasional, dan peringatan sistem",
+                "Social Intelligence": "Intelijen Medsos",
+                "Brand sentiment, public mentions, and campaign analytics": "Sentimen brand, pembicaraan publik, dan analitik kampanye",
+                "Customer Care": "Layanan Konsumen",
+                "Active complaint tickets, resolution tracking, and SLAs": "Tiket keluhan aktif, pelacakan penyelesaian, dan SLA",
+                "AI Insights": "Wawasan AI",
+                "Strategic executive recommendations and anomaly diagnosis": "Rekomendasi eksekutif strategis dan diagnosis anomali",
+                "Reports": "Laporan Bisnis",
+                "Export daily, weekly, and enterprise audit reports": "Ekspor laporan harian, mingguan, dan audit enterprise",
+                "About": "Data Driven",
+                "Data Driven": "Data Driven",
+                "Why CALF ONE": "Data Driven",
+                "KPI & Standardization": "KPI & Standarisasi",
+                "Data HUB / KPI & Standardization": "Data HUB / KPI & Standarisasi",
+                "Enterprise Operational Metrics & Supporting Standardization Engine": "Metrik Operasional Enterprise & Mesin Standarisasi Pendukung"
+              };
+              const dispTitle = lang === 'id' && title ? (headerMap[title] || title) : title;
+              const dispSub = lang === 'id' && subtitle ? (headerMap[subtitle] || subtitle) : subtitle;
+              return dispTitle ? (
+                <div style={{ marginLeft: 16 }}>
+                  <Text strong style={{ fontSize: 18, display: 'block', lineHeight: 1.2 }}>{dispTitle}</Text>
+                  {dispSub && <Text type="secondary" style={{ fontSize: 13, display: 'block', lineHeight: 1.2 }}>{dispSub}</Text>}
+                </div>
+              ) : null;
+            })()}
           </Space>
 
-          <Space size={isMobile ? "small" : "large"} align="center">
+          <Space size={isMobile ? "small" : "middle"} align="center">
             {!isMobile && (
               <>
                 <Input 
-                  placeholder="Search insights, outlets, reports..." 
+                  placeholder={t("Search insights, outlets, reports...", "Cari wawasan, cabang, laporan...")} 
                   prefix={<Search size={16} style={{ color: '#94a3b8' }} />}
-                  style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 280, padding: '6px 16px' }}
+                  style={{ borderRadius: 24, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', width: 260, padding: '6px 16px' }}
                 />
-                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>June 24, 2026</Text>
               </>
             )}
+
+            {/* SWISS MONOCHROME LANGUAGE SWITCHER */}
+            <div style={{ display: 'flex', background: '#F1F5F9', borderRadius: '6px', padding: '2px', border: '1px solid #CBD5E1' }}>
+              <Button 
+                size="small" 
+                type="text"
+                onClick={() => setLang('en')}
+                style={{ background: lang === 'en' ? '#0F172A' : 'transparent', color: lang === 'en' ? '#FFFFFF' : '#64748B', fontWeight: 700, fontSize: '11px', borderRadius: '4px', height: '26px', padding: '0 10px', transition: 'all 0.15s ease' }}
+              >
+                🇬🇧 EN
+              </Button>
+              <Button 
+                size="small" 
+                type="text"
+                onClick={() => setLang('id')}
+                style={{ background: lang === 'id' ? '#0F172A' : 'transparent', color: lang === 'id' ? '#FFFFFF' : '#64748B', fontWeight: 700, fontSize: '11px', borderRadius: '4px', height: '26px', padding: '0 10px', transition: 'all 0.15s ease' }}
+              >
+                🇮🇩 ID
+              </Button>
+            </div>
             
             <Tooltip title="System Alerts & Notifications">
               <Popover 
@@ -294,4 +361,8 @@ export function MainLayout({ children, title, subtitle }: MainLayoutProps) {
       </Layout>
     </Layout>
   )
+}
+
+export function MainLayout(props: MainLayoutProps) {
+  return <MainLayoutInner {...props} />;
 }

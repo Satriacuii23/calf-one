@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MainLayout } from '@/components/layout/main-layout';
+import { useLanguage } from '@/lib/i18n';
 import { Row, Col, Typography, Tabs } from 'antd';
 import { 
   Database, LayoutDashboard, Users, Video, Cpu, Layers, GitBranch, 
@@ -33,11 +34,12 @@ const teamHeadcountData = [
   { phase: 'Phase 5', role: '+ Product Team', headcount: 7 },
 ];
 
-export default function WhyCalfOnePage() {
+export default function AboutCalfOnePage() {
   const [activeTab, setActiveTab] = useState('1');
+  const { t } = useLanguage();
 
   return (
-    <MainLayout title="Why CALF ONE" subtitle="Digital Transformation & Enterprise Architecture Blueprint">
+    <MainLayout title={t("Data Driven", "Data Driven")} subtitle={t("Digital Transformation & Enterprise Architecture Blueprint", "Cetak Biru Transformasi Digital & Arsitektur Perusahaan")}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px' }}>
         
         {/* EDITORIAL HERO HEADER (CLEAN, NO GRADIENT) */}
@@ -54,13 +56,18 @@ export default function WhyCalfOnePage() {
             <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748B' }}>Satria Muhammad A</span>
           </div>
           <Title level={1} style={{ fontSize: '30px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 12px 0' }}>
-            Enterprise Digital Transformation Blueprint
+            {t("Enterprise Digital Transformation Blueprint", "Cetak Biru Transformasi Digital Perusahaan")}
           </Title>
           <Text style={{ fontSize: '15px', color: '#475569', lineHeight: 1.6, display: 'block', maxWidth: '850px', marginBottom: '24px' }}>
-            Kopi Calf memiliki peluang besar untuk membangun fondasi digital yang kuat melalui pendekatan <strong style={{ color: '#0F172A' }}>Data-Driven Company</strong>. Rekomendasi utama adalah membangun <strong style={{ color: '#0F172A' }}>CALF Data Hub</strong> sebagai fondasi sebelum membangun CRM, Loyalty, Customer Care, Mobile Apps, ERP, maupun AI.
+            {t(
+              "Calf Coffee has an immense strategic opportunity to build a robust digital architecture through a Data-Driven Enterprise approach. Our primary strategic directive is establishing the CALF Data Hub as the foundational SSOT before architecting CRM, Loyalty, Customer Care, Mobile Apps, ERP, or AI.",
+              "Kopi Calf memiliki peluang besar untuk membangun fondasi digital yang kuat melalui pendekatan Data-Driven Company. Rekomendasi utama adalah membangun CALF Data Hub sebagai fondasi sebelum membangun CRM, Loyalty, Customer Care, Mobile Apps, ERP, maupun AI."
+            )}
           </Text>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '8px 16px', borderRadius: '6px' }}>
-            <Text style={{ color: '#0F172A', fontWeight: 700, fontSize: '13px' }}>Prinsip Utama: Start With Data, Not Applications.</Text>
+            <Text style={{ color: '#0F172A', fontWeight: 700, fontSize: '13px' }}>
+              {t("Core Principle: Start With Data, Not Applications.", "Prinsip Utama: Start With Data, Not Applications.")}
+            </Text>
           </div>
         </div>
 
@@ -73,27 +80,27 @@ export default function WhyCalfOnePage() {
           items={[
             {
               key: '1',
-              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>01 / Summary & Vision</span>,
+              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>{t("01 / Summary & Vision", "01 / Ringkasan & Visi")}</span>,
               children: (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
                   
                   {/* BAB 1 */}
-                  <SectionBox title="Executive Summary" chapter="BAB 1">
+                  <SectionBox title={t("Executive Summary", "Ringkasan Eksekutif")} chapter="BAB 1">
                     <Text style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6 }}>
-                      Kopi Calf memiliki peluang besar untuk membangun fondasi digital yang kuat melalui pendekatan Data-Driven Company. Rekomendasi utama adalah membangun CALF Data Hub sebagai fondasi sebelum membangun CRM, Loyalty, Customer Care, Mobile Apps, ERP maupun AI.
+                      {t("Calf Coffee has a tremendous opportunity to build a strong digital foundation through a Data-Driven Company approach. The primary recommendation is establishing the CALF Data Hub as the foundation before building CRM, Loyalty, Customer Care, Mobile Apps, ERP, or AI.", "Kopi Calf memiliki peluang besar untuk membangun fondasi digital yang kuat melalui pendekatan Data-Driven Company. Rekomendasi utama adalah membangun CALF Data Hub sebagai fondasi sebelum membangun CRM, Loyalty, Customer Care, Mobile Apps, ERP maupun AI.")}
                     </Text>
                     <div style={{ padding: '12px 16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px' }}>
                       <Text style={{ fontWeight: 700, color: '#0F172A', fontSize: '13px' }}>START WITH DATA, NOT APPLICATIONS.</Text>
                     </div>
                     <div>
-                      <Text style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '12px' }}>Target Akhir:</Text>
+                      <Text style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '12px' }}>{t("Ultimate Target:", "Target Akhir:")}</Text>
                       <Row gutter={[12, 12]}>
                         {[
-                          { t: 'Single Source of Truth', d: 'Satu sumber referensi data tunggal' },
-                          { t: 'Realtime Management Dashboard', d: 'Visibilitas performa aktual' },
-                          { t: 'Customer Intelligence', d: 'Pemahaman perilaku pembeli' },
-                          { t: 'Operational Visibility', d: 'Pengawasan cabang menyeluruh' },
-                          { t: 'AI Ready Organization', d: 'Kesiapan infrastruktur AI' },
+                          { t: 'Single Source of Truth', d: t('Single unified data repository reference', 'Satu sumber referensi data tunggal') },
+                          { t: 'Realtime Management Dashboard', d: t('Actual live performance visibility', 'Visibilitas performa aktual') },
+                          { t: 'Customer Intelligence', d: t('Deep buyer behavior understanding', 'Pemahaman perilaku pembeli') },
+                          { t: 'Operational Visibility', d: t('Comprehensive network branch surveillance', 'Pengawasan cabang menyeluruh') },
+                          { t: 'AI Ready Organization', d: t('AI infrastructure readiness', 'Kesiapan infrastruktur AI') },
                         ].map((item, i) => (
                           <Col xs={24} sm={12} md={8} key={i}>
                             <div style={{ padding: '14px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', height: '100%' }}>
@@ -109,21 +116,21 @@ export default function WhyCalfOnePage() {
                   {/* BAB 2 */}
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={14}>
-                      <SectionBox title="Current State Assessment" chapter="BAB 2">
-                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>Temuan awal kondisi sistem berjalan:</Text>
+                      <SectionBox title={t("Current State Assessment", "Asesmen Kondisi Saat Ini")} chapter="BAB 2">
+                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>{t("Initial assessment of existing operational systems:", "Temuan awal kondisi sistem berjalan:")}</Text>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
                           {[
-                            "1. Data transaksi berada di POS",
-                            "2. Data operasional masih tersebar",
-                            "3. Customer complaint belum terpusat",
-                            "4. Loyalty belum tersedia",
-                            "5. CRM belum tersedia",
-                            "6. Customer Care belum tersedia",
-                            "7. Mobile Apps belum tersedia",
-                            "8. Social Media Intelligence belum tersedia",
-                            "9. CCTV belum terpusat",
-                            "10. Belum ada Data Warehouse",
-                            "11. Belum ada Executive Dashboard",
+                            t("1. Transaction data is isolated in POS", "1. Data transaksi berada di POS"),
+                            t("2. Operational data remains scattered", "2. Data operasional masih tersebar"),
+                            t("3. Customer complaints are not centralized", "3. Customer complaint belum terpusat"),
+                            t("4. Loyalty program is unavailable", "4. Loyalty belum tersedia"),
+                            t("5. CRM is unavailable", "5. CRM belum tersedia"),
+                            t("6. Customer Care is unavailable", "6. Customer Care belum tersedia"),
+                            t("7. Mobile Apps are unavailable", "7. Mobile Apps belum tersedia"),
+                            t("8. Social Media Intelligence is unavailable", "8. Social Media Intelligence belum tersedia"),
+                            t("9. CCTV monitoring is not centralized", "9. CCTV belum terpusat"),
+                            t("10. No Enterprise Data Warehouse", "10. Belum ada Data Warehouse"),
+                            t("11. No Executive Dashboard", "11. Belum ada Executive Dashboard"),
                           ].map((tem, idx) => (
                             <div key={idx} style={{ padding: '8px 12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px' }}>
                               <Text style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>{tem}</Text>
@@ -134,14 +141,14 @@ export default function WhyCalfOnePage() {
                     </Col>
                     
                     <Col xs={24} lg={10}>
-                      <SectionBox title="Dampak Operasional" chapter="BAB 2">
-                        <Text style={{ color: '#475569', fontSize: '13px' }}>Keterbatasan sistem di atas menyebabkan:</Text>
+                      <SectionBox title={t("Operational Impact", "Dampak Operasional")} chapter="BAB 2">
+                        <Text style={{ color: '#475569', fontSize: '13px' }}>{t("The system limitations above result in:", "Keterbatasan sistem di atas menyebabkan:")}</Text>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {[
-                            "Pengambilan keputusan lambat",
-                            "Banyak proses manual",
-                            "Sulit mendapatkan insight lintas divisi",
-                            "Ketergantungan pada laporan manual",
+                            t("Slow executive decision making", "Pengambilan keputusan lambat"),
+                            t("Excessive manual workflows", "Banyak proses manual"),
+                            t("Difficulty obtaining cross-divisional insights", "Sulit mendapatkan insight lintas divisi"),
+                            t("Heavy reliance on manual reporting", "Ketergantungan pada laporan manual"),
                           ].map((damp, di) => (
                             <div key={di} style={{ padding: '12px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '3px solid #64748B', borderRadius: '4px' }}>
                               <Text style={{ fontWeight: 600, color: '#0F172A', fontSize: '13px' }}>{damp}</Text>
@@ -153,7 +160,7 @@ export default function WhyCalfOnePage() {
                   </Row>
 
                   {/* BAB 3 */}
-                  <SectionBox title="Vision CALF ONE" chapter="BAB 3">
+                  <SectionBox title={t("CALF ONE Vision", "Visi CALF ONE")} chapter="BAB 3">
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
                       {[
                         "ONE DATA", "ONE SOURCE OF TRUTH", "ONE CUSTOMER VIEW", "ONE OPERATIONS VIEW", "ONE DIGITAL ECOSYSTEM"
@@ -164,7 +171,7 @@ export default function WhyCalfOnePage() {
                       ))}
                     </div>
                     <Text style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginTop: '4px' }}>
-                      CALF ONE adalah ekosistem digital Kopi Calf yang menghubungkan seluruh data, operasional, customer, dan management ke dalam satu platform terpadu.
+                      {t("CALF ONE is Calf Coffee's digital ecosystem connecting all enterprise data, operations, customers, and management into one unified platform.", "CALF ONE adalah ekosistem digital Kopi Calf yang menghubungkan seluruh data, operasional, customer, dan management ke dalam satu platform terpadu.")}
                     </Text>
                   </SectionBox>
 
@@ -173,14 +180,14 @@ export default function WhyCalfOnePage() {
             },
             {
               key: '2',
-              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>02 / Architecture & Hub</span>,
+              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>{t("02 / Architecture & Hub", "02 / Arsitektur & Hub")}</span>,
               children: (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
                   
                   {/* BAB 4 */}
-                  <SectionBox title="Why CALF Data Hub" chapter="BAB 4">
+                  <SectionBox title={t("Why CALF Data Hub", "Mengapa CALF Data Hub")} chapter="BAB 4">
                     <Text style={{ fontSize: '14px', color: '#334155', lineHeight: 1.6 }}>
-                      CALF Data Hub adalah pusat data perusahaan. Seluruh data perusahaan akan dikumpulkan, divalidasi, disimpan, dan didistribusikan dari satu platform.
+                      {t("CALF Data Hub is the corporate data core. All enterprise data is ingested, validated, stored, and distributed from a single platform.", "CALF Data Hub adalah pusat data perusahaan. Seluruh data perusahaan akan dikumpulkan, divalidasi, disimpan, dan didistribusikan dari satu platform.")}
                     </Text>
                     <Text style={{ fontWeight: 700, fontSize: '12px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Business Value:</Text>
                     <Row gutter={[12, 12]}>
@@ -198,7 +205,7 @@ export default function WhyCalfOnePage() {
                   </SectionBox>
 
                   {/* BAB 5 */}
-                  <SectionBox title="Enterprise Architecture" chapter="BAB 5">
+                  <SectionBox title={t("Enterprise Architecture", "Arsitektur Perusahaan")} chapter="BAB 5">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '10px 0' }}>
                       
                       <div style={{ padding: '16px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', textAlign: 'center' }}>
@@ -244,7 +251,7 @@ export default function WhyCalfOnePage() {
                   {/* BAB 8 & BAB 10 */}
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={12}>
-                      <SectionBox title="Data Flow" chapter="BAB 8">
+                      <SectionBox title={t("Data Flow", "Alur Data")} chapter="BAB 8">
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           {[
                             "1. Source Systems",
@@ -264,7 +271,7 @@ export default function WhyCalfOnePage() {
                     </Col>
 
                     <Col xs={24} lg={12}>
-                      <SectionBox title="CALF Data Warehouse" chapter="BAB 10">
+                      <SectionBox title={t("CALF Data Warehouse", "Data Warehouse CALF")} chapter="BAB 10">
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                           <div style={{ padding: '12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px' }}>
                             <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Raw Layer:</Text>
@@ -279,7 +286,7 @@ export default function WhyCalfOnePage() {
                             <Text style={{ fontSize: '12px', color: '#475569', fontFamily: 'monospace' }}>dim_date, dim_product, dim_customer, dim_outlet</Text>
                           </div>
                           <div style={{ background: '#F1F5F9', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
-                            <Text style={{ color: '#0F172A', fontWeight: 700, fontSize: '12px' }}>Output: Single Source of Truth</Text>
+                            <Text style={{ color: '#0F172A', fontWeight: 700, fontSize: '12px' }}>{t("Output: Single Source of Truth", "Luaran: Sumber Referensi Data Tunggal (SSOT)")}</Text>
                           </div>
                         </div>
                       </SectionBox>
@@ -291,12 +298,12 @@ export default function WhyCalfOnePage() {
             },
             {
               key: '3',
-              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>03 / Domains & Governance</span>,
+              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>{t("03 / Domains & Governance", "03 / Domain & Tata Kelola")}</span>,
               children: (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
                   
                   {/* BAB 6 */}
-                  <SectionBox title="Data Domain" chapter="BAB 6">
+                  <SectionBox title={t("Data Domains", "Domain Data")} chapter="BAB 6">
                     <Row gutter={[12, 12]}>
                       {[
                         { dom: 'Sales Domain', sub: 'Revenue, Transaction, Promotion, Refund' },
@@ -323,7 +330,7 @@ export default function WhyCalfOnePage() {
                   {/* BAB 7 & BAB 9 */}
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={14}>
-                      <SectionBox title="Data Acquisition Strategy" chapter="BAB 7">
+                      <SectionBox title={t("Data Acquisition Strategy", "Strategi Akuisisi Data")} chapter="BAB 7">
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {[
                             { t: 'A. File Integration', d: 'CSV, Excel, Google Sheet' },
@@ -338,12 +345,12 @@ export default function WhyCalfOnePage() {
                             </div>
                           ))}
                         </div>
-                        <Text style={{ fontSize: '12px', color: '#475569', marginTop: '10px', display: 'block' }}>Tujuan: Mengakomodasi seluruh tingkat kematangan digital perusahaan.</Text>
+                        <Text style={{ fontSize: '12px', color: '#475569', marginTop: '10px', display: 'block' }}>{t("Objective: Accommodate all digital maturity levels across the enterprise.", "Tujuan: Mengakomodasi seluruh tingkat kematangan digital perusahaan.")}</Text>
                       </SectionBox>
                     </Col>
 
                     <Col xs={24} lg={10}>
-                      <SectionBox title="Data Governance" chapter="BAB 9">
+                      <SectionBox title={t("Data Governance", "Tata Kelola Data")} chapter="BAB 9">
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           <div style={{ padding: '12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px' }}>
                             <Text style={{ fontWeight: 700, color: '#0F172A', display: 'block', fontSize: '13px' }}>Data Owner:</Text>
@@ -358,13 +365,13 @@ export default function WhyCalfOnePage() {
                             <Text style={{ fontSize: '12px', color: '#475569' }}>Founder, COO, Manager, Supervisor</Text>
                           </div>
                         </div>
-                        <Text style={{ fontSize: '12px', color: '#475569', marginTop: '10px', display: 'block' }}>Tujuan: Menjamin kualitas, keamanan, dan konsistensi data.</Text>
+                        <Text style={{ fontSize: '12px', color: '#475569', marginTop: '10px', display: 'block' }}>{t("Objective: Ensure data quality, security, and enterprise consistency.", "Tujuan: Menjamin kualitas, keamanan, dan konsistensi data.")}</Text>
                       </SectionBox>
                     </Col>
                   </Row>
 
                   {/* BAB 16 */}
-                  <SectionBox title="KPI Dictionary" chapter="BAB 16">
+                  <SectionBox title={t("KPI Dictionary", "Kamus KPI")} chapter="BAB 16">
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       {[
                         "Revenue", "Revenue Growth", "Transaction Growth", "Average Basket", 
@@ -383,13 +390,13 @@ export default function WhyCalfOnePage() {
             },
             {
               key: '4',
-              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>04 / Command Centers</span>,
+              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>{t("04 / Command Centers", "04 / Pusat Komando")}</span>,
               children: (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
                   
                   {/* BAB 11 */}
-                  <SectionBox title="Executive Command Center" chapter="BAB 11">
-                    <Text style={{ fontSize: '14px', color: '#475569', marginBottom: '4px' }}>Dashboard Founder & Management:</Text>
+                  <SectionBox title={t("Executive Command Center", "Pusat Komando Eksekutif")} chapter="BAB 11">
+                    <Text style={{ fontSize: '14px', color: '#475569', marginBottom: '4px' }}>{t("Founder & Executive Management Dashboard:", "Dashboard Founder & Management:")}</Text>
                     <Row gutter={[16, 16]}>
                       <Col xs={24} md={8}>
                         <div style={{ padding: '16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', height: '100%' }}>
@@ -431,8 +438,8 @@ export default function WhyCalfOnePage() {
                   {/* BAB 12 & BAB 13 */}
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={12}>
-                      <SectionBox title="Operations Command Center" chapter="BAB 12">
-                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>Centralized Monitoring:</Text>
+                      <SectionBox title={t("Operations Command Center", "Pusat Komando Operasional")} chapter="BAB 12">
+                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>{t("Centralized Surveillance:", "Pemantauan Terpusat:")}</Text>
                         <ul style={{ margin: 0, paddingLeft: '20px', color: '#334155', fontSize: '13px', lineHeight: 2 }}>
                           <li>CCTV Monitoring</li>
                           <li>Internet Monitoring</li>
@@ -441,13 +448,13 @@ export default function WhyCalfOnePage() {
                           <li>Vehicle Monitoring</li>
                           <li>Incident Monitoring</li>
                         </ul>
-                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '8px', display: 'block' }}>Tujuan: Memberikan visibilitas operasional seluruh outlet dari pusat.</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '8px', display: 'block' }}>{t("Objective: Provide centralized operational visibility across all branch outlets.", "Tujuan: Memberikan visibilitas operasional seluruh outlet dari pusat.")}</Text>
                       </SectionBox>
                     </Col>
 
                     <Col xs={24} lg={12}>
-                      <SectionBox title="Customer Intelligence" chapter="BAB 13">
-                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>Customer 360 View:</Text>
+                      <SectionBox title={t("Customer Intelligence", "Intelijen Pelanggan")} chapter="BAB 13">
+                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '4px' }}>{t("Customer 360 View:", "Profil Konsumen 360:")}</Text>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {[
                             "Customer Profile", "Purchase History", "Frequency", "Monetary Value", "Segment", "Churn Indicator"
@@ -457,7 +464,7 @@ export default function WhyCalfOnePage() {
                             </div>
                           ))}
                         </div>
-                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '12px', display: 'block' }}>Output: Data-driven marketing dan loyalty strategy.</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '12px', display: 'block' }}>{t("Output: Data-driven marketing and loyalty strategy.", "Output: Strategi marketing dan loyalty berbasis data.")}</Text>
                       </SectionBox>
                     </Col>
                   </Row>
@@ -467,21 +474,21 @@ export default function WhyCalfOnePage() {
             },
             {
               key: '5',
-              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>05 / Roadmap & Tech</span>,
+              label: <span style={{ fontWeight: 600, fontSize: '14px', padding: '0 4px' }}>{t("05 / Roadmap & Tech", "05 / Peta Jalan & Teknologi")}</span>,
               children: (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '16px' }}>
                   
                   {/* BAB 14 & BAB 17 */}
-                  <SectionBox title="Implementation Roadmap & Future Ecosystem" chapter="BAB 14 & BAB 17">
+                  <SectionBox title={t("Implementation Roadmap & Future Ecosystem", "Roadmap Implementasi & Ekosistem Masa Depan")} chapter="BAB 14 & BAB 17">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {[
-                        { pri: 'Priority 1', q: 'Q3 2026', t: 'CALF Data Hub', d: 'Audit Data & Build Data Hub MVP' },
-                        { pri: 'Priority 2', q: 'Q4 2026', t: 'Executive Command Center', d: 'Dashboard Founder & Management' },
-                        { pri: 'Priority 3', q: 'H1 2027', t: 'Operations Command Center', d: 'Centralized ops monitoring' },
-                        { pri: 'Priority 4', q: 'H2 2027', t: 'CRM', d: 'Customer segmentation & profile' },
-                        { pri: 'Priority 5', q: '2028', t: 'Loyalty & Customer Care', d: 'Centralized complaint & membership' },
-                        { pri: 'Priority 6', q: '2029', t: 'Mobile Apps / Super App', d: 'Direct ordering app' },
-                        { pri: 'Priority 7', q: '2030', t: 'AI Platform', d: 'Forecasting & AI layer' },
+                        { pri: 'Priority 1', q: 'Q3 2026', t: 'CALF Data Hub', d: t('Audit Data & Build Data Hub MVP', 'Audit Data & Bangun MVP Data Hub') },
+                        { pri: 'Priority 2', q: 'Q4 2026', t: 'Executive Command Center', d: t('Founder & Executive Management Dashboard', 'Dashboard Founder & Management') },
+                        { pri: 'Priority 3', q: 'H1 2027', t: 'Operations Command Center', d: t('Centralized ops monitoring', 'Pemantauan operasional terpusat') },
+                        { pri: 'Priority 4', q: 'H2 2027', t: 'CRM', d: t('Customer segmentation & profile', 'Segmentasi & profil konsumen') },
+                        { pri: 'Priority 5', q: '2028', t: 'Loyalty & Customer Care', d: t('Centralized complaint & membership', 'Layanan keluhan & keanggotaan terpusat') },
+                        { pri: 'Priority 6', q: '2029', t: 'Mobile Apps / Super App', d: t('Direct ordering app', 'Aplikasi pemesanan mandiri') },
+                        { pri: 'Priority 7', q: '2030', t: 'AI Platform', d: t('Forecasting & AI layer', 'Lapisan prediksi & AI') },
                       ].map((rm, ri) => (
                         <div key={ri} style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px 16px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', flexWrap: 'wrap' }}>
                           <span style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', width: '75px' }}>{rm.pri}</span>
@@ -494,16 +501,16 @@ export default function WhyCalfOnePage() {
                   </SectionBox>
 
                   {/* BAB 15 */}
-                  <SectionBox title="Team Growth Plan" chapter="BAB 15">
+                  <SectionBox title={t("Team Growth Plan", "Rencana Pertumbuhan Tim")} chapter="BAB 15">
                     <Row gutter={[24, 24]} align="middle">
                       <Col xs={24} lg={12}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {[
-                            { ph: 'Phase 1', role: '1 IT / Digital Transformation Lead' },
-                            { ph: 'Phase 2', role: '+ Fullstack Developer' },
-                            { ph: 'Phase 3', role: '+ BI / Data Analyst' },
-                            { ph: 'Phase 4', role: '+ Infrastructure Engineer' },
-                            { ph: 'Phase 5', role: '+ Product & Mobile Team' },
+                            { ph: 'Phase 1', role: t('1 IT / Digital Transformation Lead', '1 Lead IT / Transformasi Digital') },
+                            { ph: 'Phase 2', role: t('+ Fullstack Developer', '+ Fullstack Developer') },
+                            { ph: 'Phase 3', role: t('+ BI / Data Analyst', '+ Analis Data / BI') },
+                            { ph: 'Phase 4', role: t('+ Infrastructure Engineer', '+ Engineer Infrastruktur') },
+                            { ph: 'Phase 5', role: t('+ Product & Mobile Team', '+ Tim Produk & Mobile Apps') },
                           ].map((tm, tI) => (
                             <div key={tI} style={{ padding: '10px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', display: 'flex', gap: '12px', alignItems: 'center' }}>
                               <span style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', width: '60px' }}>{tm.ph}</span>
@@ -511,7 +518,7 @@ export default function WhyCalfOnePage() {
                             </div>
                           ))}
                         </div>
-                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '12px', display: 'block' }}>Target: Membangun tim digital internal secara bertahap sesuai pertumbuhan bisnis.</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '12px', display: 'block' }}>{t("Target: Build internal digital team progressively aligned with business growth.", "Target: Membangun tim digital internal secara bertahap sesuai pertumbuhan bisnis.")}</Text>
                       </Col>
 
                       <Col xs={24} lg={12}>
@@ -534,8 +541,8 @@ export default function WhyCalfOnePage() {
                   {/* BAB 18 & BAB 19 */}
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={10}>
-                      <SectionBox title="Required Discovery" chapter="BAB 18">
-                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '8px' }}>Sebelum stack final ditentukan perlu dilakukan audit:</Text>
+                      <SectionBox title={t("Required Discovery", "Discovery & Investigasi Awal")} chapter="BAB 18">
+                        <Text style={{ color: '#475569', fontSize: '13px', marginBottom: '8px' }}>{t("Before finalizing the tech stack, audits must be conducted on:", "Sebelum stack final ditentukan perlu dilakukan audit:")}</Text>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                           {[
                             "POS / ESB", "Finance Process", "HR Process", "Inventory Process", 
@@ -545,12 +552,12 @@ export default function WhyCalfOnePage() {
                             <span key={auI} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, color: '#334155' }}>{aud}</span>
                           ))}
                         </div>
-                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '14px', display: 'block' }}>Tujuan: Menghindari over-engineering dan memastikan efisiensi biaya.</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748B', marginTop: '14px', display: 'block' }}>{t("Objective: Prevent over-engineering and ensure cost efficiency.", "Tujuan: Menghindari over-engineering dan memastikan efisiensi biaya.")}</Text>
                       </SectionBox>
                     </Col>
 
                     <Col xs={24} lg={14}>
-                      <SectionBox title="Recommended Technology Direction" chapter="BAB 19">
+                      <SectionBox title={t("Recommended Technology Direction", "Rekomendasi Arah Teknologi")} chapter="BAB 19">
                         <Row gutter={[10, 10]}>
                           {[
                             { layer: 'Data Acquisition', stk: 'Python ETL, n8n, API Integration' },
@@ -569,7 +576,7 @@ export default function WhyCalfOnePage() {
                             </Col>
                           ))}
                         </Row>
-                        <Text style={{ fontSize: '11px', color: '#64748B', marginTop: '12px', display: 'block', fontStyle: 'italic' }}>Catatan: Final stack ditentukan setelah discovery selesai.</Text>
+                        <Text style={{ fontSize: '11px', color: '#64748B', marginTop: '12px', display: 'block', fontStyle: 'italic' }}>{t("Note: Final tech stack determined post-discovery.", "Catatan: Final stack ditentukan setelah discovery selesai.")}</Text>
                       </SectionBox>
                     </Col>
                   </Row>
@@ -581,12 +588,12 @@ export default function WhyCalfOnePage() {
                     padding: '32px 36px', 
                     color: '#FFFFFF'
                   }}>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.04em', display: 'block', marginBottom: '12px' }}>BAB 20 / FINAL RECOMMENDATION</span>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.04em', display: 'block', marginBottom: '12px' }}>{t("BAB 20 / FINAL RECOMMENDATION", "BAB 20 / REKOMENDASI AKHIR")}</span>
                     <Title level={2} style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '24px', margin: '0 0 14px 0', letterSpacing: '-0.01em' }}>
-                      Transformasi digital Kopi Calf sebaiknya dimulai dari CALF Data Hub.
+                      {t("Calf Coffee's digital transformation should begin with the CALF Data Hub.", "Transformasi digital Kopi Calf sebaiknya dimulai dari CALF Data Hub.")}
                     </Title>
                     <Text style={{ color: '#CBD5E1', fontSize: '15px', lineHeight: 1.6, display: 'block', maxWidth: '850px', marginBottom: '24px' }}>
-                      Dengan membangun fondasi data terlebih dahulu, seluruh roadmap digital seperti CRM, Loyalty, Customer Care, Mobile Apps, hingga AI dapat dibangun lebih cepat, lebih murah, dan lebih terukur.
+                      {t("By establishing the data foundation first, subsequent digital roadmaps (CRM, Loyalty, Customer Care, Mobile Apps, AI) can be built faster, more cost-effectively, and with measurable impact.", "Dengan membangun fondasi data terlebih dahulu, seluruh roadmap digital seperti CRM, Loyalty, Customer Care, Mobile Apps, hingga AI dapat dibangun lebih cepat, lebih murah, dan lebih terukur.")}
                     </Text>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                       <div style={{ padding: '8px 16px', background: '#1E293B', borderRadius: '6px', border: '1px solid #334155' }}>

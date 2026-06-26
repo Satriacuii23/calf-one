@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import { ConfigProvider } from 'antd';
 import type { Metadata } from "next";
 import './globals.css';
+import { LanguageProvider } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: "Calf Command Center",
@@ -16,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head />
       <body style={{ margin: 0, padding: 0, backgroundColor: '#f0f2f5' }}>
         <MantineProvider>
@@ -58,7 +59,9 @@ export default function RootLayout({
                 }
               }}
             >
-              {children}
+              <LanguageProvider>
+                {children}
+              </LanguageProvider>
             </ConfigProvider>
           </AntdRegistry>
         </MantineProvider>
